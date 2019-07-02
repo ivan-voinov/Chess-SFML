@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Board.h"
-#include "ObjectDrawer.h"
+#include "GameObject.h"
 	
 class ChessGame
 {
@@ -9,16 +9,20 @@ private:
 	sf::RenderWindow m_Window;
 	sf::Event m_Event;
 	Board m_Board;
-	ObjectDrawer m_ObjectDrawer;
+	std::vector<GameObject*> m_GameObjects;
+	std::vector<sf::Drawable*> m_DrawableObjects;
 
-	ChessGame(sf::VideoMode mode, const std::string &title, sf::Uint32 style);
+	ChessGame();
+public:
+	static ChessGame& getInstance();
+	void runGame();
+	void addGameObject(GameObject* gameObject);
+	void addDrawableObject(sf::Drawable* drawableObject);
+	void removeGameObject(GameObject* gameObject);
+	void removeDrawableObject(sf::Drawable* drawableObject);
 	void readInput();
 	void update();
 	void draw();
-
-public:
-	static ChessGame& getInstance(sf::VideoMode mode, const std::string &title, sf::Uint32 style);
-	void runGame();
 	~ChessGame();
 };
 

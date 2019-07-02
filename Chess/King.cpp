@@ -2,6 +2,7 @@
 #include "King.h"
 #include "FilePaths.h"
 #include "FileException.h"
+#include "Square.h"
 #include <iostream>
 
 
@@ -29,6 +30,12 @@ King::King(const sf::Vector2f& position, const sf::Vector2i coordinates, const s
 
 bool King::isLegalMove(const Square& square)
 {
+	int changeInX = abs(m_Coordinates.x - square.getCoordinates().x);
+	int changeInY = abs(m_Coordinates.y - square.getCoordinates().y);
+
+	if ((changeInX + changeInY == 1) || (changeInX == changeInY && changeInX == 1))
+		return true;
+
 	return false;
 }
 

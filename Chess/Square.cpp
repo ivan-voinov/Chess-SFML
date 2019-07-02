@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Square.h"
+#include "ChessGame.h"
 
 Square::Square()
 {}
@@ -92,6 +93,12 @@ void Square::setPiece(std::unique_ptr<Piece> piece)
 void Square::movePiece(Square& square)
 {
 	m_Piece->move(square);
+
+	//If a piece is captured, delete it from everywhere
+	if (square.getPiece() != nullptr)
+		ChessGame::getInstance().removeDrawableObject(square.getPiece());
+
+	//Assign the square a new piece
 	square.setPiece(std::move(m_Piece));
 }
 
@@ -127,6 +134,7 @@ void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 bool Square::isTriggered(const sf::Vector2i& mousePosition) const
 {
+	//If the mouse is inside the square, return true (false otherwise)
 	if (m_Shape.getGlobalBounds().contains(sf::Vector2f(mousePosition)))
 		return true;
 	return false;

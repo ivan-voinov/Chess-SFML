@@ -19,7 +19,7 @@ const sf::Color& Piece::getColor() const
 	return m_Color;
 }
 
-bool Piece::canBeCaptured(const Piece &piece) const
+bool Piece::canBeCaptured(const Piece& piece) const
 {
 	if (piece.getColor() != this->m_Color)
 		return true;
@@ -32,7 +32,7 @@ void Piece::move(Square& square)
 	m_PieceSprite.setPosition(square.getPosition());
 }
 
-void Piece::draw(sf::RenderTarget & target, sf::RenderStates states) const
+void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_PieceSprite, states);
 }

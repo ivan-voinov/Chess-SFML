@@ -35,10 +35,12 @@ void Bishop::move(const sf::Vector2f& position)
 
 bool Bishop::isLegalMove(const Square& square)
 {
-	sf::Vector2i coordinates = square.getCoordinates();
+	int changeInX = abs(m_Coordinates.x - square.getCoordinates().x);
+	int changeInY = abs(m_Coordinates.y - square.getCoordinates().y);
 
-	if (coordinates.x - m_Coordinates.x == coordinates.y - m_Coordinates.y)
+	if (changeInX == changeInY && changeInX > 0)
 		return true;
+
 	return false;
 }
 

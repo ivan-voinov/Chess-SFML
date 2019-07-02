@@ -2,8 +2,8 @@
 #include "Board.h"
 #include "Piece.h"
 #include "PieceHeaders.h"
-
 #include <iostream>
+#include "ChessGame.h"
 
 
 Board::Board()
@@ -41,7 +41,7 @@ void Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
 			{
 				if (&square != m_FocusedSquare)
 				{
-					//if (m_FocusedSquare->getPiece()->isLegalMove(square))
+					if (m_FocusedSquare->getPiece()->isLegalMove(square))
 					{
 						m_FocusedSquare->movePiece(square);
 						m_FocusedSquare = nullptr;
@@ -64,10 +64,10 @@ void Board::readInput(const sf::Vector2i& mousePosition)
 		choosePiece(mousePosition);
 }
 
-void Board::loadBoard(const sf::RenderWindow& window, ObjectDrawer& objectDrawer)
+void Board::loadBoard(const sf::RenderWindow& window)
 {
-	createOddRows(window, objectDrawer);
-	createEvenRows(window, objectDrawer);
+	createOddRows(window);
+	createEvenRows(window);
 }
 
 std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
@@ -112,7 +112,7 @@ std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareC
 	return nullptr;
 }
 
-void Board::createEvenRows(const sf::RenderWindow& window, ObjectDrawer& objectDrawer)
+void Board::createEvenRows(const sf::RenderWindow& window)
 {
 	//Build white-black rows
 	for (int i = 0; i < boardSize; i += 2)
@@ -126,25 +126,25 @@ void Board::createEvenRows(const sf::RenderWindow& window, ObjectDrawer& objectD
 
 			if (j % 2 == 0)
 				//Build a white square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color::White)
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color(255, 229, 204))
 					.position(squarePosition)
 					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 			else
 				//Build a black square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color::Black)
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color(212,135,97))
 					.position(squarePosition)
 					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 
-			objectDrawer.addNewObject(&m_Board[i][j]);
+			ChessGame::getInstance().addDrawableObject(&m_Board[i][j]);
 			if (m_Board[i][j].getPiece() != nullptr)
-				objectDrawer.addNewObject(m_Board[i][j].getPiece());
+				ChessGame::getInstance().addDrawableObject(m_Board[i][j].getPiece());
 		}
 	}
 }
 
-void Board::createOddRows(const sf::RenderWindow& window, ObjectDrawer& objectDrawer)
+void Board::createOddRows(const sf::RenderWindow& window)
 {
 	//Build black-white rows
 	for (int i = 1; i < boardSize; i += 2)
@@ -158,20 +158,20 @@ void Board::createOddRows(const sf::RenderWindow& window, ObjectDrawer& objectDr
 
 			if (j % 2 == 0)
 				//Build a black square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color::Black)
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color(212, 135, 97))
 					.position(squarePosition)
 					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 			else
 				//Build a white square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color::White)
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color(255, 229, 204))
 					.position(squarePosition)
 					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 
-			objectDrawer.addNewObject(&m_Board[i][j]);
+			ChessGame::getInstance().addDrawableObject(&m_Board[i][j]);
 			if (m_Board[i][j].getPiece() != nullptr)
-				objectDrawer.addNewObject(m_Board[i][j].getPiece());
+				ChessGame::getInstance().addDrawableObject(m_Board[i][j].getPiece());
 		}
 	}
 }

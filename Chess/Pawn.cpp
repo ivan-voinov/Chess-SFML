@@ -2,6 +2,7 @@
 #include "Pawn.h"
 #include "FilePaths.h"
 #include "FileException.h"
+#include "Square.h"
 #include <iostream>
 
 
@@ -36,6 +37,13 @@ bool Pawn::isStartingSquare(const sf::Vector2i& coordinates) const
 
 bool Pawn::isLegalMove(const Square& square)
 {
+	int changeInX = abs(m_Coordinates.x - square.getCoordinates().x);
+	int changeInY = abs(m_Coordinates.y - square.getCoordinates().y);
+
+	//TO DO: force the pawn to move only forward
+	if (changeInX > 0 && changeInY == 0)
+		return true;
+
 	return false;
 }
 

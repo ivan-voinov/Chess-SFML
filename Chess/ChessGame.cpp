@@ -1,10 +1,46 @@
 #include "pch.h"
 #include "ChessGame.h"
 
-ChessGame::ChessGame(sf::VideoMode mode, const std::string &title, sf::Uint32 style)
+ChessGame::ChessGame()
 {
-	m_Window.create(mode, title, style);
-	m_Board.loadBoard(m_Window, m_ObjectDrawer);
+	m_Window.create(sf::VideoMode(700, 700), "Chess", sf::Style::Default);
+}
+
+void ChessGame::addGameObject(GameObject* gameObject)
+{
+	m_GameObjects.push_back(gameObject);
+}
+
+void ChessGame::addDrawableObject(sf::Drawable* drawableObject)
+{
+	m_DrawableObjects.push_back(drawableObject);
+}
+
+void ChessGame::removeGameObject(GameObject* gameObject)
+{
+	std::vector<GameObject*>::iterator it;
+	it = m_GameObjects.begin();
+	while (it != m_GameObjects.end())
+	{
+		if (*it == gameObject)
+			m_GameObjects.erase(it);
+		++it;
+	}
+}
+
+void ChessGame::removeDrawableObject(sf::Drawable* drawableObject)
+{
+	std::vector<sf::Drawable*>::iterator it;
+	it = m_DrawableObjects.begin();
+	while (it != m_DrawableObjects.end())
+	{
+		if (*it == drawableObject)
+		{
+			m_DrawableObjects.erase(it);
+			break;
+		}
+		++it;
+	}
 }
 
 void ChessGame::readInput()
@@ -34,13 +70,17 @@ void ChessGame::update()
 void ChessGame::draw()
 {
 	m_Window.clear();
-	m_ObjectDrawer.cleanUpDestroyedObjects();
-	m_ObjectDrawer.drawObjects(m_Window);
+	
+	for (auto& drawableObject : m_DrawableObjects)
+		m_Window.draw(*drawableObject);
+
 	m_Window.display();
 }
 
 void ChessGame::runGame()
 {
+	m_Board.loadBoard(m_Window);
+
 	while (m_Window.isOpen())
 	{
 		readInput();
@@ -49,9 +89,9 @@ void ChessGame::runGame()
 	}
 }
 
-ChessGame& ChessGame::getInstance(sf::VideoMode mode, const std::string &title, sf::Uint32 style)
+ChessGame& ChessGame::getInstance()
 {
-	static ChessGame chessGame(mode, title, style);
+	static ChessGame chessGame;
 	return chessGame;
 }
 
