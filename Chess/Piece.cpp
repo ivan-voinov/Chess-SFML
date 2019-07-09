@@ -32,6 +32,11 @@ void Piece::move(Square& square)
 	m_PieceSprite.setPosition(square.getPosition());
 }
 
+void Piece::resize(const double squareSize)
+{
+	m_PieceSprite.setScale(squareSize / m_PieceTexture.getSize().x, squareSize / m_PieceTexture.getSize().y);
+}
+
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_PieceSprite, states);

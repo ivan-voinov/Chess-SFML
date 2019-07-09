@@ -16,6 +16,7 @@ public:
 	const sf::Color& getColor() const;
 	bool canBeCaptured(const Piece &piece) const;
 	void move(Square& square);
+	void resize(const double squareSize);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual bool isLegalMove(const Square& square) = 0;
 	~Piece();

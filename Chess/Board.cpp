@@ -54,6 +54,19 @@ void Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
 	}
 }
 
+void Board::resizePieces()
+{
+	for (auto& rows : m_Board)
+	{
+		for (auto& square : rows)
+		{
+			Piece* piece = square.getPiece();
+			if (piece != nullptr)
+				piece->resize(squareSize);
+		}
+	}
+}
+
 void Board::readInput(const sf::Vector2i& mousePosition)
 {
 	if (pieceIsChosen())
@@ -68,6 +81,7 @@ void Board::loadBoard(const sf::RenderWindow& window)
 {
 	createOddRows(window);
 	createEvenRows(window);
+	resizePieces();
 }
 
 std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
