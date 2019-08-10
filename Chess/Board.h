@@ -2,29 +2,35 @@
 #include <SFML/Graphics.hpp>
 #include "Square.h"
 #include "SquareBuilder.h"
+#include "Collection.h"
+#include "Player.h"
 
-class ChessGame;
+class GameManager;
 
-class Board
+class Board : public Collection
 {
 private:
 	static constexpr int boardSize = 8;
 	static constexpr double squareSize = 55;
 	Square m_Board[boardSize][boardSize];
-	Square* m_FocusedSquare = nullptr;
+	Square* m_FocusedSquare;
 
 	void createEvenRows(const sf::RenderWindow& window);
 	void createOddRows(const sf::RenderWindow& window);
 public:
 	Board();
-	bool pieceIsChosen() const;
-	void choosePiece(const sf::Vector2i& mousePosition);
 	void chooseSquareForPiece(const sf::Vector2i& mousePosition);
+	Square* getFocusedSquare();
+	void resetFocusedSquare();
+	bool squareIsChosen() const;
 	void resizePieces();
-	void readInput(const sf::Vector2i& mousePosition);
 	void loadBoard(const sf::RenderWindow& window);
+	void addGameObjects();
+	void assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer);
+	
 	std::unique_ptr<Piece> getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
 		const sf::Vector2f& squarePosition) const;
+	virtual void removeGameObject(GameObject* gameObject) override;
 	~Board();
 };
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -170,7 +170,8 @@
     <ClInclude Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.h" />
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="Board.h" />
-    <ClInclude Include="ChessGame.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Collection.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="GameObject.h" />
@@ -191,8 +192,9 @@
     <ClCompile Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.cpp" />
     <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="Board.cpp" />
-    <ClCompile Include="Chess.cpp" />
-    <ClCompile Include="ChessGame.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Collection.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FilePaths.cpp" />
     <ClCompile Include="GameObject.cpp" />

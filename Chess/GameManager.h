@@ -2,27 +2,30 @@
 #include <SFML/Graphics.hpp>
 #include "Board.h"
 #include "GameObject.h"
+#include "Collection.h"
+
+class Player;
 	
-class ChessGame
+class GameManager
 {
 private:
 	sf::RenderWindow m_Window;
 	sf::Event m_Event;
-	Board m_Board;
 	std::vector<GameObject*> m_GameObjects;
-	std::vector<sf::Drawable*> m_DrawableObjects;
+	std::vector<Collection*> m_GameObjectContainers;
+	Board m_Board;
+	Player m_WhitePlayer;
+	Player m_BlackPlayer;
 
-	ChessGame();
+	GameManager();
 public:
-	static ChessGame& getInstance();
+	static GameManager& getInstance();
 	void runGame();
 	void addGameObject(GameObject* gameObject);
-	void addDrawableObject(sf::Drawable* drawableObject);
 	void removeGameObject(GameObject* gameObject);
-	void removeDrawableObject(sf::Drawable* drawableObject);
 	void readInput();
 	void update();
 	void draw();
-	~ChessGame();
+	~GameManager();
 };
 

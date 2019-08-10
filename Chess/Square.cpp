@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "Square.h"
-#include "ChessGame.h"
+#include "GameManager.h"
 
 Square::Square()
 {}
+
+const sf::Color Square::m_WhiteColor = sf::Color(212, 135, 97);
+const sf::Color Square::m_BlackColor = sf::Color(255, 229, 204);
 
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
@@ -67,7 +70,10 @@ Square& Square::operator=(Square&& square)
 
 const sf::Color& Square::getColor() const
 {
-	return m_Color;
+	if (m_Color == m_BlackColor)
+		return sf::Color::Black;
+	else if (m_Color == m_WhiteColor)
+		return sf::Color::White;
 }
 
 const sf::Vector2i& Square::getCoordinates() const
@@ -96,7 +102,7 @@ void Square::movePiece(Square& square)
 
 	//If a piece is captured, delete it from everywhere
 	if (square.getPiece() != nullptr)
-		ChessGame::getInstance().removeDrawableObject(square.getPiece());
+		GameManager::getInstance().removeGameObject(square.getPiece());
 
 	//Assign the square a new piece
 	square.setPiece(std::move(m_Piece));

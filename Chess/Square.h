@@ -3,9 +3,11 @@
 #include "ITriggered.h"
 #include "Piece.h"
 
-class Square : public ITriggered, public sf::Drawable
+class Square : public ITriggered, public GameObject
 {
 private:
+	static const sf::Color m_WhiteColor;
+	static const sf::Color m_BlackColor;
 	sf::RectangleShape m_Shape;
 	sf::Color m_Color;
 	sf::Vector2i m_Coordinates;

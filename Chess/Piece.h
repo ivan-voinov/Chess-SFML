@@ -1,10 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "ITriggered.h"
+#include "GameObject.h"
 
 class Square;
 
-class Piece : public sf::Drawable
+class Piece : public GameObject
 {
 protected:
 	sf::Vector2i m_Coordinates;

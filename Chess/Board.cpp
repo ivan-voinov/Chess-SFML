@@ -3,32 +3,11 @@
 #include "Piece.h"
 #include "PieceHeaders.h"
 #include <iostream>
-#include "ChessGame.h"
+#include "GameManager.h"
 
 
 Board::Board()
 {
-}
-
-bool Board::pieceIsChosen() const
-{
-	if (m_FocusedSquare == nullptr)
-		return false;
-	return true;
-}
-
-void Board::choosePiece(const sf::Vector2i& mousePosition)
-{
-	for (auto& rows : m_Board)
-	{
-		for (auto& square : rows)
-		{
-			if (square.isTriggered(mousePosition) && square.getPiece() != nullptr)
-			{
-				m_FocusedSquare = &square;
-			}
-		}
-	}
 }
 
 void Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
@@ -39,19 +18,27 @@ void Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
 		{
 			if (square.isTriggered(mousePosition))
 			{
-				if (&square != m_FocusedSquare)
-				{
-					if (m_FocusedSquare->getPiece()->isLegalMove(square))
-					{
-						m_FocusedSquare->movePiece(square);
-						m_FocusedSquare = nullptr;
-					}
-				}
-				else
-					m_FocusedSquare = nullptr;
+				m_FocusedSquare = &square;
 			}
 		}
 	}
+}
+
+Square* Board::getFocusedSquare()
+{
+	return m_FocusedSquare;
+}
+
+void Board::resetFocusedSquare()
+{
+	m_FocusedSquare = nullptr;
+}
+
+bool Board::squareIsChosen() const
+{
+	if (m_FocusedSquare == nullptr)
+		return false;
+	return true;
 }
 
 void Board::resizePieces()
@@ -67,21 +54,53 @@ void Board::resizePieces()
 	}
 }
 
-void Board::readInput(const sf::Vector2i& mousePosition)
-{
-	if (pieceIsChosen())
-	{
-		chooseSquareForPiece(mousePosition);
-	}
-	else
-		choosePiece(mousePosition);
-}
-
 void Board::loadBoard(const sf::RenderWindow& window)
 {
 	createOddRows(window);
 	createEvenRows(window);
 	resizePieces();
+}
+
+void Board::addGameObjects()
+{
+	//Add squares
+	for (auto& rows : m_Board)
+	{
+		for (auto& square : rows)
+		{
+			GameManager::getInstance().addGameObject(&square);
+		}
+	}
+
+	//Add pieces
+	for (auto& rows : m_Board)
+	{
+		for (auto& square : rows)
+		{
+			if (square.getPiece() != nullptr)
+				GameManager::getInstance().addGameObject(square.getPiece());
+		}
+	}
+}
+
+void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
+{
+	for (int i = 0; i < boardSize; ++i)
+	{
+		for (int j = 0; j < boardSize; ++j)
+		{
+			Piece* piece = m_Board[i][j].getPiece();
+
+			if (piece != nullptr)
+			{
+				if (piece->getColor() == sf::Color::White)
+					whitePlayer.addPiece(&m_Board[i][j]);
+
+				else if (piece->getColor() == sf::Color::Black)
+					blackPlayer.addPiece(&m_Board[i][j]);
+			}
+		}
+	}
 }
 
 std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
@@ -126,6 +145,20 @@ std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareC
 	return nullptr;
 }
 
+void Board::removeGameObject(GameObject* gameObject)
+{
+	for (auto& rows : m_Board)
+	{
+		for (auto& square : rows)
+		{
+			Piece* piece = square.getPiece();
+			
+			if (square.getPiece() == gameObject)
+				square.setPiece(nullptr);
+		}
+	}
+}
+
 void Board::createEvenRows(const sf::RenderWindow& window)
 {
 	//Build white-black rows
@@ -150,10 +183,6 @@ void Board::createEvenRows(const sf::RenderWindow& window)
 					.position(squarePosition)
 					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
-
-			ChessGame::getInstance().addDrawableObject(&m_Board[i][j]);
-			if (m_Board[i][j].getPiece() != nullptr)
-				ChessGame::getInstance().addDrawableObject(m_Board[i][j].getPiece());
 		}
 	}
 }
@@ -182,10 +211,6 @@ void Board::createOddRows(const sf::RenderWindow& window)
 					.position(squarePosition)
 					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
-
-			ChessGame::getInstance().addDrawableObject(&m_Board[i][j]);
-			if (m_Board[i][j].getPiece() != nullptr)
-				ChessGame::getInstance().addDrawableObject(m_Board[i][j].getPiece());
 		}
 	}
 }
