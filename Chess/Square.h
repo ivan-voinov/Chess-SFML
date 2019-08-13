@@ -5,9 +5,14 @@
 
 class Square : public ITriggered, public GameObject
 {
+public:
+	static const sf::Color whiteColor;
+	static const sf::Color blackColor;
+	static const sf::Color greenColor;
+	static const sf::Color darkBrownColor;
+	static const sf::Color lightBrownColor;
+
 private:
-	static const sf::Color m_WhiteColor;
-	static const sf::Color m_BlackColor;
 	sf::RectangleShape m_Shape;
 	sf::Color m_Color;
 	sf::Vector2i m_Coordinates;
@@ -29,7 +34,9 @@ public:
 		int timesAttacked);
 	Square(Square&& square);
 	Square& operator=(Square&& square);
-	const sf::Color& getColor() const;
+	void setColor(sf::Color color);
+	sf::Color getColor() const;
+	sf::Color getInitialColor() const;
 	const sf::Vector2i& getCoordinates() const;
 	const sf::Vector2f& getPosition() const;
 	Piece* getPiece() const;

@@ -5,8 +5,11 @@
 Square::Square()
 {}
 
-const sf::Color Square::m_WhiteColor = sf::Color(212, 135, 97);
-const sf::Color Square::m_BlackColor = sf::Color(255, 229, 204);
+const sf::Color Square::whiteColor = sf::Color(sf::Color::White);
+const sf::Color Square::blackColor = sf::Color(sf::Color::Black);
+const sf::Color Square::greenColor = sf::Color(11, 176, 5);
+const sf::Color Square::lightBrownColor = sf::Color(255, 229, 204);
+const sf::Color Square::darkBrownColor = sf::Color(212, 135, 97);
 
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
@@ -68,12 +71,27 @@ Square& Square::operator=(Square&& square)
 	return *this;
 }
 
-const sf::Color& Square::getColor() const
+void Square::setColor(sf::Color color)
 {
-	if (m_Color == m_BlackColor)
+	m_Color = color;
+	m_Shape.setFillColor(color);
+}
+
+sf::Color Square::getColor() const
+{
+	if (m_Color == blackColor)
 		return sf::Color::Black;
-	else if (m_Color == m_WhiteColor)
+	else if (m_Color == whiteColor)
 		return sf::Color::White;
+}
+
+sf::Color Square::getInitialColor() const
+{
+	if ((m_Coordinates.x % 2 == 0) && (m_Coordinates.y % 2 == 0) ||
+		(m_Coordinates.x % 2 == 1) && (m_Coordinates.y % 2 == 1))
+			return lightBrownColor;
+	else
+		return darkBrownColor;
 }
 
 const sf::Vector2i& Square::getCoordinates() const

@@ -8,7 +8,7 @@ class Board;
 class Player : public Collection
 {
 private:
-	Square* m_ActivePiece = nullptr;
+	Square* m_FocusedPiece = nullptr;
 	Board* m_Board;
 	std::vector<Square*> m_Pieces;
 	bool m_IsPlayerTurn;
@@ -24,7 +24,7 @@ public:
 	bool makeMove();
 	void endTurn();
 	void startTurn();
-	void resetActivePiece();
+	void resetFocusedPiece();
 	virtual void removeGameObject(GameObject* gameObject) override;
 	~Player();
 };

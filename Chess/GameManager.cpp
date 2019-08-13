@@ -55,26 +55,39 @@ void GameManager::readInput()
 					{
 						if (m_WhitePlayer.makeMove())
 						{
+							m_WhitePlayer.resetFocusedPiece();
+							m_Board.resetFocusedSquare();
+
 							m_WhitePlayer.endTurn();
 							m_BlackPlayer.startTurn();
 						}
 						else
 						{
-							m_WhitePlayer.resetActivePiece();
+							m_WhitePlayer.resetFocusedPiece();
 							m_Board.resetFocusedSquare();
 						}
 					}
 				}
-				if (m_BlackPlayer.isPlayerTurn())
+				else
 				{
-					if (m_BlackPlayer.pieceIsChosen())
-						m_Board.chooseSquareForPiece(sf::Mouse::getPosition());
-					else
-						m_BlackPlayer.choosePiece(sf::Mouse::getPosition());
-					if (m_BlackPlayer.makeMove())
+					if (m_BlackPlayer.isPlayerTurn())
 					{
-						m_BlackPlayer.endTurn();
-						m_WhitePlayer.startTurn();
+						if (m_BlackPlayer.pieceIsChosen())
+							m_Board.chooseSquareForPiece(sf::Mouse::getPosition(m_Window));
+						else
+							m_BlackPlayer.choosePiece(sf::Mouse::getPosition(m_Window));
+
+						if (m_Board.squareIsChosen())
+						{
+							if (m_BlackPlayer.makeMove())
+							{
+								m_BlackPlayer.resetFocusedPiece();
+								m_Board.resetFocusedSquare();
+
+								m_BlackPlayer.endTurn();
+								m_WhitePlayer.startTurn();
+							}
+						}
 					}
 				}
 			}

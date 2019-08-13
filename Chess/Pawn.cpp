@@ -47,6 +47,14 @@ bool Pawn::isLegalMove(const Square& square)
 	return false;
 }
 
+bool Pawn::reachedEighthRank() const
+{
+	if (m_Coordinates.x == 0 || m_Coordinates.x == 7)
+		return true;
+
+	return false;
+}
+
 Pawn::~Pawn()
 {
 }

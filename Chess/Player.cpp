@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 #include "Board.h"
+#include <vector>
 
 
 Player::Player(const sf::Color& playerColor)
@@ -23,20 +24,21 @@ void Player::choosePiece(const sf::Vector2i& mousePosition)
 	for (auto& piece : m_Pieces)
 		if (piece->isTriggered(mousePosition))
 		{
-			if (piece == m_ActivePiece)
+			if (piece == m_FocusedPiece)
 			{
-				resetActivePiece();
+				resetFocusedPiece();
 			}
 			else
 			{
-				m_ActivePiece = piece;
+				piece->setColor(Square::greenColor);
+				m_FocusedPiece = piece;
 			}
 		}
 }
 
 bool Player::pieceIsChosen() const
 {
-	if (m_ActivePiece == nullptr)
+	if (m_FocusedPiece == nullptr)
 		return false;
 	return true;
 }
@@ -55,9 +57,11 @@ bool Player::makeMove()
 {
 	Square* focusedSquare = m_Board->getFocusedSquare();
 
-	if (m_ActivePiece->getPiece()->isLegalMove(*focusedSquare))
+	if (m_FocusedPiece->getPiece()->isLegalMove(*focusedSquare))
 	{
-		m_ActivePiece->movePiece(*focusedSquare);
+		m_FocusedPiece->movePiece(*focusedSquare);
+		removeGameObject(m_FocusedPiece->getPiece());
+		addPiece(focusedSquare);
 		return true;
 	}
 	else
@@ -71,14 +75,13 @@ void Player::endTurn()
 
 void Player::startTurn()
 {
-	m_Board->resetFocusedSquare();
-	resetActivePiece();
 	m_IsPlayerTurn = true;
 }
 
-void Player::resetActivePiece()
+void Player::resetFocusedPiece()
 {
-	m_ActivePiece = nullptr;
+	m_FocusedPiece->setColor(m_FocusedPiece->getInitialColor());
+	m_FocusedPiece = nullptr;
 }
 
 void Player::removeGameObject(GameObject* gameObject)
@@ -88,9 +91,11 @@ void Player::removeGameObject(GameObject* gameObject)
 	while (it != m_Pieces.end())
 	{
 		if ((*it)->getPiece() == gameObject)
+		{
 			m_Pieces.erase(it);
-		else
-			++it;
+			break;
+		}
+		++it;
 	}
 }
 
