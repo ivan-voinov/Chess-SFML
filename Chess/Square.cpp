@@ -5,23 +5,13 @@
 Square::Square()
 {}
 
-const sf::Color Square::whiteColor = sf::Color(sf::Color::White);
-const sf::Color Square::blackColor = sf::Color(sf::Color::Black);
-const sf::Color Square::greenColor = sf::Color(11, 176, 5);
-const sf::Color Square::lightBrownColor = sf::Color(255, 229, 204);
-const sf::Color Square::darkBrownColor = sf::Color(212, 135, 97);
-
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
 	const sf::Vector2f& position,
-	std::unique_ptr<Piece> piece,
 	double size,
 	bool free,
 	int timesAttacked)
 {
-	this->m_Piece = std::move(piece);
-	piece = nullptr;
-
 	this->m_Color = color;
 	this->m_Coordinates = coordinates;
 	this->m_Position = position;
@@ -37,9 +27,6 @@ Square::Square(const sf::Color& color,
 
 Square::Square(Square&& square)
 {
-	this->m_Piece = std::move(square.m_Piece);
-	square.m_Piece = nullptr;
-
 	this->m_Shape = square.m_Shape;
 	this->m_Color = square.m_Color;
 	this->m_Coordinates = square.m_Coordinates;
@@ -55,11 +42,6 @@ Square& Square::operator=(Square&& square)
 	if (&square == this)
 		return *this;
 
-	m_Piece.release();
-
-	this->m_Piece = std::move(square.m_Piece);
-	square.m_Piece = nullptr;
-
 	this->m_Shape = square.m_Shape;
 	this->m_Color = square.m_Color;
 	this->m_Coordinates = square.m_Coordinates;
@@ -71,6 +53,12 @@ Square& Square::operator=(Square&& square)
 	return *this;
 }
 
+void Square::resetColor()
+{
+	m_Color = getInitialColor();
+	m_Shape.setFillColor(m_Color);
+}
+
 void Square::setColor(sf::Color color)
 {
 	m_Color = color;
@@ -79,19 +67,19 @@ void Square::setColor(sf::Color color)
 
 sf::Color Square::getColor() const
 {
-	if (m_Color == blackColor)
-		return sf::Color::Black;
-	else if (m_Color == whiteColor)
-		return sf::Color::White;
+	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
+		return Colors::getInstance().getColor(Colors::ColorNames::BLACK);
+	else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+		return Colors::getInstance().getColor(Colors::ColorNames::WHITE);
 }
 
 sf::Color Square::getInitialColor() const
 {
 	if ((m_Coordinates.x % 2 == 0) && (m_Coordinates.y % 2 == 0) ||
 		(m_Coordinates.x % 2 == 1) && (m_Coordinates.y % 2 == 1))
-			return lightBrownColor;
+			return Colors::getInstance().getColor(Colors::ColorNames::LIGHT_BROWN);
 	else
-		return darkBrownColor;
+		return Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN);
 }
 
 const sf::Vector2i& Square::getCoordinates() const
@@ -102,28 +90,6 @@ const sf::Vector2i& Square::getCoordinates() const
 const sf::Vector2f& Square::getPosition() const
 {
 	return m_Position;
-}
-
-Piece* Square::getPiece() const
-{
-	return m_Piece.get();
-}
-
-void Square::setPiece(std::unique_ptr<Piece> piece)
-{
-	m_Piece = std::move(piece);
-}
-
-void Square::movePiece(Square& square)
-{
-	m_Piece->move(square);
-
-	//If a piece is captured, delete it from everywhere
-	if (square.getPiece() != nullptr)
-		GameManager::getInstance().removeGameObject(square.getPiece());
-
-	//Assign the square a new piece
-	square.setPiece(std::move(m_Piece));
 }
 
 bool Square::isFree() const

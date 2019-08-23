@@ -6,8 +6,8 @@
 #include <iostream>
 
 
-King::King(const sf::Vector2f& position, const sf::Vector2i coordinates, const sf::Color& color) :
-	Piece(position, coordinates, color)
+King::King(const sf::Vector2f& position, const sf::Color& color) :
+	Piece(position, color)
 {
 	try
 	{
@@ -30,8 +30,8 @@ King::King(const sf::Vector2f& position, const sf::Vector2i coordinates, const s
 
 bool King::isLegalMove(const Square& square)
 {
-	int changeInX = abs(m_Coordinates.x - square.getCoordinates().x);
-	int changeInY = abs(m_Coordinates.y - square.getCoordinates().y);
+	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
+	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
 
 	if ((changeInX + changeInY == 1) || (changeInX == changeInY && changeInX == 1))
 		return true;

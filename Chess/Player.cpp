@@ -2,38 +2,65 @@
 #include "Player.h"
 #include "Board.h"
 #include <vector>
+#include "GameManager.h"
 
 
 Player::Player(const sf::Color& playerColor)
 {
 	m_PlayerColor = playerColor;
 
-	if (playerColor == sf::Color::White)
+	if (playerColor == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
 		m_IsPlayerTurn = true;
 	else
 		m_IsPlayerTurn = false;
 }
 
-void Player::addPiece(Square* square)
+void Player::addPiece(std::unique_ptr<Piece> piece)
 {
-	m_Pieces.push_back(square);
+	m_Pieces.push_back(std::move(piece));
+}
+
+void Player::registerGameObjects()
+{
+	for (auto& piece : m_Pieces)
+		GameManager::getInstance().addGameObject(piece.get());
+}
+
+Piece* Player::findPieceBySquare(const Square& square)
+{
+	for (auto& piece : m_Pieces)
+	{
+		if (piece.get()->getSquare() == &square)
+			return piece.get();
+	}
+	return nullptr;
 }
 
 void Player::choosePiece(const sf::Vector2i& mousePosition)
 {
 	for (auto& piece : m_Pieces)
+	{
 		if (piece->isTriggered(mousePosition))
 		{
-			if (piece == m_FocusedPiece)
+			if (piece.get() == m_FocusedPiece)
 			{
 				resetFocusedPiece();
 			}
 			else
 			{
-				piece->setColor(Square::greenColor);
-				m_FocusedPiece = piece;
+				piece->setSquareColor(Colors::getInstance().getColor(Colors::ColorNames::GREEN));
+				m_FocusedPiece = piece.get();
 			}
 		}
+	}
+}
+
+void Player::resizePieces(const double squareSize)
+{
+	for (auto& piece : m_Pieces)
+	{
+		piece->resize(squareSize);
+	}
 }
 
 bool Player::pieceIsChosen() const
@@ -48,24 +75,21 @@ bool Player::isPlayerTurn() const
 	return m_IsPlayerTurn;
 }
 
-void Player::setBoard(Board* board)
+bool Player::isLegalMove(Square& square) const
 {
-	m_Board = board;
+	if (m_FocusedPiece->isLegalMove(square))
+		return true;
+
+	return false;
 }
 
-bool Player::makeMove()
+void Player::makeMove(Square& square)
 {
-	Square* focusedSquare = m_Board->getFocusedSquare();
+	//Reset the color of the square with selected piece
+	m_FocusedPiece->getSquare()->resetColor();
 
-	if (m_FocusedPiece->getPiece()->isLegalMove(*focusedSquare))
-	{
-		m_FocusedPiece->movePiece(*focusedSquare);
-		removeGameObject(m_FocusedPiece->getPiece());
-		addPiece(focusedSquare);
-		return true;
-	}
-	else
-		return false;
+	//Move the focued piece to the focused square
+	m_FocusedPiece->move(square);
 }
 
 void Player::endTurn()
@@ -80,17 +104,16 @@ void Player::startTurn()
 
 void Player::resetFocusedPiece()
 {
-	m_FocusedPiece->setColor(m_FocusedPiece->getInitialColor());
 	m_FocusedPiece = nullptr;
 }
 
 void Player::removeGameObject(GameObject* gameObject)
 {
-	std::vector<Square*>::iterator it;
+	std::vector<std::unique_ptr<Piece>>::iterator it;
 	it = m_Pieces.begin();
 	while (it != m_Pieces.end())
 	{
-		if ((*it)->getPiece() == gameObject)
+		if ((*it).get() == gameObject)
 		{
 			m_Pieces.erase(it);
 			break;

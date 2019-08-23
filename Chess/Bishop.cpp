@@ -6,8 +6,8 @@
 #include <iostream>
 
 
-Bishop::Bishop(const sf::Vector2f& position, const sf::Vector2i coordinates, const sf::Color& color) :
-	Piece(position, coordinates, color)
+Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :
+	Piece(position, color)
 {
 	try
 	{
@@ -35,8 +35,8 @@ void Bishop::move(const sf::Vector2f& position)
 
 bool Bishop::isLegalMove(const Square& square)
 {
-	int changeInX = abs(m_Coordinates.x - square.getCoordinates().x);
-	int changeInY = abs(m_Coordinates.y - square.getCoordinates().y);
+	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
+	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
 
 	if (changeInX == changeInY && changeInX > 0)
 		return true;

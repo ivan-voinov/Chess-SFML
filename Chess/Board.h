@@ -7,7 +7,7 @@
 
 class GameManager;
 
-class Board : public Collection
+class Board
 {
 private:
 	static constexpr int boardSize = 8;
@@ -23,14 +23,12 @@ public:
 	Square* getFocusedSquare();
 	void resetFocusedSquare();
 	bool squareIsChosen() const;
-	void resizePieces();
 	void loadBoard(const sf::RenderWindow& window);
-	void addGameObjects();
+	void registerGameObjects();
 	void assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer);
 	
 	std::unique_ptr<Piece> getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
 		const sf::Vector2f& squarePosition) const;
-	virtual void removeGameObject(GameObject* gameObject) override;
 	~Board();
 };
 

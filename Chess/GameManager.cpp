@@ -53,18 +53,20 @@ void GameManager::readInput()
 
 					if (m_Board.squareIsChosen())
 					{
-						if (m_WhitePlayer.makeMove())
+						if (m_WhitePlayer.isLegalMove(*m_Board.getFocusedSquare()))
 						{
-							m_WhitePlayer.resetFocusedPiece();
+							m_WhitePlayer.makeMove(*m_Board.getFocusedSquare());
 							m_Board.resetFocusedSquare();
-
 							m_WhitePlayer.endTurn();
 							m_BlackPlayer.startTurn();
 						}
 						else
 						{
+							//Reset the focused piece
 							m_WhitePlayer.resetFocusedPiece();
-							m_Board.resetFocusedSquare();
+
+							//Reset the color of the square with selected piece
+							//TO DO
 						}
 					}
 				}
@@ -79,13 +81,20 @@ void GameManager::readInput()
 
 						if (m_Board.squareIsChosen())
 						{
-							if (m_BlackPlayer.makeMove())
+							if (m_BlackPlayer.isLegalMove(*m_Board.getFocusedSquare()))
 							{
-								m_BlackPlayer.resetFocusedPiece();
+								m_BlackPlayer.makeMove(*m_Board.getFocusedSquare());
 								m_Board.resetFocusedSquare();
-
 								m_BlackPlayer.endTurn();
 								m_WhitePlayer.startTurn();
+							}
+							else
+							{
+								//Reset the focused piece
+								m_BlackPlayer.resetFocusedPiece();
+
+								//Reset the color of the square with selected piece
+								//TO DO
 							}
 						}
 					}
@@ -112,16 +121,15 @@ void GameManager::draw()
 
 void GameManager::runGame()
 {
-	m_GameObjectContainers.push_back(&m_Board);
+	//m_GameObjectContainers.push_back(&m_Board);
 	m_GameObjectContainers.push_back(&m_WhitePlayer);
 	m_GameObjectContainers.push_back(&m_BlackPlayer);
 
 	m_Board.loadBoard(m_Window);
-	m_Board.addGameObjects();
+	m_Board.registerGameObjects();
 	m_Board.assignPiecesToPlayers(m_WhitePlayer, m_BlackPlayer);
-
-	m_WhitePlayer.setBoard(&m_Board);
-	m_BlackPlayer.setBoard(&m_Board);
+	m_WhitePlayer.registerGameObjects();
+	m_BlackPlayer.registerGameObjects();
 
 	while (m_Window.isOpen())
 	{

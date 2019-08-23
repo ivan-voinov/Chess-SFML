@@ -6,8 +6,8 @@
 #include <iostream>
 
 
-Knight::Knight(const sf::Vector2f& position, const sf::Vector2i coordinates, const sf::Color& color) :
-	Piece(position, coordinates, color)
+Knight::Knight(const sf::Vector2f& position, const sf::Color& color) :
+	Piece(position, color)
 {
 	try
 	{
@@ -30,8 +30,8 @@ Knight::Knight(const sf::Vector2f& position, const sf::Vector2i coordinates, con
 
 bool Knight::isLegalMove(const Square& square)
 {
-	int changeInX = abs(m_Coordinates.x - square.getCoordinates().x);
-	int changeInY = abs(m_Coordinates.y - square.getCoordinates().y);
+	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
+	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
 
 	if ((changeInX == 2 && changeInY == 1) || (changeInX == 1 && changeInY == 2))
 		return true;

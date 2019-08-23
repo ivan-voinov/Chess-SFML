@@ -170,6 +170,7 @@
     <ClInclude Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.h" />
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Collection.h" />
     <ClInclude Include="Event.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.cpp" />
     <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Colors.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Collection.cpp" />

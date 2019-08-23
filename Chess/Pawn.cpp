@@ -6,8 +6,8 @@
 #include <iostream>
 
 
-Pawn::Pawn(const sf::Vector2f& position, const sf::Vector2i coordinates, const sf::Color& color) :
-	Piece(position, coordinates, color)
+Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) :
+	Piece(position,	 color)
 {
 	try
 	{
@@ -37,8 +37,8 @@ bool Pawn::isStartingSquare(const sf::Vector2i& coordinates) const
 
 bool Pawn::isLegalMove(const Square& square)
 {
-	int changeInX = abs(m_Coordinates.x - square.getCoordinates().x);
-	int changeInY = abs(m_Coordinates.y - square.getCoordinates().y);
+	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
+	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
 
 	//TO DO: force the pawn to move only forward
 	if (changeInX > 0 && changeInY == 0)
@@ -49,7 +49,7 @@ bool Pawn::isLegalMove(const Square& square)
 
 bool Pawn::reachedEighthRank() const
 {
-	if (m_Coordinates.x == 0 || m_Coordinates.x == 7)
+	if (m_Square->getCoordinates().x == 0 || m_Square->getCoordinates().x == 7)
 		return true;
 
 	return false;

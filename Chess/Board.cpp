@@ -48,27 +48,13 @@ bool Board::squareIsChosen() const
 	return true;
 }
 
-void Board::resizePieces()
-{
-	for (auto& rows : m_Board)
-	{
-		for (auto& square : rows)
-		{
-			Piece* piece = square.getPiece();
-			if (piece != nullptr)
-				piece->resize(squareSize);
-		}
-	}
-}
-
 void Board::loadBoard(const sf::RenderWindow& window)
 {
 	createOddRows(window);
 	createEvenRows(window);
-	resizePieces();
 }
 
-void Board::addGameObjects()
+void Board::registerGameObjects()
 {
 	//Add squares
 	for (auto& rows : m_Board)
@@ -76,16 +62,6 @@ void Board::addGameObjects()
 		for (auto& square : rows)
 		{
 			GameManager::getInstance().addGameObject(&square);
-		}
-	}
-
-	//Add pieces
-	for (auto& rows : m_Board)
-	{
-		for (auto& square : rows)
-		{
-			if (square.getPiece() != nullptr)
-				GameManager::getInstance().addGameObject(square.getPiece());
 		}
 	}
 }
@@ -96,15 +72,21 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 	{
 		for (int j = 0; j < boardSize; ++j)
 		{
-			Piece* piece = m_Board[i][j].getPiece();
+			std::unique_ptr<Piece> piece = 
+				getStartingSquarePiece(m_Board[i][j].getCoordinates(), m_Board[i][j].getPosition());
 
 			if (piece != nullptr)
 			{
-				if (piece->getColor() == sf::Color::White)
-					whitePlayer.addPiece(&m_Board[i][j]);
+				piece.get()->setSquare(m_Board[i][j]);
 
-				else if (piece->getColor() == sf::Color::Black)
-					blackPlayer.addPiece(&m_Board[i][j]);
+				if (piece.get()->getColor() == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+				{
+					whitePlayer.addPiece(std::move(piece));
+				}
+				else if (piece.get()->getColor() == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
+				{
+					blackPlayer.addPiece(std::move(piece));
+				}
 			}
 		}
 	}
@@ -114,56 +96,42 @@ std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareC
 	const sf::Vector2f& squarePosition) const
 {
 	if (squareCoordinates.x == 1)
-		return std::make_unique<Pawn>(squarePosition, squareCoordinates, Square::blackColor);
+		return std::make_unique<Pawn>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::BLACK));
 
 	if (squareCoordinates.x == 6)
-		return std::make_unique<Pawn>(squarePosition, squareCoordinates, Square::whiteColor);
+		return std::make_unique<Pawn>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::WHITE));
 
 	if (squareCoordinates == sf::Vector2i(0,0) || squareCoordinates == sf::Vector2i(0,7))
-		return std::make_unique<Rook>(squarePosition, squareCoordinates, Square::blackColor);
+		return std::make_unique<Rook>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::BLACK));
 
 	if (squareCoordinates == sf::Vector2i(7,0) || squareCoordinates == sf::Vector2i(7,7))
-		return std::make_unique<Rook>(squarePosition, squareCoordinates, Square::whiteColor);
+		return std::make_unique<Rook>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::WHITE));
 
 	if (squareCoordinates == sf::Vector2i(0,1) || squareCoordinates == sf::Vector2i(0,6))
-		return std::make_unique<Knight>(squarePosition, squareCoordinates, Square::blackColor);
+		return std::make_unique<Knight>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::BLACK));
 
 	if (squareCoordinates == sf::Vector2i(7,1) || squareCoordinates == sf::Vector2i(7,6))
-		return std::make_unique<Knight>(squarePosition, squareCoordinates, Square::whiteColor);
+		return std::make_unique<Knight>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::WHITE));
 
 	if (squareCoordinates == sf::Vector2i(0,2) || squareCoordinates == sf::Vector2i(0,5))
-		return std::make_unique<Bishop>(squarePosition, squareCoordinates, Square::blackColor);
+		return std::make_unique<Bishop>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::BLACK));
 
 	if (squareCoordinates == sf::Vector2i(7,2) || squareCoordinates == sf::Vector2i(7,5))
-		return std::make_unique<Bishop>(squarePosition, squareCoordinates, Square::whiteColor);
+		return std::make_unique<Bishop>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::WHITE));
 
 	if (squareCoordinates == sf::Vector2i(0,3))
-		return std::make_unique<Queen>(squarePosition, squareCoordinates, Square::blackColor);
+		return std::make_unique<Queen>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::BLACK));
 
 	if (squareCoordinates == sf::Vector2i(7,3))
-		return std::make_unique<Queen>(squarePosition, squareCoordinates, Square::whiteColor);
+		return std::make_unique<Queen>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::WHITE));
 
 	if (squareCoordinates == sf::Vector2i(0,4))
-		return std::make_unique<King>(squarePosition, squareCoordinates, Square::blackColor);
+		return std::make_unique<King>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::BLACK));
 
 	if (squareCoordinates == sf::Vector2i(7,4))
-		return std::make_unique<King>(squarePosition, squareCoordinates, Square::whiteColor);
+		return std::make_unique<King>(squarePosition, Colors::getInstance().getColor(Colors::ColorNames::WHITE));
 
 	return nullptr;
-}
-
-void Board::removeGameObject(GameObject* gameObject)
-{
-	for (auto& rows : m_Board)
-	{
-		for (auto& square : rows)
-		{
-			Piece* piece = square.getPiece();
-			
-			if (square.getPiece() == gameObject)
-				square.setPiece(nullptr);
-		}
-	}
 }
 
 void Board::createEvenRows(const sf::RenderWindow& window)
@@ -180,15 +148,15 @@ void Board::createEvenRows(const sf::RenderWindow& window)
 
 			if (j % 2 == 0)
 				//Build a white square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color(Square::lightBrownColor))
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize)
+					.color(sf::Color(Colors::getInstance().getColor(Colors::ColorNames::LIGHT_BROWN)))
 					.position(squarePosition)
-					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 			else
 				//Build a black square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(sf::Color(Square::darkBrownColor))
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize)
+					.color(sf::Color(Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN)))
 					.position(squarePosition)
-					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 		}
 	}
@@ -208,15 +176,15 @@ void Board::createOddRows(const sf::RenderWindow& window)
 
 			if (j % 2 == 0)
 				//Build a black square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(Square::darkBrownColor)
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize)
+					.color(Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN))
 					.position(squarePosition)
-					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 			else
 				//Build a white square
-				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize).color(Square::lightBrownColor)
+				m_Board[i][j] = std::move(SquareBuilder(squareCoordinates, squareSize)
+					.color(Colors::getInstance().getColor(Colors::ColorNames::LIGHT_BROWN))
 					.position(squarePosition)
-					.piece(getStartingSquarePiece(squareCoordinates, squarePosition))
 					.build());
 		}
 	}

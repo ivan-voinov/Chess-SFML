@@ -3,10 +3,9 @@
 #include "Square.h"
 
 
-Piece::Piece(const sf::Vector2f& position, const sf::Vector2i coordinates, const sf::Color& color)
+Piece::Piece(const sf::Vector2f& position, const sf::Color& color)
 {
 	this->m_Color = color;
-	this->m_Coordinates = coordinates;
 
 	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
 	m_PieceSprite.setColor(color);
@@ -19,6 +18,21 @@ const sf::Color& Piece::getColor() const
 	return m_Color;
 }
 
+void Piece::setSquare(Square& square)
+{
+	m_Square = &square;
+}
+
+Square* Piece::getSquare() const
+{
+	return m_Square;
+}
+
+void Piece::setSquareColor(const sf::Color& color)
+{
+	m_Square->setColor(color);
+}
+
 bool Piece::canBeCaptured(const Piece& piece) const
 {
 	if (piece.getColor() != this->m_Color)
@@ -28,7 +42,7 @@ bool Piece::canBeCaptured(const Piece& piece) const
 
 void Piece::move(Square& square)
 {
-	m_Coordinates = square.getCoordinates();
+	m_Square = &square;
 	m_PieceSprite.setPosition(square.getPosition());
 }
 
@@ -40,6 +54,14 @@ void Piece::resize(const double squareSize)
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_PieceSprite, states);
+}
+
+bool Piece::isTriggered(const sf::Vector2i & mousePosition) const
+{
+	//If the mouse is inside the piece sprite, return true (false otherwise)
+	if (m_PieceSprite.getGlobalBounds().contains(sf::Vector2f(mousePosition)))
+		return true;
+	return false;
 }
 
 Piece::~Piece()

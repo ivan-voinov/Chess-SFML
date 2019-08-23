@@ -32,16 +32,9 @@ SquareBuilder& SquareBuilder::timesAttacked(int timesAttacked)
 	return *this;
 }
 
-SquareBuilder& SquareBuilder::piece(std::unique_ptr<Piece> piece)
-{
-	this->m_Piece = std::move(piece);
-	piece = nullptr;
-	return *this;
-}
-
 Square SquareBuilder::build()
 {
-	return Square(m_Color, m_Coordinates, m_Position, std::move(m_Piece), m_Size, m_Free, m_TimesAttacked);
+	return Square(m_Color, m_Coordinates, m_Position, m_Size, m_Free, m_TimesAttacked);
 }
 
 SquareBuilder::~SquareBuilder()
