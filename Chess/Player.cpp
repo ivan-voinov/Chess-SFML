@@ -44,6 +44,7 @@ void Player::choosePiece(const sf::Vector2i& mousePosition)
 		{
 			if (piece.get() == m_FocusedPiece)
 			{
+				m_FocusedPiece->getSquare()->resetColor();
 				resetFocusedPiece();
 			}
 			else
@@ -85,10 +86,7 @@ bool Player::isLegalMove(Square& square) const
 
 void Player::makeMove(Square& square)
 {
-	//Reset the color of the square with selected piece
-	m_FocusedPiece->getSquare()->resetColor();
-
-	//Move the focued piece to the focused square
+	//Move the focused piece to the focused square
 	m_FocusedPiece->move(square);
 }
 
@@ -105,6 +103,12 @@ void Player::startTurn()
 void Player::resetFocusedPiece()
 {
 	m_FocusedPiece = nullptr;
+}
+
+void Player::resetFocusedPieceColor()
+{
+	//Reset the color of the square with selected piece
+	m_FocusedPiece->getSquare()->resetColor();
 }
 
 void Player::removeGameObject(GameObject* gameObject)

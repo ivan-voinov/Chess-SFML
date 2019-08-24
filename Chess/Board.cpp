@@ -17,15 +17,7 @@ void Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
 		{
 			if (square.isTriggered(mousePosition))
 			{
-				if (m_FocusedSquare == nullptr)
-				{
-					m_FocusedSquare = &square;
-				}
-				else
-				{
-					resetFocusedSquare();
-					m_FocusedSquare = &square;
-				}
+				m_FocusedSquare = &square;
 			}
 		}
 	}

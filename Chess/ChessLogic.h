@@ -6,9 +6,12 @@
 class ChessLogic
 {
 private:
-	
+	Board* m_Board;
+	Player* m_WhitePlayer;
+	Player* m_BlackPlayer;
 public:
-	ChessLogic();
+	ChessLogic(Board* board, Player* whitePlayer, Player* blackPlayer);
+	void onClick(sf::RenderWindow& window);
 	~ChessLogic();
 };
 

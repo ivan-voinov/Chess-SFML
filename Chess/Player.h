@@ -28,6 +28,7 @@ public:
 	void endTurn();
 	void startTurn();
 	void resetFocusedPiece();
+	void resetFocusedPieceColor();
 	virtual void removeGameObject(GameObject* gameObject) override;
 	~Player();
 };

@@ -2,7 +2,11 @@
 #include "GameManager.h"
 #include "Player.h"
 
-GameManager::GameManager() : m_WhitePlayer(sf::Color::White), m_BlackPlayer(sf::Color::Black)
+GameManager::GameManager() : 
+m_WhitePlayer(sf::Color::White),
+m_BlackPlayer(sf::Color::Black),
+m_ChessLogic(&m_Board, &m_WhitePlayer, &m_BlackPlayer)
+
 {
 	m_Window.create(sf::VideoMode(700, 700), "Chess", sf::Style::Default);
 }
@@ -31,6 +35,25 @@ void GameManager::removeGameObject(GameObject* gameObject)
 	}
 }
 
+void GameManager::addCollection(Collection* collection)
+{
+	m_GameObjectContainers.push_back(collection);
+}
+
+void GameManager::removeCollection(Collection* collection)
+{
+	std::vector<Collection*>::iterator it;
+	it = m_GameObjectContainers.begin();
+	while (it != m_GameObjectContainers.end())
+	{
+		if (*it == collection)
+		{
+			m_GameObjectContainers.erase(it);
+			break;
+		}
+	}
+}
+
 void GameManager::readInput()
 {
 	while (m_Window.pollEvent(m_Event))
@@ -44,61 +67,7 @@ void GameManager::readInput()
 			}
 			case sf::Event::MouseButtonPressed:
 			{
-				if (m_WhitePlayer.isPlayerTurn())
-				{
-					if (m_WhitePlayer.pieceIsChosen())
-						m_Board.chooseSquareForPiece(sf::Mouse::getPosition(m_Window));
-					else
-						m_WhitePlayer.choosePiece(sf::Mouse::getPosition(m_Window));
-
-					if (m_Board.squareIsChosen())
-					{
-						if (m_WhitePlayer.isLegalMove(*m_Board.getFocusedSquare()))
-						{
-							m_WhitePlayer.makeMove(*m_Board.getFocusedSquare());
-							m_Board.resetFocusedSquare();
-							m_WhitePlayer.endTurn();
-							m_BlackPlayer.startTurn();
-						}
-						else
-						{
-							//Reset the focused piece
-							m_WhitePlayer.resetFocusedPiece();
-
-							//Reset the color of the square with selected piece
-							//TO DO
-						}
-					}
-				}
-				else
-				{
-					if (m_BlackPlayer.isPlayerTurn())
-					{
-						if (m_BlackPlayer.pieceIsChosen())
-							m_Board.chooseSquareForPiece(sf::Mouse::getPosition(m_Window));
-						else
-							m_BlackPlayer.choosePiece(sf::Mouse::getPosition(m_Window));
-
-						if (m_Board.squareIsChosen())
-						{
-							if (m_BlackPlayer.isLegalMove(*m_Board.getFocusedSquare()))
-							{
-								m_BlackPlayer.makeMove(*m_Board.getFocusedSquare());
-								m_Board.resetFocusedSquare();
-								m_BlackPlayer.endTurn();
-								m_WhitePlayer.startTurn();
-							}
-							else
-							{
-								//Reset the focused piece
-								m_BlackPlayer.resetFocusedPiece();
-
-								//Reset the color of the square with selected piece
-								//TO DO
-							}
-						}
-					}
-				}
+				m_ChessLogic.onClick(m_Window);
 			}
 		}
 	}

@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "GameObject.h"
 #include "Collection.h"
+#include "ChessLogic.h"
 
 class Player;
 	
@@ -16,6 +17,7 @@ private:
 	Board m_Board;
 	Player m_WhitePlayer;
 	Player m_BlackPlayer;
+	ChessLogic m_ChessLogic;
 
 	GameManager();
 public:
@@ -23,6 +25,8 @@ public:
 	void runGame();
 	void addGameObject(GameObject* gameObject);
 	void removeGameObject(GameObject* gameObject);
+	void addCollection(Collection* collection);
+	void removeCollection(Collection* collection);
 	void readInput();
 	void update();
 	void draw();
