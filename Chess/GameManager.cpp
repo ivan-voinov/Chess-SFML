@@ -97,6 +97,8 @@ void GameManager::runGame()
 	m_Board.loadBoard(m_Window);
 	m_Board.registerGameObjects();
 	m_Board.assignPiecesToPlayers(m_WhitePlayer, m_BlackPlayer);
+	/*m_WhitePlayer.resizePieces();
+	m_BlackPlayer.resizePieces();*/
 	m_WhitePlayer.registerGameObjects();
 	m_BlackPlayer.registerGameObjects();
 

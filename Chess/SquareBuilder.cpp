@@ -26,15 +26,9 @@ SquareBuilder& SquareBuilder::free(bool free)
 	return *this;
 }
 
-SquareBuilder& SquareBuilder::timesAttacked(int timesAttacked)
-{
-	this->m_TimesAttacked = timesAttacked;
-	return *this;
-}
-
 Square SquareBuilder::build()
 {
-	return Square(m_Color, m_Coordinates, m_Position, m_Size, m_Free, m_TimesAttacked);
+	return Square(m_Color, m_Coordinates, m_Position, m_Size, m_Free);
 }
 
 SquareBuilder::~SquareBuilder()

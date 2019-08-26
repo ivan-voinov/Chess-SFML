@@ -14,7 +14,6 @@ private:
 
 	double m_Size;
 	bool m_Free;
-	int m_TimesAttacked;
 
 public:
 	Square();
@@ -22,8 +21,7 @@ public:
 		const sf::Vector2i& coordinates,
 		const sf::Vector2f& position,
 		double size,
-		bool free,
-		int timesAttacked);
+		bool free);
 	Square(Square&& square);
 	Square& operator=(Square&& square);
 	void resetColor();
@@ -33,9 +31,6 @@ public:
 	const sf::Vector2i& getCoordinates() const;
 	const sf::Vector2f& getPosition() const;
 	bool isFree() const;
-	bool isFreeForKing() const;
-	void increaseTimesAttacked();
-	void decreaseTimesAttacked();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual bool isTriggered(const sf::Vector2i& mousePosition) const override;
 	~Square();

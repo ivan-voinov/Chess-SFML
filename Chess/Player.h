@@ -18,8 +18,8 @@ public:
 	Player(const sf::Color& playerColor);
 	void addPiece(std::unique_ptr<Piece> piece);
 	void registerGameObjects();
-	Piece* findPieceBySquare(const Square& square);
 	void choosePiece(const sf::Vector2i& mousePosition);
+	Piece* findPieceBySquare(const Square& square) const;
 	void resizePieces(const double squareSize);
 	bool pieceIsChosen() const;
 	bool isPlayerTurn() const;

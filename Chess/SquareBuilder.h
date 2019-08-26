@@ -10,14 +10,12 @@ private:
 	sf::Vector2f m_Position = sf::Vector2f(0,0);
 	double m_Size;
 	bool m_Free = true;
-	int m_TimesAttacked = 0;
 
 public:
 	SquareBuilder(const sf::Vector2i& coordinates, double size);
 	SquareBuilder& color(const sf::Color& color);
 	SquareBuilder& position(const sf::Vector2f& position);
 	SquareBuilder& free(bool free);
-	SquareBuilder& timesAttacked(int timesAttacked);
 	Square build();
 	~SquareBuilder();
 };

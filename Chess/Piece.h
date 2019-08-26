@@ -12,6 +12,7 @@ protected:
 	sf::Texture m_PieceTexture;
 	sf::Sprite m_PieceSprite;
 	sf::Color m_Color;
+	int numberOfPinningPieces = 0;
 public:
 	Piece(const sf::Vector2f& position, const sf::Color& color);
 	const sf::Color& getColor() const;

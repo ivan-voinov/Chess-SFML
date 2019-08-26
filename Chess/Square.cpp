@@ -9,15 +9,13 @@ Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
 	const sf::Vector2f& position,
 	double size,
-	bool free,
-	int timesAttacked)
+	bool free)
 {
 	this->m_Color = color;
 	this->m_Coordinates = coordinates;
 	this->m_Position = position;
 	this->m_Size = size;
 	this->m_Free = free;
-	this->m_TimesAttacked = timesAttacked;
 
 	m_Shape.setFillColor(m_Color);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -33,7 +31,6 @@ Square::Square(Square&& square)
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
 	this->m_Free = square.m_Free;
-	this->m_TimesAttacked = square.m_TimesAttacked;
 }
 
 Square& Square::operator=(Square&& square)
@@ -48,7 +45,6 @@ Square& Square::operator=(Square&& square)
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
 	this->m_Free = square.m_Free;
-	this->m_TimesAttacked = square.m_TimesAttacked;
 
 	return *this;
 }
@@ -95,26 +91,6 @@ const sf::Vector2f& Square::getPosition() const
 bool Square::isFree() const
 {
 	return m_Free;
-}
-
-bool Square::isFreeForKing() const
-{
-	if (m_TimesAttacked > 0)
-		return false;
-	else if (m_TimesAttacked == 0)
-		return true;
-	return false;
-}
-
-void Square::increaseTimesAttacked()
-{
-	++m_TimesAttacked;
-}
-
-void Square::decreaseTimesAttacked()
-{
-	if (m_TimesAttacked != 0)
-		--m_TimesAttacked;
 }
 
 void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const

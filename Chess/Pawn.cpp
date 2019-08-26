@@ -40,9 +40,38 @@ bool Pawn::isLegalMove(const Square& square)
 	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
 	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
 
-	//TO DO: force the pawn to move only forward
-	if (changeInX > 0 && changeInY == 0)
-		return true;
+	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+	{
+		if (m_Square->getCoordinates().x - square.getCoordinates().x > 0)
+		{
+			if (isStartingSquare(m_Square->getCoordinates()))
+			{
+				if ((changeInX == 1 || changeInX == 2) && changeInY == 0)
+					return true;
+			}
+			else
+			{
+				if (changeInX == 1 && changeInY == 0)
+					return true;
+			}
+		}
+	}
+	else
+	{
+		if (m_Square->getCoordinates().x - square.getCoordinates().y < 0)
+		{
+			if (isStartingSquare(m_Square->getCoordinates()))
+			{
+				if ((changeInX == 1 || changeInX == 2) && changeInY == 0)
+					return true;
+			}
+			else
+			{
+				if (changeInX == 1 && changeInY == 0)
+					return true;
+			}
+		}
+	}
 
 	return false;
 }

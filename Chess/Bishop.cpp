@@ -44,8 +44,6 @@ bool Bishop::isLegalMove(const Square& square)
 	return false;
 }
 
-
-
 Bishop::~Bishop()
 {
 }

@@ -26,16 +26,6 @@ void Player::registerGameObjects()
 		GameManager::getInstance().addGameObject(piece.get());
 }
 
-Piece* Player::findPieceBySquare(const Square& square)
-{
-	for (auto& piece : m_Pieces)
-	{
-		if (piece.get()->getSquare() == &square)
-			return piece.get();
-	}
-	return nullptr;
-}
-
 void Player::choosePiece(const sf::Vector2i& mousePosition)
 {
 	for (auto& piece : m_Pieces)
@@ -54,6 +44,18 @@ void Player::choosePiece(const sf::Vector2i& mousePosition)
 			}
 		}
 	}
+}
+
+Piece* Player::findPieceBySquare(const Square& square) const
+{
+	for (auto& piece : m_Pieces)
+	{
+		if (piece->getSquare() == &square)
+			return piece.get();
+	}
+
+	//The player doesn't control the square
+	return nullptr;
 }
 
 void Player::resizePieces(const double squareSize)
