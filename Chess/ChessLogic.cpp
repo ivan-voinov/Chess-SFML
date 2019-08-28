@@ -14,12 +14,14 @@ void ChessLogic::onClick(sf::RenderWindow& window)
 {
 	if (m_WhitePlayer->isPlayerTurn())
 	{
+		//Process white player's turn
 		processPlayerTurn(*m_WhitePlayer, *m_BlackPlayer, window);
 	}
 	else
 	{
 		if (m_BlackPlayer->isPlayerTurn())
 		{
+			//Process black player's turn
 			processPlayerTurn(*m_BlackPlayer, *m_WhitePlayer, window);
 		}
 	}
@@ -39,6 +41,7 @@ void ChessLogic::processPlayerTurn(Player& activePlayer, Player& inactivePlayer,
 		{
 			if (activePlayer.isLegalMove(*m_Board->getFocusedSquare()))
 			{
+				//Successfully complete the turn
 				activePlayer.resetFocusedPieceColor();
 				activePlayer.makeMove(*m_Board->getFocusedSquare());
 				activePlayer.resetFocusedPiece();
@@ -72,6 +75,7 @@ void ChessLogic::processPlayerTurn(Player& activePlayer, Player& inactivePlayer,
 		{
 			if (activePlayer.isLegalMove(*m_Board->getFocusedSquare()))
 			{
+				//Successfully complete the turn
 				activePlayer.resetFocusedPieceColor();
 				GameManager::getInstance().removeGameObject(inactivePlayer.findPieceBySquare(*m_Board->getFocusedSquare()));
 				activePlayer.makeMove(*m_Board->getFocusedSquare());

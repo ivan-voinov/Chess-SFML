@@ -1,12 +1,12 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "Square.h"
-#include "Collection.h"
+#include "GameObjectContainer.h"
 #include "Colors.h"
 
 class Board;
 
-class Player : public Collection
+class Player : public GameObjectContainer
 {
 private:
 	Piece* m_FocusedPiece = nullptr;

@@ -3,11 +3,11 @@
 
 class GameObject;
 
-class Collection
+class GameObjectContainer
 {
 public:
-	Collection();
+	GameObjectContainer();
 	virtual void removeGameObject(GameObject* gameObject) = 0;
-	~Collection();
+	~GameObjectContainer();
 };
 

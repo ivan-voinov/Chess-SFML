@@ -35,9 +35,11 @@ void Bishop::move(const sf::Vector2f& position)
 
 bool Bishop::isLegalMove(const Square& square)
 {
+	//Get dX and dY
 	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
 	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
 
+	//Check if the square is on bishop's diagonal
 	if (changeInX == changeInY && changeInX > 0)
 		return true;
 

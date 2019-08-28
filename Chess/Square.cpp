@@ -63,10 +63,7 @@ void Square::setColor(sf::Color color)
 
 sf::Color Square::getColor() const
 {
-	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
-		return Colors::getInstance().getColor(Colors::ColorNames::BLACK);
-	else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
-		return Colors::getInstance().getColor(Colors::ColorNames::WHITE);
+	return m_Color;
 }
 
 sf::Color Square::getInitialColor() const

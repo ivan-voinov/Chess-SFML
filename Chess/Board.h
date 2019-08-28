@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Square.h"
 #include "SquareBuilder.h"
-#include "Collection.h"
+#include "GameObjectContainer.h"
 #include "Player.h"
 
 class GameManager;
@@ -10,15 +10,16 @@ class GameManager;
 class Board
 {
 private:
-	static constexpr int boardSize = 8;
-	static constexpr double squareSize = 55;
-	Square m_Board[boardSize][boardSize];
+	static constexpr int m_BoardSize = 8;
+	static constexpr double m_SquareSize = 55;
+	Square m_Board[m_BoardSize][m_BoardSize];
 	Square* m_FocusedSquare;
 
 	void createEvenRows(const sf::RenderWindow& window);
 	void createOddRows(const sf::RenderWindow& window);
 public:
 	Board();
+	static const int getSquareSize();
 	void chooseSquareForPiece(const sf::Vector2i& mousePosition);
 	Square* getFocusedSquare();
 	void resetFocusedSquare();

@@ -35,14 +35,14 @@ void GameManager::removeGameObject(GameObject* gameObject)
 	}
 }
 
-void GameManager::addCollection(Collection* collection)
+void GameManager::addGameObjectContainer(GameObjectContainer* collection)
 {
 	m_GameObjectContainers.push_back(collection);
 }
 
-void GameManager::removeCollection(Collection* collection)
+void GameManager::removeGameObjectContainer(GameObjectContainer* collection)
 {
-	std::vector<Collection*>::iterator it;
+	std::vector<GameObjectContainer*>::iterator it;
 	it = m_GameObjectContainers.begin();
 	while (it != m_GameObjectContainers.end())
 	{
@@ -90,18 +90,26 @@ void GameManager::draw()
 
 void GameManager::runGame()
 {
-	//m_GameObjectContainers.push_back(&m_Board);
+	//m_GameObjectContainers.push_back(&m_Board); OLD DESIGN
+
+	//Add players to the array of game object containers
 	m_GameObjectContainers.push_back(&m_WhitePlayer);
 	m_GameObjectContainers.push_back(&m_BlackPlayer);
 
+	//Load the board
 	m_Board.loadBoard(m_Window);
-	m_Board.registerGameObjects();
 	m_Board.assignPiecesToPlayers(m_WhitePlayer, m_BlackPlayer);
-	/*m_WhitePlayer.resizePieces();
-	m_BlackPlayer.resizePieces();*/
+
+	//Resize the pieces according to the size of square
+	m_WhitePlayer.resizePieces(m_Board.getSquareSize());
+	m_BlackPlayer.resizePieces(m_Board.getSquareSize());
+
+	//Register the game objects
+	m_Board.registerGameObjects();
 	m_WhitePlayer.registerGameObjects();
 	m_BlackPlayer.registerGameObjects();
 
+	//Game loop
 	while (m_Window.isOpen())
 	{
 		readInput();
