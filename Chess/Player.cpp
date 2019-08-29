@@ -54,7 +54,7 @@ Piece* Player::findPieceBySquare(const Square& square) const
 			return piece.get();
 	}
 
-	//The player doesn't control the square
+	//If the player doesn't control the square
 	return nullptr;
 }
 

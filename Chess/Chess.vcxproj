@@ -167,11 +167,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.h" />
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="ChessLogic.h" />
+    <ClInclude Include="FileException.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObjectContainer.h" />
     <ClInclude Include="FilePaths.h" />
@@ -190,11 +190,11 @@
     <ClInclude Include="SquareBuilder.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.cpp" />
     <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="ChessLogic.cpp" />
+    <ClCompile Include="FileException.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObjectContainer.cpp" />

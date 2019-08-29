@@ -54,9 +54,6 @@
     <ClInclude Include="FilePaths.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PieceHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,6 +73,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -119,9 +119,6 @@
     <ClCompile Include="FilePaths.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Hex strategy project\Windows\SFML - Startup\FileException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -141,6 +138,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameObjectContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

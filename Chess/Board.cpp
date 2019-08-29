@@ -9,7 +9,7 @@ Board::Board()
 {
 }
 
-const int Board::getSquareSize()
+const double Board::getSquareSize()
 {
 	return m_SquareSize;
 }
@@ -63,7 +63,7 @@ void Board::registerGameObjects()
 	}
 }
 
-//Builds the pieces and assigns them to players
+//Build the pieces and assign them to players
 void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 {
 	for (int i = 0; i < m_BoardSize; ++i)
@@ -94,7 +94,7 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 	}
 }
 
-//Returns the correct piece for the square at the start of the game
+//Return the correct piece for the square at the start of the game
 std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
 	const sf::Vector2f& squarePosition) const
 {

@@ -42,8 +42,10 @@ bool Pawn::isLegalMove(const Square& square)
 
 	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
 	{
+		//Check to force the pawn to move only forward
 		if (m_Square->getCoordinates().x - square.getCoordinates().x > 0)
 		{
+			//Check if the pawn can move two spaces or not
 			if (isStartingSquare(m_Square->getCoordinates()))
 			{
 				if ((changeInX == 1 || changeInX == 2) && changeInY == 0)
@@ -58,6 +60,7 @@ bool Pawn::isLegalMove(const Square& square)
 	}
 	else
 	{
+		//Check to force the pawn to move only forward
 		if (m_Square->getCoordinates().x - square.getCoordinates().y < 0)
 		{
 			if (isStartingSquare(m_Square->getCoordinates()))

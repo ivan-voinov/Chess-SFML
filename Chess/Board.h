@@ -19,7 +19,7 @@ private:
 	void createOddRows(const sf::RenderWindow& window);
 public:
 	Board();
-	static const int getSquareSize();
+	static const double getSquareSize();
 	void chooseSquareForPiece(const sf::Vector2i& mousePosition);
 	Square* getFocusedSquare();
 	void resetFocusedSquare();
