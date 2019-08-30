@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "FilePaths.h"
 
-static const std::string GAME_PATH = "C:/Users/Ivan/source/repos/Chess";
-static const std::string ASSETS_PATH = GAME_PATH + "/Assets";
+static const std::string ASSETS_PATH = "Assets";
 static const std::string PIECES_PATH = ASSETS_PATH + "/Pieces";
 
 FilePaths::FilePaths() :
