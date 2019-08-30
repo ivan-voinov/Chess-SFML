@@ -58,10 +58,10 @@ bool Pawn::isLegalMove(const Square& square)
 			}
 		}
 	}
-	else
+	else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
 	{
 		//Check to force the pawn to move only forward
-		if (m_Square->getCoordinates().x - square.getCoordinates().y < 0)
+		if (m_Square->getCoordinates().x - square.getCoordinates().x < 0)
 		{
 			if (isStartingSquare(m_Square->getCoordinates()))
 			{
