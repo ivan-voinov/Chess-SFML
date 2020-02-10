@@ -14,7 +14,7 @@ const double Board::getSquareSize()
 	return m_SquareSize;
 }
 
-void Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
+bool Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
 {
 	for (auto& rows : m_Board)
 	{
@@ -22,15 +22,19 @@ void Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
 		{
 			if (square.isTriggered(mousePosition))
 			{
+				//Square has been chosen
 				m_FocusedSquare = &square;
+				return true;
 			}
 		}
 	}
+	//Square has not been chosen
+	return false;
 }
 
-Square* Board::getFocusedSquare()
+Square& Board::getFocusedSquare()
 {
-	return m_FocusedSquare;
+	return *m_FocusedSquare;
 }
 
 void Board::resetFocusedSquare()

@@ -20,8 +20,8 @@ private:
 public:
 	Board();
 	static const double getSquareSize();
-	void chooseSquareForPiece(const sf::Vector2i& mousePosition);
-	Square* getFocusedSquare();
+	bool chooseSquareForPiece(const sf::Vector2i& mousePosition);
+	Square& getFocusedSquare();
 	void resetFocusedSquare();
 	bool squareIsChosen() const;
 	void loadBoard(const sf::RenderWindow& window);

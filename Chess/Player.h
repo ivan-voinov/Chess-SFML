@@ -25,8 +25,8 @@ public:
 	bool isPlayerTurn() const;
 	bool isLegalMove(Square& square) const;
 	void makeMove(Square& square);
-	void endTurn();
-	void startTurn();
+	void processTurn(Player& opponent, Board& board, sf::RenderWindow& window);
+	void switchTurn(Player& opponent);
 	void resetFocusedPiece();
 	void resetFocusedPieceColor();
 	virtual void removeGameObject(GameObject* gameObject) override;

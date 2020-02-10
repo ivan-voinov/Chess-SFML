@@ -92,14 +92,37 @@ void Player::makeMove(Square& square)
 	m_FocusedPiece->move(square);
 }
 
-void Player::endTurn()
+void Player::processTurn(Player& opponent, Board& board, sf::RenderWindow& window)
 {
-	m_IsPlayerTurn = false;
+	if (!pieceIsChosen())
+	{
+		choosePiece(sf::Mouse::getPosition(window));
+	}
+	else
+	{
+		if (board.chooseSquareForPiece(sf::Mouse::getPosition(window)))
+		{
+			//TODO: check if the square is legal
+			if (m_FocusedPiece->isLegalMove(board.getFocusedSquare()))
+			{
+				resetFocusedPieceColor();
+				makeMove(board.getFocusedSquare());
+				resetFocusedPiece();
+				switchTurn(opponent);
+			}
+			else
+			{
+				resetFocusedPieceColor();
+				resetFocusedPiece();
+			}
+		}
+	}
 }
 
-void Player::startTurn()
+void Player::switchTurn(Player& opponent)
 {
-	m_IsPlayerTurn = true;
+	m_IsPlayerTurn = !m_IsPlayerTurn;
+	opponent.isPlayerTurn = !opponent.isPlayerTurn;
 }
 
 void Player::resetFocusedPiece()
