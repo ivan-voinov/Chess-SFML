@@ -3,7 +3,6 @@
 #include "Board.h"
 #include "GameObject.h"
 #include "ChessLogic.h"
-#include "Entity.h"
 
 class Player;
 	
