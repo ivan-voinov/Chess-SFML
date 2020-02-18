@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Player.h"
+#include "Square.h"
+#include "Piece.h"
 #include "Board.h"
 #include <vector>
 #include "GameManager.h"
@@ -134,21 +136,6 @@ void Player::resetFocusedPieceColor()
 {
 	//Reset the color of the square with selected piece
 	m_FocusedPiece->getSquare()->resetColor();
-}
-
-void Player::removeGameObject(GameObject* gameObject)
-{
-	std::vector<std::unique_ptr<Piece>>::iterator it;
-	it = m_Pieces.begin();
-	while (it != m_Pieces.end())
-	{
-		if ((*it).get() == gameObject)
-		{
-			m_Pieces.erase(it);
-			break;
-		}
-		++it;
-	}
 }
 
 Player::~Player()

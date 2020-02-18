@@ -27,30 +27,7 @@ void GameManager::removeGameObject(GameObject* gameObject)
 			m_GameObjects.erase(it);
 			break;
 		}
-
-		for (auto container : m_GameObjectContainers)
-			container->removeGameObject(gameObject);
-
 		++it;
-	}
-}
-
-void GameManager::addGameObjectContainer(GameObjectContainer* collection)
-{
-	m_GameObjectContainers.push_back(collection);
-}
-
-void GameManager::removeGameObjectContainer(GameObjectContainer* collection)
-{
-	std::vector<GameObjectContainer*>::iterator it;
-	it = m_GameObjectContainers.begin();
-	while (it != m_GameObjectContainers.end())
-	{
-		if (*it == collection)
-		{
-			m_GameObjectContainers.erase(it);
-			break;
-		}
 	}
 }
 
@@ -88,14 +65,16 @@ void GameManager::draw()
 	m_Window.display();
 }
 
+GameObject* GameManager::getGameObject(int id)
+{
+	for (auto& gameObject : m_GameObjects)
+		if (*gameObject == id)
+			return gameObject;
+	return nullptr;
+}
+
 void GameManager::runGame()
 {
-	//m_GameObjectContainers.push_back(&m_Board); OLD DESIGN
-
-	//Add players to the array of game object containers
-	m_GameObjectContainers.push_back(&m_WhitePlayer);
-	m_GameObjectContainers.push_back(&m_BlackPlayer);
-
 	//Load the board
 	m_Board.loadBoard(m_Window);
 	m_Board.assignPiecesToPlayers(m_WhitePlayer, m_BlackPlayer);

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Piece.h"
 #include "Square.h"
+#include "GameManager.h"
 
 
 Piece::Piece(const sf::Vector2f& position, const sf::Color& color)
@@ -49,6 +50,11 @@ void Piece::move(Square& square)
 void Piece::resize(const double squareSize)
 {
 	m_PieceSprite.setScale(squareSize / m_PieceTexture.getSize().x, squareSize / m_PieceTexture.getSize().y);
+}
+
+void Piece::onCaptured()
+{
+	destroy();
 }
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const

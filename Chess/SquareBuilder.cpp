@@ -20,15 +20,14 @@ SquareBuilder& SquareBuilder::position(const sf::Vector2f& position)
 	return *this;
 }
 
-SquareBuilder& SquareBuilder::free(bool free)
+SquareBuilder& SquareBuilder::piece(Piece* piece)
 {
-	this->m_Free = free;
-	return *this;
+	this->m_Piece = piece;
 }
 
 Square SquareBuilder::build()
 {
-	return Square(m_Color, m_Coordinates, m_Position, m_Size, m_Free);
+	return Square(m_Color, m_Coordinates, m_Position, m_Size, m_Piece);
 }
 
 SquareBuilder::~SquareBuilder()

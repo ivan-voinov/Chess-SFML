@@ -1,14 +1,13 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Square.h"
-#include "GameObjectContainer.h"
 #include "Colors.h"
 
 class Board;
 
-class Player : public GameObjectContainer
+class Player
 {
 private:
+
 	Piece* m_FocusedPiece = nullptr;
 	std::vector<std::unique_ptr<Piece>> m_Pieces;
 	bool m_IsPlayerTurn;
@@ -29,7 +28,6 @@ public:
 	void switchTurn(Player& opponent);
 	void resetFocusedPiece();
 	void resetFocusedPieceColor();
-	virtual void removeGameObject(GameObject* gameObject) override;
 	~Player();
 };
 
