@@ -21,7 +21,6 @@ private:
 public:
 	ChessLogic(Board* board, Player* whitePlayer, Player* blackPlayer);
 	void onClick(sf::RenderWindow& window);
-	void processPlayerTurn(Player& activePlayer, Player& inactivePlayer, sf::RenderWindow& window);
 	SquareState getSquareState(const Player& activePlayer, const Player& inactivePlayer, const Square& square);
 	~ChessLogic();
 };

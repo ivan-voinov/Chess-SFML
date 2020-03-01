@@ -45,12 +45,6 @@ bool Board::squareIsChosen() const
 	return m_FocusedSquareId == -1 ? false : true;
 }
 
-void Board::loadBoard(const sf::RenderWindow& window)
-{
-	createOddRows(window);
-	createEvenRows(window);
-}
-
 //Build the pieces and assign them to players
 void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 {
@@ -136,19 +130,18 @@ std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareC
 	return nullptr;
 }
 
-void Board::createEvenRows(const sf::RenderWindow& window)
+void Board::buildBoard(const sf::RenderWindow& window)
 {
 	//Build white-black rows
-	for (int i = 0; i < m_BoardSize; i += 2)
+	for (int i = 0; i < m_BoardSize; ++i)
 	{
 		for (int j = 0; j < m_BoardSize; ++j)
 		{
 			sf::Vector2f squarePosition =
 				std::move(sf::Vector2f(window.getSize().x / 4 + j * m_SquareSize, window.getSize().y / 4 + i * m_SquareSize));
-
 			sf::Vector2i squareCoordinates = sf::Vector2i(i,j);
-			
-			if (j % 2 == 0)
+
+			if (i % 2 == 0 && j % 2 == 0 || i % 2 != 0 && j % 2 != 0)
 			{
 				//Build a white square
 				GameManager::getInstance().addGameObject(std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
@@ -158,7 +151,7 @@ void Board::createEvenRows(const sf::RenderWindow& window)
 			}
 			else
 			{
-				//Build a white square
+				//Build a black square
 				GameManager::getInstance().addGameObject(std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
 					.color(Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN))
 					.position(squarePosition)
@@ -167,39 +160,6 @@ void Board::createEvenRows(const sf::RenderWindow& window)
 		}
 	}
 }
-
-void Board::createOddRows(const sf::RenderWindow& window)
-{
-	//Build black-white rows
-	for (int i = 1; i < m_BoardSize; i += 2)
-	{
-		for (int j = 0; j < m_BoardSize; ++j)
-		{
-			sf::Vector2f squarePosition = 
-				std::move(sf::Vector2f(window.getSize().x / 4 + j * m_SquareSize, window.getSize().y / 4 + i * m_SquareSize));
-
-			sf::Vector2i squareCoordinates = sf::Vector2i(i, j);
-
-			if (j % 2 == 0)
-			{
-				//Build a white square
-				GameManager::getInstance().addGameObject(std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
-					.color(Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN))
-					.position(squarePosition)
-					.build())));
-			}
-			else
-			{
-				//Build a white square
-				GameManager::getInstance().addGameObject(std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
-					.color(Colors::getInstance().getColor(Colors::ColorNames::LIGHT_BROWN))
-					.position(squarePosition)
-					.build())));
-			}
-		}
-	}
-}
-
 
 Board::~Board()
 {

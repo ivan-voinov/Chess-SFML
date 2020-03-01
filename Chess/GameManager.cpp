@@ -65,7 +65,7 @@ void GameManager::draw()
 void GameManager::runGame()
 {
 	//Load the board
-	m_Board.loadBoard(m_Window);
+	m_Board.buildBoard(m_Window);
 	m_Board.assignPiecesToPlayers(m_WhitePlayer, m_BlackPlayer);
 
 	//Resize the pieces according to the size of square

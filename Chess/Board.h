@@ -14,8 +14,6 @@ private:
 	int m_FocusedSquareId = -1;
 	std::vector<int> m_SquareIds;
 
-	void createEvenRows(const sf::RenderWindow& window);
-	void createOddRows(const sf::RenderWindow& window);
 public:
 	Board();
 	static const double getSquareSize();
@@ -23,7 +21,7 @@ public:
 	Square* getFocusedSquare();
 	void resetFocusedSquare();
 	bool squareIsChosen() const;
-	void loadBoard(const sf::RenderWindow& window);
+	void buildBoard(const sf::RenderWindow& window);
 	void assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer);
 	std::unique_ptr<Piece> getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
 		const sf::Vector2f& squarePosition) const;
