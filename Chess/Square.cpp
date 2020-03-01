@@ -8,14 +8,13 @@ Square::Square()
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
 	const sf::Vector2f& position,
-	double size,
-	Piece* piece)
+	double size
+	)
 {
 	this->m_Color = color;
 	this->m_Coordinates = coordinates;
 	this->m_Position = position;
 	this->m_Size = size;
-	this->m_Piece = piece;
 
 	m_Shape.setFillColor(m_Color);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -30,7 +29,6 @@ Square::Square(Square&& square)
 	this->m_Coordinates = square.m_Coordinates;
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
-	this->m_Piece = square.m_Piece;
 }
 
 Square& Square::operator=(Square&& square)
@@ -44,7 +42,6 @@ Square& Square::operator=(Square&& square)
 	this->m_Coordinates = square.m_Coordinates;
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
-	this->m_Piece = square.m_Piece;
 
 	return *this;
 }
@@ -93,9 +90,7 @@ void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 bool Square::isTriggered(const sf::Vector2i& mousePosition) const
 {
 	//If the mouse is inside the square, return true (false otherwise)
-	if (m_Shape.getGlobalBounds().contains(sf::Vector2f(mousePosition)))
-		return true;
-	return false;
+	return m_Shape.getGlobalBounds().contains(sf::Vector2f(mousePosition)) ? true : false;
 }
 
 Square::~Square()

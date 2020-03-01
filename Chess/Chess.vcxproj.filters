@@ -72,9 +72,6 @@
     <ClInclude Include="ChessLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjectContainer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FileException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -135,9 +132,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChessLogic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObjectContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileException.cpp">

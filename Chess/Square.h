@@ -2,8 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "ITriggered.h"
 #include "Colors.h"
-
-class Piece;
+#include "GameObject.h"
 
 class Square : public ITriggered, public GameObject
 {
@@ -12,7 +11,6 @@ private:
 	sf::Color m_Color;
 	sf::Vector2i m_Coordinates;
 	sf::Vector2f m_Position;
-	Piece* m_Piece = nullptr;
 
 	double m_Size;
 
@@ -21,8 +19,7 @@ public:
 	Square(const sf::Color& color,
 		const sf::Vector2i& coordinates,
 		const sf::Vector2f& position,
-		double size,
-		Piece* piece
+		double size
 		);
 	Square(Square&& square);
 	Square& operator=(Square&& square);

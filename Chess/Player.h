@@ -3,20 +3,20 @@
 #include "Colors.h"
 
 class Board;
+class Square;
+class Piece;
 
 class Player
 {
 private:
-
-	Piece* m_FocusedPiece = nullptr;
-	std::vector<std::unique_ptr<Piece>> m_Pieces;
+	int m_FocusedPieceId = -1;
+	std::vector<int> m_PiecesIds;
 	bool m_IsPlayerTurn;
 	sf::Color m_PlayerColor;
 
 public:
 	Player(const sf::Color& playerColor);
-	void addPiece(std::unique_ptr<Piece> piece);
-	void registerGameObjects();
+	void addPiece(int pieceId);
 	void choosePiece(const sf::Vector2i& mousePosition);
 	Piece* findPieceBySquare(const Square& square) const;
 	void resizePieces(const double squareSize);

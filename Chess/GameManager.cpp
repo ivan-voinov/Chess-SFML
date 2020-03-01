@@ -11,18 +11,17 @@ m_ChessLogic(&m_Board, &m_WhitePlayer, &m_BlackPlayer)
 	m_Window.create(sf::VideoMode(700, 700), "Chess", sf::Style::Default);
 }
 
-void GameManager::addGameObject(GameObject* gameObject)
+void GameManager::addGameObject(std::unique_ptr<GameObject> gameObject)
 {
-	m_GameObjects.push_back(gameObject);
+	m_GameObjects.push_back(std::move(gameObject));
 }
 
-void GameManager::removeGameObject(GameObject* gameObject)
+void GameManager::removeGameObject(int id)
 {
-	std::vector<GameObject*>::iterator it;
-	it = m_GameObjects.begin();
+	std::vector<std::unique_ptr<GameObject>>::iterator it = m_GameObjects.begin();
 	while (it != m_GameObjects.end())
 	{
-		if (*it == gameObject)
+		if (*it->get() == id)
 		{
 			m_GameObjects.erase(it);
 			break;
@@ -58,19 +57,9 @@ void GameManager::update()
 void GameManager::draw()
 {
 	m_Window.clear();
-	
-	for (auto& gameObject : m_GameObjects)
-		m_Window.draw(*gameObject);
-
+	for (const auto& gameObject : m_GameObjects)
+		m_Window.draw(*gameObject.get());
 	m_Window.display();
-}
-
-GameObject* GameManager::getGameObject(int id)
-{
-	for (auto& gameObject : m_GameObjects)
-		if (*gameObject == id)
-			return gameObject;
-	return nullptr;
 }
 
 void GameManager::runGame()
@@ -82,11 +71,6 @@ void GameManager::runGame()
 	//Resize the pieces according to the size of square
 	m_WhitePlayer.resizePieces(m_Board.getSquareSize());
 	m_BlackPlayer.resizePieces(m_Board.getSquareSize());
-
-	//Register the game objects
-	m_Board.registerGameObjects();
-	m_WhitePlayer.registerGameObjects();
-	m_BlackPlayer.registerGameObjects();
 
 	//Game loop
 	while (m_Window.isOpen())

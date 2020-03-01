@@ -17,32 +17,28 @@ Player::Player(const sf::Color& playerColor)
 		m_IsPlayerTurn = false;
 }
 
-void Player::addPiece(std::unique_ptr<Piece> piece)
+void Player::addPiece(int pieceId)
 {
-	m_Pieces.push_back(std::move(piece));
-}
-
-void Player::registerGameObjects()
-{
-	for (auto& piece : m_Pieces)
-		GameManager::getInstance().addGameObject(piece.get());
+	m_PiecesIds.push_back(pieceId);
 }
 
 void Player::choosePiece(const sf::Vector2i& mousePosition)
 {
-	for (auto& piece : m_Pieces)
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
+	for (auto& piece : pieces)
 	{
 		if (piece->isTriggered(mousePosition))
 		{
-			if (piece.get() == m_FocusedPiece)
+			if (piece == focusedPiece)
 			{
-				m_FocusedPiece->getSquare()->resetColor();
+				focusedPiece->getSquare()->resetColor();
 				resetFocusedPiece();
 			}
 			else
 			{
 				piece->setSquareColor(Colors::getInstance().getColor(Colors::ColorNames::GREEN));
-				m_FocusedPiece = piece.get();
+				m_FocusedPieceId = piece->getId();
 			}
 		}
 	}
@@ -50,29 +46,26 @@ void Player::choosePiece(const sf::Vector2i& mousePosition)
 
 Piece* Player::findPieceBySquare(const Square& square) const
 {
-	for (auto& piece : m_Pieces)
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	for (auto& piece : pieces)
 	{
 		if (piece->getSquare() == &square)
-			return piece.get();
+			return piece;
 	}
-
 	//If the player doesn't control the square
 	return nullptr;
 }
 
 void Player::resizePieces(const double squareSize)
 {
-	for (auto& piece : m_Pieces)
-	{
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	for (auto& piece : pieces)
 		piece->resize(squareSize);
-	}
 }
 
 bool Player::pieceIsChosen() const
 {
-	if (m_FocusedPiece == nullptr)
-		return false;
-	return true;
+	return m_FocusedPieceId == -1 ? false : true;
 }
 
 bool Player::isPlayerTurn() const
@@ -82,20 +75,21 @@ bool Player::isPlayerTurn() const
 
 bool Player::isLegalMove(Square& square) const
 {
-	if (m_FocusedPiece->isLegalMove(square))
-		return true;
-
-	return false;
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
+	return focusedPiece->isLegalMove(square) ? true : false;
 }
 
 void Player::makeMove(Square& square)
 {
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 	//Move the focused piece to the focused square
-	m_FocusedPiece->move(square);
+	focusedPiece->move(square);
 }
 
 void Player::processTurn(Player& opponent, Board& board, sf::RenderWindow& window)
 {
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 	if (!pieceIsChosen())
 	{
 		choosePiece(sf::Mouse::getPosition(window));
@@ -105,10 +99,10 @@ void Player::processTurn(Player& opponent, Board& board, sf::RenderWindow& windo
 		if (board.chooseSquareForPiece(sf::Mouse::getPosition(window)))
 		{
 			//TODO: check if the square is legal
-			if (m_FocusedPiece->isLegalMove(board.getFocusedSquare()))
+			if (focusedPiece->isLegalMove(*board.getFocusedSquare()))
 			{
 				resetFocusedPieceColor();
-				makeMove(board.getFocusedSquare());
+				makeMove(*board.getFocusedSquare());
 				resetFocusedPiece();
 				switchTurn(opponent);
 			}
@@ -124,18 +118,19 @@ void Player::processTurn(Player& opponent, Board& board, sf::RenderWindow& windo
 void Player::switchTurn(Player& opponent)
 {
 	m_IsPlayerTurn = !m_IsPlayerTurn;
-	opponent.isPlayerTurn = !opponent.isPlayerTurn;
+	opponent.m_IsPlayerTurn = !opponent.isPlayerTurn();
 }
 
 void Player::resetFocusedPiece()
 {
-	m_FocusedPiece = nullptr;
+	m_FocusedPieceId = -1;
 }
 
 void Player::resetFocusedPieceColor()
 {
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 	//Reset the color of the square with selected piece
-	m_FocusedPiece->getSquare()->resetColor();
+	focusedPiece->getSquare()->resetColor();
 }
 
 Player::~Player()

@@ -17,7 +17,6 @@ public:
 	friend bool operator!= (const GameObject& g1, int id);
 	bool isDestroyed() const;
 	int getId() const;
-	void add();
 	void destroy();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 	~GameObject();

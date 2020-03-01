@@ -39,11 +39,6 @@ int GameObject::getId() const
 	return m_Id;
 }
 
-void GameObject::add()
-{
-	GameManager::getInstance().addGameObject(this);
-}
-
 void GameObject::destroy()
 {
 	m_IsDestroyed = true;

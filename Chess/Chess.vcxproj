@@ -173,7 +173,6 @@
     <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="FileException.h" />
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="GameObjectContainer.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="ITriggered.h" />
@@ -197,7 +196,6 @@
     <ClCompile Include="FileException.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GameObjectContainer.cpp" />
     <ClCompile Include="FilePaths.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ITriggered.cpp" />
