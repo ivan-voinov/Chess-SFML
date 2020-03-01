@@ -144,18 +144,22 @@ void Board::buildBoard(const sf::RenderWindow& window)
 			if (i % 2 == 0 && j % 2 == 0 || i % 2 != 0 && j % 2 != 0)
 			{
 				//Build a white square
-				GameManager::getInstance().addGameObject(std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
+				std::unique_ptr<Square> newSquare = std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
 					.color(Colors::getInstance().getColor(Colors::ColorNames::LIGHT_BROWN))
 					.position(squarePosition)
-					.build())));
+					.build()));
+				m_SquareIds.push_back(newSquare->getId());
+				GameManager::getInstance().addGameObject(std::move(newSquare));
 			}
 			else
 			{
 				//Build a black square
-				GameManager::getInstance().addGameObject(std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
+				std::unique_ptr<Square> newSquare = std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
 					.color(Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN))
 					.position(squarePosition)
-					.build())));
+					.build()));
+				m_SquareIds.push_back(newSquare->getId());
+				GameManager::getInstance().addGameObject(std::move(newSquare));
 			}
 		}
 	}
