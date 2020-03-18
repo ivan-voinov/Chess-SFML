@@ -1,9 +1,10 @@
 #include "pch.h"
+#include <iostream>
 #include "Knight.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include <iostream>
+#include "Player.h"
 
 
 Knight::Knight(const sf::Vector2f& position, const sf::Color& color) :
@@ -28,15 +29,22 @@ Knight::Knight(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-bool Knight::isLegalMove(const Square& square)
+bool Knight::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
 {
-	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
-	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
+	sf::Vector2i squareCoordinates = square.getCoordinates();
+	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
+	int xDifference = abs(squareCoordinates.x - thisCoordinates.x);
+	int yDifference = abs(squareCoordinates.y - thisCoordinates.y);
 
-	if ((changeInX == 2 && changeInY == 1) || (changeInX == 1 && changeInY == 2))
-		return true;
+	return (xDifference == 2 && yDifference == 1) || (xDifference == 1 && yDifference == 2);
+}
 
-	return false;
+bool Knight::isLegalMove(const Square& square, const Player& player, const Player& opponent)
+{
+	if (!Piece::isLegalMove(square, player, opponent) || player.isChecked(opponent))
+		return false;
+
+	return controlsSquare(square, player, opponent);
 }
 
 Knight::~Knight()

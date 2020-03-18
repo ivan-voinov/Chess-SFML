@@ -1,9 +1,10 @@
 #include "pch.h"
+#include <iostream>
 #include "Bishop.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include <iostream>
+#include "Player.h"
 
 
 Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :
@@ -28,22 +29,17 @@ Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-void Bishop::move(const sf::Vector2f& position)
+bool Bishop::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
 {
-	this->m_PieceSprite.setPosition(position);
+	return Piece::controlsDiagonal(player, opponent, getSquare()->getCoordinates(), square.getCoordinates());
 }
 
-bool Bishop::isLegalMove(const Square& square)
+bool Bishop::isLegalMove(const Square& square, const Player& player, const Player& opponent)
 {
-	//Get dX and dY
-	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
-	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
-
-	//Check if the square is on bishop's diagonal
-	if (changeInX == changeInY && changeInX > 0)
-		return true;
-
-	return false;
+	if (!Piece::isLegalMove(square, player, opponent) || player.isChecked(opponent))
+		return false;
+	
+	return controlsSquare(square, player, opponent);
 }
 
 Bishop::~Bishop()

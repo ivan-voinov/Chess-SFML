@@ -1,9 +1,11 @@
 #include "pch.h"
+#include <iostream>
 #include "Queen.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include <iostream>
+#include "Player.h"
+#include "Bishop.h"
 
 
 Queen::Queen(const sf::Vector2f& position, const sf::Color& color) :
@@ -28,16 +30,21 @@ Queen::Queen(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-bool Queen::isLegalMove(const Square& square)
+bool Queen::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
 {
-	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
-	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
+	sf::Vector2i squareCoordinates = square.getCoordinates();
+	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
 
-	if ((changeInX > 0 && changeInY == 0) || (changeInY > 0 && changeInX == 0) || 
-		(changeInX == changeInY) && (changeInX > 0))
-		return true;
+	return Piece::controlsLine(player, opponent, squareCoordinates, thisCoordinates) ||
+		Piece::controlsDiagonal(player, opponent, squareCoordinates, thisCoordinates);
+}
 
-	return false;
+bool Queen::isLegalMove(const Square& square, const Player& player, const Player& opponent)
+{
+	if (!Piece::isLegalMove(square, player, opponent) || player.isChecked(opponent))
+		return false;
+
+	return controlsSquare(square, player, opponent);
 }
 
 

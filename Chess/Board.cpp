@@ -14,35 +14,15 @@ const double Board::getSquareSize()
 	return m_SquareSize;
 }
 
-bool Board::chooseSquareForPiece(const sf::Vector2i& mousePosition)
+Square* Board::getTriggeredSquare(const sf::Vector2i& mousePosition)
 {
 	std::vector<Square*> board = GameManager::getInstance().getGameObjects<Square>(m_SquareIds);
 	for (auto& square : board)
 	{
 		if (square->isTriggered(mousePosition))
-		{
-			//Square has been chosen
-			m_FocusedSquareId = square->getId();
-			return true;
-		}
+			return square;
 	}
-	//Square has not been chosen
-	return false;
-}
-
-Square* Board::getFocusedSquare()
-{
-	return GameManager::getInstance().getGameObject<Square>(m_FocusedSquareId);
-}
-
-void Board::resetFocusedSquare()
-{
-	m_FocusedSquareId = -1;
-}
-
-bool Board::squareIsChosen() const
-{
-	return m_FocusedSquareId == -1 ? false : true;
+	return nullptr;
 }
 
 //Build the pieces and assign them to players
@@ -52,23 +32,26 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 	for (const auto& square : board)
 	{
 		//Build the piece
-		std::unique_ptr<Piece> piece = 
-			getStartingSquarePiece(square->getCoordinates(), square->getPosition());
+		std::unique_ptr<Piece> piece = getStartingSquarePiece(square->getCoordinates(), square->getPosition());
 
 		//If built successfully, give it a reference to it's square and assign to a player
 		if (piece != nullptr)
 		{
-			piece.get()->setSquare(*square);
+			piece.get()->setSquare(square->getId());
 
 			//If the piece is white, assign it to white player
 			if (piece.get()->getColor() == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
 			{
 				whitePlayer.addPiece(piece->getId());
+				if (square->getCoordinates().x == 7 && square->getCoordinates().y == 4)
+					whitePlayer.setKing(piece->getId());
 			}
 			//If the piece is black, assign it to black player
 			else if (piece.get()->getColor() == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
 			{
 				blackPlayer.addPiece(piece->getId());
+				if (square->getCoordinates().x == 0 && square->getCoordinates().y == 4)
+					blackPlayer.setKing(piece->getId());
 			}
 			GameManager::getInstance().addGameObject(std::move(piece));
 		}

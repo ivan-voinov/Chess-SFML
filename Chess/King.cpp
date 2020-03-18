@@ -3,6 +3,7 @@
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
+#include "Player.h"
 #include <iostream>
 
 
@@ -28,15 +29,25 @@ King::King(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-bool King::isLegalMove(const Square& square)
+bool King::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
 {
-	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
-	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
+	sf::Vector2i squareCoordinates = square.getCoordinates();
+	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
+	int xDifference = abs(squareCoordinates.x - thisCoordinates.x);
+	int yDifference = abs(squareCoordinates.y - thisCoordinates.y);
 
-	if ((changeInX + changeInY == 1) || (changeInX == changeInY && changeInX == 1))
-		return true;
+	return (xDifference + yDifference == 1) || (xDifference == yDifference) && (xDifference == 1);
+}
 
-	return false;
+bool King::isLegalMove(const Square& square, const Player& player, const Player& opponent)
+{
+	if (!Piece::isLegalMove(square, player, opponent))
+		return false;
+
+	if (controlsSquare(square, player, opponent))
+	{
+		return !opponent.controlsSquare(square, player);
+	}
 }
 
 King::~King()

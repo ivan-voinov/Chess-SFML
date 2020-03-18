@@ -1,9 +1,10 @@
 #include "pch.h"
+#include <iostream>
 #include "Pawn.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include <iostream>
+#include "Player.h"
 
 
 Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) :
@@ -28,63 +29,65 @@ Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-bool Pawn::isStartingSquare(const sf::Vector2i& coordinates) const
+bool Pawn::isMovingForward(const Square& startSquare, const Square& targetSquare) const
 {
-	if (coordinates.x == 1 || coordinates.x == 6)
-		return true;
-	return false;
+	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
+	{
+		return startSquare.getCoordinates().x - targetSquare.getCoordinates().x < 0;
+	}
+	else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+	{
+		return startSquare.getCoordinates().x - targetSquare.getCoordinates().x > 0;
+	}
 }
 
-bool Pawn::isLegalMove(const Square& square)
+bool Pawn::hasDoubleMove() const
 {
-	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
-	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
+	return m_HasDoubleMove;
+}
 
-	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+bool Pawn::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
+{
+	sf::Vector2i squareCoordinates = square.getCoordinates();
+	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
+	int xDifference = abs(squareCoordinates.x - thisCoordinates.x);
+	int yDifference = abs(squareCoordinates.y - thisCoordinates.y);
+
+	return (xDifference + yDifference == 2) && (xDifference == yDifference);
+}
+
+bool Pawn::isLegalMove(const Square& square, const Player& player, const Player& opponent)
+{
+	Square* startingSquare = getSquare();
+	int xDifference = abs(startingSquare->getCoordinates().x - square.getCoordinates().x);
+	int yDifference = abs(startingSquare->getCoordinates().y - square.getCoordinates().y);
+
+	if (!Piece::isLegalMove(square, player, opponent) || player.isChecked(opponent))
+		return false;
+
+	if (isMovingForward(*startingSquare, square))
 	{
-		//Check to force the pawn to move only forward
-		if (m_Square->getCoordinates().x - square.getCoordinates().x > 0)
+		if (hasDoubleMove())
 		{
-			//Check if the pawn can move two spaces or not
-			if (isStartingSquare(m_Square->getCoordinates()))
+ 			if ((xDifference == 1 || xDifference == 2) && yDifference == 0)
 			{
-				if ((changeInX == 1 || changeInX == 2) && changeInY == 0)
-					return true;
-			}
-			else
-			{
-				if (changeInX == 1 && changeInY == 0)
-					return true;
+				m_HasDoubleMove = false;
+				return true;
 			}
 		}
-	}
-	else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
-	{
-		//Check to force the pawn to move only forward
-		if (m_Square->getCoordinates().x - square.getCoordinates().x < 0)
+		else
 		{
-			if (isStartingSquare(m_Square->getCoordinates()))
-			{
-				if ((changeInX == 1 || changeInX == 2) && changeInY == 0)
-					return true;
-			}
-			else
-			{
-				if (changeInX == 1 && changeInY == 0)
-					return true;
-			}
+			if (xDifference == 1 && yDifference == 0)
+				return true;
 		}
 	}
-
 	return false;
 }
 
 bool Pawn::reachedEighthRank() const
 {
-	if (m_Square->getCoordinates().x == 0 || m_Square->getCoordinates().x == 7)
-		return true;
-
-	return false;
+	Square* startingSquare = getSquare();
+	return (startingSquare->getCoordinates().x == 0 || startingSquare->getCoordinates().x == 7);
 }
 
 Pawn::~Pawn()

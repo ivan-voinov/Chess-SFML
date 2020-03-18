@@ -11,7 +11,7 @@ private:
 	sf::Color m_Color;
 	sf::Vector2i m_Coordinates;
 	sf::Vector2f m_Position;
-
+	bool m_IsFree = true;
 	double m_Size;
 
 public:

@@ -1,9 +1,10 @@
 #include "pch.h"
+#include <iostream>
 #include "Rook.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include <iostream>
+#include "Player.h"
 
 
 Rook::Rook(const sf::Vector2f& position, const sf::Color& color) :
@@ -28,15 +29,18 @@ Rook::Rook(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-bool Rook::isLegalMove(const Square& square)
+
+bool Rook::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
 {
-	int changeInX = abs(m_Square->getCoordinates().x - square.getCoordinates().x);
-	int changeInY = abs(m_Square->getCoordinates().y - square.getCoordinates().y);
+	return Piece::controlsLine(player, opponent, getSquare()->getCoordinates(), square.getCoordinates());
+}
 
-	if ((changeInX > 0 && changeInY == 0) || (changeInY > 0 && changeInX == 0))
-		return true;
+bool Rook::isLegalMove(const Square& square, const Player& player, const Player& opponent)
+{
+	if (!Piece::isLegalMove(square, player, opponent) || player.isChecked(opponent))
+		return false;
 
-	return false;
+	return controlsSquare(square, player, opponent);
 }
 
 
