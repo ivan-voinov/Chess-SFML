@@ -27,7 +27,7 @@ public:
 	void resetFocusedSquare();
 	void checkKing();
 	void uncheckKing();
-	void removePiece(int capturedPieceId);
+	void removePiece(int capturedPieceId, Player& opponent);
 	bool squareIsChosen() const;
 	bool isChecked(const Player& opponent) const;
 	bool hasPieceOnSquare(const sf::Vector2i& squareCoordinates) const;

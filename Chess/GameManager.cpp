@@ -18,16 +18,10 @@ void GameManager::addGameObject(std::unique_ptr<GameObject> gameObject)
 
 void GameManager::removeGameObject(int id)
 {
-	std::vector<std::unique_ptr<GameObject>>::iterator it = m_GameObjects.begin();
-	while (it != m_GameObjects.end())
-	{
-		if (*it->get() == id)
-		{
-			m_GameObjects.erase(it);
-			break;
-		}
-		++it;
-	}
+	m_GameObjects.erase(std::remove_if(
+		m_GameObjects.begin(), 
+		m_GameObjects.end(), 
+		[id](std::unique_ptr<GameObject>& gmObj) {return *gmObj.get() == id;}));
 }
 
 void GameManager::readInput()

@@ -38,10 +38,8 @@ public:
 	void setSquare(int squareId);
 	Square* getSquare() const;
 	void setSquareColor(const sf::Color& color);
-	bool canBeCaptured(const Piece &piece) const;
 	void move(Square& square);
 	void resize(const double squareSize);
-	void onCaptured();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual bool controlsSquare(const Square& square, const Player& player, const Player& opponent) const = 0;
 	virtual bool isLegalMove(const Square& square, const Player& player, const Player& opponent);

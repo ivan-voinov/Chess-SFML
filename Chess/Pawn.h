@@ -6,8 +6,10 @@ class Pawn : public Piece
 {
 private:
 	bool m_HasDoubleMove = true;
-	bool isMovingForward(const Square& startSquare, const Square& targetSquare) const;
-	bool hasDoubleMove() const;
+	bool movesForward(const Square& square, const Player& player, const Player& opponent) const;
+	bool capturesPiece(const Square& square, const Player& player, const Player& opponent) const;
+	bool doubleMoveIsBlocked(const Square& targetSquare, const Player& player, const Player& opponent) const;
+	bool freeToMove(const Square& targetSquare, const Player& player, const Player& opponent) const;
 
 public:
 	Pawn(const sf::Vector2f& position, const sf::Color& color);

@@ -41,12 +41,7 @@ int GameObject::getId() const
 
 void GameObject::destroy()
 {
-	m_IsDestroyed = true;
-}
-
-bool GameObject::isDestroyed() const
-{
-	return m_IsDestroyed;
+	GameManager::getInstance().removeGameObject(m_Id);
 }
 
 GameObject::~GameObject()

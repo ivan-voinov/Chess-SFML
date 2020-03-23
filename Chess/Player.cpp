@@ -54,9 +54,12 @@ void Player::uncheckKing()
 	//TODO: remove checked highlight
 }
 
-void Player::removePiece(int capturedPieceId)
+void Player::removePiece(int capturedPieceId, Player& opponent)
 {
-	//TODO
+	opponent.m_PiecesIds.erase(std::remove_if(
+		opponent.m_PiecesIds.begin(),
+		opponent.m_PiecesIds.end(),
+		[capturedPieceId](int gmObjId) {return gmObjId == capturedPieceId;}));
 }
 
 bool Player::squareIsChosen() const
@@ -143,8 +146,8 @@ void Player::makeMove(Square& square, Player& opponent)
 	Piece* pieceCaptured = opponent.findPiece(square);
 	if (pieceCaptured)
 	{
+		removePiece(pieceCaptured->getId(), opponent);
 		pieceCaptured->destroy();
-		removePiece(pieceCaptured->getId());
 	}
 	focusedPiece->move(square);
 }

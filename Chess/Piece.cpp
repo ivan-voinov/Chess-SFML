@@ -139,13 +139,6 @@ void Piece::setSquareColor(const sf::Color& color)
 	GameManager::getInstance().getGameObject<Square>(m_SquareId)->setColor(color);
 }
 
-bool Piece::canBeCaptured(const Piece& piece) const
-{
-	if (piece.getColor() != this->m_Color)
-		return true;
-	return false;
-}
-
 void Piece::move(Square& square)
 {
 	m_SquareId = square.getId();
@@ -155,11 +148,6 @@ void Piece::move(Square& square)
 void Piece::resize(const double squareSize)
 {
 	m_PieceSprite.setScale(squareSize / m_PieceTexture.getSize().x, squareSize / m_PieceTexture.getSize().y);
-}
-
-void Piece::onCaptured()
-{
-	destroy();
 }
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
