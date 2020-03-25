@@ -14,11 +14,8 @@ class GameManager
 private:
 	sf::RenderWindow m_Window;
 	sf::Event m_Event;
-	std::vector<std::unique_ptr<GameObject>> m_GameObjects;
-	Board m_Board;
-	Player m_WhitePlayer;
-	Player m_BlackPlayer;
 	ChessLogic m_ChessLogic;
+	std::vector<std::unique_ptr<GameObject>> m_GameObjects;
 
 	GameManager();
 public:

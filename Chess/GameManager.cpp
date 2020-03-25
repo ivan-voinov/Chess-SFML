@@ -2,10 +2,7 @@
 #include "GameManager.h"
 #include "Player.h"
 
-GameManager::GameManager() : 
-m_WhitePlayer(sf::Color::White),
-m_BlackPlayer(sf::Color::Black),
-m_ChessLogic(&m_Board, &m_WhitePlayer, &m_BlackPlayer)
+GameManager::GameManager()
 
 {
 	m_Window.create(sf::VideoMode(700, 700), "Chess", sf::Style::Default);
@@ -58,14 +55,7 @@ void GameManager::draw()
 
 void GameManager::runGame()
 {
-	//Load the board
-	m_Board.buildBoard(m_Window);
-	m_Board.assignPiecesToPlayers(m_WhitePlayer, m_BlackPlayer);
-
-	//Resize the pieces according to the size of square
-	m_WhitePlayer.resizePieces(m_Board.getSquareSize());
-	m_BlackPlayer.resizePieces(m_Board.getSquareSize());
-
+	m_ChessLogic.initializeGame(m_Window);
 	//Game loop
 	while (m_Window.isOpen())
 	{

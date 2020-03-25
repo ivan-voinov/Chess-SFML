@@ -75,6 +75,12 @@
     <ClInclude Include="FileException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MoveHistory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Move.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -135,6 +141,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveHistory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Move.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
