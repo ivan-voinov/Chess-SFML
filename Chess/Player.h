@@ -10,7 +10,6 @@ class Player
 {
 private:
 	int m_FocusedPieceId = -1;
-	int m_FocusedSquareId = -1;
 	int m_KingId = -1;
 	std::vector<int> m_PiecesIds;
 	bool m_IsPlayerTurn;
@@ -24,23 +23,20 @@ public:
 	Piece* findPiece(const Square& square) const;
 	Piece* getKing() const;
 	void setKing(int kingId);
-	void resetFocusedSquare();
 	void checkKing();
 	void uncheckKing();
-	void removePiece(int capturedPieceId, Player& opponent);
-	bool squareIsChosen() const;
-	bool isChecked(const Player& opponent) const;
-	bool hasPieceOnSquare(const sf::Vector2i& squareCoordinates) const;
-	bool controlsSquare(const Square& square, const Player& opponent) const;
+	void removePiece(int capturedPieceId);
+	bool isChecked(const Player& opponent, const Board& board) const;
+	bool controlsSquare(const Square& square, const Board& board) const;
 	void resizePieces(const double squareSize);
 	bool pieceIsChosen() const;
 	bool isPlayerTurn() const;
-	void makeMove(Square& square, Player& opponent);
+	bool makeMove(Square& square, Player& opponent, const Board& board);
 	void processTurn(Player& opponent, Board& board, sf::RenderWindow& window);
 	void switchTurn(Player& opponent);
 	void resetFocusedPiece();
-	void resetFocusedPieceColor();
-	void highlightFocusedPiece();
+	void resetSquareColor(Square& square);
+	void highlightSquare(Square& square);
 	~Player();
 };
 

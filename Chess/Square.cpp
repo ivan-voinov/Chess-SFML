@@ -8,13 +8,15 @@ Square::Square()
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
 	const sf::Vector2f& position,
-	double size
+	double size,
+	const State& state
 	)
 {
 	this->m_Color = color;
 	this->m_Coordinates = coordinates;
 	this->m_Position = position;
 	this->m_Size = size;
+	this->m_State = state;
 
 	m_Shape.setFillColor(m_Color);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -29,6 +31,7 @@ Square::Square(Square&& square)
 	this->m_Coordinates = square.m_Coordinates;
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
+	this->m_State = square.m_State;
 }
 
 Square& Square::operator=(Square&& square)
@@ -42,6 +45,7 @@ Square& Square::operator=(Square&& square)
 	this->m_Coordinates = square.m_Coordinates;
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
+	this->m_State = square.m_State;
 
 	return *this;
 }
@@ -52,10 +56,42 @@ void Square::resetColor()
 	m_Shape.setFillColor(m_Color);
 }
 
-void Square::setColor(sf::Color color)
+void Square::setColor(const sf::Color& color)
 {
 	m_Color = color;
 	m_Shape.setFillColor(color);
+}
+
+void Square::setState(const State& state)
+{
+	m_State = state;
+}
+
+bool Square::isFree() const
+{
+	return m_State == State::IS_FREE;
+}
+
+bool Square::hasAllyPiece(const sf::Color& color) const
+{
+	if (isFree())
+		return false;
+
+	sf::Color blackColor = Colors::getInstance().getColor(Colors::ColorNames::BLACK);
+	sf::Color whiteColor = Colors::getInstance().getColor(Colors::ColorNames::WHITE);
+	return (m_State == State::HAS_BLACK_PIECE && color == blackColor) ||
+		   (m_State == State::HAS_WHITE_PIECE && color == whiteColor);
+}
+
+bool Square::hasEnemyPiece(const sf::Color& color) const
+{
+	if (isFree())
+		return false;
+
+	sf::Color blackColor = Colors::getInstance().getColor(Colors::ColorNames::BLACK);
+	sf::Color whiteColor = Colors::getInstance().getColor(Colors::ColorNames::WHITE);
+	return (m_State == State::HAS_BLACK_PIECE && color == whiteColor) ||
+		   (m_State == State::HAS_WHITE_PIECE && color == blackColor);
 }
 
 sf::Color Square::getColor() const

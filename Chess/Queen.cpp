@@ -4,9 +4,8 @@
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include "Player.h"
 #include "Bishop.h"
-
+#include "Board.h"
 
 Queen::Queen(const sf::Vector2f& position, const sf::Color& color) :
 	Piece(position, color)
@@ -30,21 +29,22 @@ Queen::Queen(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-bool Queen::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
+void Queen::onSuccessfulMove()
 {
-	sf::Vector2i squareCoordinates = square.getCoordinates();
-	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
-
-	return Piece::controlsLine(player, opponent, squareCoordinates, thisCoordinates) ||
-		Piece::controlsDiagonal(player, opponent, squareCoordinates, thisCoordinates);
 }
 
-bool Queen::isLegalMove(const Square& square, const Player& player, const Player& opponent)
+bool Queen::controlsSquare(const Square& square, const Board& board) const
 {
-	if (!Piece::isLegalMove(square, player, opponent) || player.isChecked(opponent))
+	Square& currentSquare = *getSquare();
+	return board.LineIsFree(currentSquare, square) || board.diagonalIsFree(currentSquare, square);
+}
+
+bool Queen::isLegalMove(const Square& square, const Board& board)
+{
+	if (!Piece::isLegalMove(square, board))
 		return false;
 
-	return controlsSquare(square, player, opponent);
+	return controlsSquare(square, board);
 }
 
 

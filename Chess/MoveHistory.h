@@ -10,7 +10,7 @@ private:
 
 public:
 	void rewindLastMove();
-	void addMove(const Move& move);
+	void addMove(Move& move);
 	Move& getLastMove();
 };
 

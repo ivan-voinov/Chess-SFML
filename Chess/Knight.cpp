@@ -29,7 +29,11 @@ Knight::Knight(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
-bool Knight::controlsSquare(const Square& square, const Player& player, const Player& opponent) const
+void Knight::onSuccessfulMove()
+{
+}
+
+bool Knight::controlsSquare(const Square& square, const Board& board) const
 {
 	sf::Vector2i squareCoordinates = square.getCoordinates();
 	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
@@ -39,12 +43,12 @@ bool Knight::controlsSquare(const Square& square, const Player& player, const Pl
 	return (xDifference == 2 && yDifference == 1) || (xDifference == 1 && yDifference == 2);
 }
 
-bool Knight::isLegalMove(const Square& square, const Player& player, const Player& opponent)
+bool Knight::isLegalMove(const Square& square, const Board& board)
 {
-	if (!Piece::isLegalMove(square, player, opponent) || player.isChecked(opponent))
+	if (!Piece::isLegalMove(square, board))
 		return false;
 
-	return controlsSquare(square, player, opponent);
+	return controlsSquare(square, board);
 }
 
 Knight::~Knight()

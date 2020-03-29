@@ -14,6 +14,12 @@ const double Board::getSquareSize()
 	return m_SquareSize;
 }
 
+Square* Board::getSquare(const sf::Vector2i coords) const
+{
+	int squareId = coords.x * 8 + coords.y;
+	return GameManager::getInstance().getGameObject<Square>(m_SquareIds.at(squareId));
+}
+
 Square* Board::getTriggeredSquare(const sf::Vector2i& mousePosition)
 {
 	std::vector<Square*> board = GameManager::getInstance().getGameObjects<Square>(m_SquareIds);
@@ -23,6 +29,101 @@ Square* Board::getTriggeredSquare(const sf::Vector2i& mousePosition)
 			return square;
 	}
 	return nullptr;
+}
+
+void Board::swapCoordinates(sf::Vector2i& coords1, sf::Vector2i& coords2) const
+{
+	sf::Vector2i temp = coords1;
+	coords1 = coords2;
+	coords2 = temp;
+}
+
+bool Board::LineIsFree(const Square& startSquare, const Square& destSquare) const
+{
+	sf::Vector2i startPoint(startSquare.getCoordinates());
+	sf::Vector2i endPoint(destSquare.getCoordinates());
+	int xDifference = abs(startPoint.x - endPoint.x);
+	int yDifference = abs(startPoint.y - endPoint.y);
+	bool isVertical = false;
+
+	if (!((xDifference == 0 && yDifference > 0) || (yDifference == 0 && xDifference > 0)))
+	{
+		return false;
+	}
+	if (startPoint.x < endPoint.x && startPoint.y == endPoint.y)
+	{
+		isVertical = true;
+	}
+	if (startPoint.x > endPoint.x && startPoint.y == endPoint.y)
+	{
+		isVertical = true;
+		swapCoordinates(startPoint, endPoint);
+	}
+	if (startPoint.x == endPoint.x && startPoint.y < endPoint.y)
+	{
+		isVertical = false;
+	}
+	if (startPoint.x == endPoint.x && startPoint.y > endPoint.y)
+	{
+		isVertical = false;
+		swapCoordinates(startPoint, endPoint);
+	}
+	int i = isVertical ? startPoint.x + 1 : startPoint.x;
+	int j = isVertical ? startPoint.y : startPoint.y + 1;
+	if (isVertical)
+	{
+		for (i; i < endPoint.x; i++)
+			if (!getSquare(sf::Vector2i(i,j))->isFree())
+				return false;
+	}
+	else
+	{
+		for (j; j < endPoint.y; j++)
+			if (!destSquare.isFree())
+				return false;
+	}
+	return true;
+}
+
+bool Board::diagonalIsFree(const Square& startSquare, const Square& destSquare) const
+{
+	bool isMainDiagonal = false;
+	sf::Vector2i startPoint(startSquare.getCoordinates());
+	sf::Vector2i endPoint(destSquare.getCoordinates());
+	int xDifference = abs(startPoint.x - endPoint.x);
+	int yDifference = abs(startPoint.y - endPoint.y);
+
+	if ((xDifference != yDifference) || xDifference == 0)
+	{
+		return false;
+	}
+	if (startPoint.x < endPoint.x && startPoint.y < endPoint.y)
+	{
+		isMainDiagonal = true;
+	}
+	if (startPoint.x > endPoint.x && startPoint.y > endPoint.y)
+	{
+		isMainDiagonal = true;
+		swapCoordinates(startPoint, endPoint);
+	}
+	if (startPoint.x < endPoint.x && startPoint.y > endPoint.y)
+	{
+		isMainDiagonal = false;
+	}
+	if (startPoint.x > endPoint.x && startPoint.y < endPoint.y)
+	{
+		isMainDiagonal = false;
+		swapCoordinates(startPoint, endPoint);
+	}
+
+	int j = startPoint.y;
+	for (int i = startPoint.x + 1; i < endPoint.x; i++)
+	{
+		j = isMainDiagonal ? (j + 1) : (j - 1);
+		if (!getSquare(sf::Vector2i(i,j))->isFree())
+			return false;
+	}
+	return true;
 }
 
 //Build the pieces and assign them to players
@@ -43,6 +144,7 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 			if (piece.get()->getColor() == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
 			{
 				whitePlayer.addPiece(piece->getId());
+				square->setState(Square::State::HAS_WHITE_PIECE);
 				if (square->getCoordinates().x == 7 && square->getCoordinates().y == 4)
 					whitePlayer.setKing(piece->getId());
 			}
@@ -50,6 +152,7 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 			else if (piece.get()->getColor() == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
 			{
 				blackPlayer.addPiece(piece->getId());
+				square->setState(Square::State::HAS_BLACK_PIECE);
 				if (square->getCoordinates().x == 0 && square->getCoordinates().y == 4)
 					blackPlayer.setKing(piece->getId());
 			}
@@ -130,6 +233,7 @@ void Board::buildBoard(const sf::RenderWindow& window)
 				std::unique_ptr<Square> newSquare = std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
 					.color(Colors::getInstance().getColor(Colors::ColorNames::LIGHT_BROWN))
 					.position(squarePosition)
+					.state(Square::State::IS_FREE)
 					.build()));
 				m_SquareIds.push_back(newSquare->getId());
 				GameManager::getInstance().addGameObject(std::move(newSquare));
@@ -140,6 +244,7 @@ void Board::buildBoard(const sf::RenderWindow& window)
 				std::unique_ptr<Square> newSquare = std::move(std::make_unique<Square>(SquareBuilder(squareCoordinates, m_SquareSize)
 					.color(Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN))
 					.position(squarePosition)
+					.state(Square::State::IS_FREE)
 					.build()));
 				m_SquareIds.push_back(newSquare->getId());
 				GameManager::getInstance().addGameObject(std::move(newSquare));
