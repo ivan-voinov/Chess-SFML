@@ -9,7 +9,6 @@ Piece::Piece(const sf::Vector2f& position, const sf::Color& color)
 	this->m_Color = color;
 
 	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
-	m_PieceSprite.setColor(color);
 	m_PieceSprite.setPosition(position);
 }
 
