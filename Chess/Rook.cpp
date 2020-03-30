@@ -31,7 +31,7 @@ Rook::Rook(const sf::Vector2f& position, const sf::Color& color) :
 
 void Rook::onSuccessfulMove()
 {
-	m_HasCastled = false;
+	m_HasCastle = false;
 }
 
 bool Rook::controlsSquare(const Square& square, const Board& board) const

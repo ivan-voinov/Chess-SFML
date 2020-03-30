@@ -77,8 +77,8 @@ bool Square::hasAllyPiece(const sf::Color& color) const
 	if (isFree())
 		return false;
 
-	sf::Color blackColor = Colors::getInstance().getColor(Colors::ColorNames::BLACK);
-	sf::Color whiteColor = Colors::getInstance().getColor(Colors::ColorNames::WHITE);
+	sf::Color blackColor = Colors::getColor(Colors::Names::BLACK);
+	sf::Color whiteColor = Colors::getColor(Colors::Names::WHITE);
 	return (m_State == State::HAS_BLACK_PIECE && color == blackColor) ||
 		   (m_State == State::HAS_WHITE_PIECE && color == whiteColor);
 }
@@ -88,8 +88,8 @@ bool Square::hasEnemyPiece(const sf::Color& color) const
 	if (isFree())
 		return false;
 
-	sf::Color blackColor = Colors::getInstance().getColor(Colors::ColorNames::BLACK);
-	sf::Color whiteColor = Colors::getInstance().getColor(Colors::ColorNames::WHITE);
+	sf::Color blackColor = Colors::getColor(Colors::Names::BLACK);
+	sf::Color whiteColor = Colors::getColor(Colors::Names::WHITE);
 	return (m_State == State::HAS_BLACK_PIECE && color == whiteColor) ||
 		   (m_State == State::HAS_WHITE_PIECE && color == blackColor);
 }
@@ -103,9 +103,9 @@ sf::Color Square::getInitialColor() const
 {
 	if ((m_Coordinates.x % 2 == 0) && (m_Coordinates.y % 2 == 0) ||
 		(m_Coordinates.x % 2 == 1) && (m_Coordinates.y % 2 == 1))
-			return Colors::getInstance().getColor(Colors::ColorNames::LIGHT_BROWN);
+			return Colors::getColor(Colors::Names::LIGHT_BROWN);
 	else
-		return Colors::getInstance().getColor(Colors::ColorNames::DARK_BROWN);
+		return Colors::getColor(Colors::Names::DARK_BROWN);
 }
 
 const sf::Vector2i& Square::getCoordinates() const
@@ -125,8 +125,7 @@ void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 bool Square::isTriggered(const sf::Vector2i& mousePosition) const
 {
-	//If the mouse is inside the square, return true (false otherwise)
-	return m_Shape.getGlobalBounds().contains(sf::Vector2f(mousePosition)) ? true : false;
+	return m_Shape.getGlobalBounds().contains(sf::Vector2f(mousePosition));
 }
 
 Square::~Square()

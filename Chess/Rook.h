@@ -4,7 +4,7 @@
 class Rook : public Piece
 {
 private:
-	bool m_HasCastled = true;
+	bool m_HasCastle = true;
 
 public:
 	Rook(const sf::Vector2f& position, const sf::Color& color);

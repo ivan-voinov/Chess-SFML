@@ -30,6 +30,21 @@ King::King(const sf::Vector2f& position, const sf::Color& color) :
 
 void King::onSuccessfulMove()
 {
+	m_HasCastle = false;
+}
+
+bool King::isCastling(const Square& square) const
+{
+	sf::Color whiteColor = Colors::getColor(Colors::Names::WHITE);
+	sf::Vector2i squareCoords = square.getCoordinates();
+	if (m_Color == whiteColor)
+	{
+		return squareCoords.x == 7 && (squareCoords.y == 2 || squareCoords.y == 6);
+	}
+	else
+	{
+		return squareCoords.x == 0 && (squareCoords.y == 2 || squareCoords.y == 6);
+	}
 }
 
 bool King::controlsSquare(const Square& square, const Board& board) const

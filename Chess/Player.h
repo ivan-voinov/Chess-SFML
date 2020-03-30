@@ -34,8 +34,7 @@ public:
 	bool makeMove(Square& square, Player& opponent, const Board& board);
 	void processTurn(Player& opponent, Board& board, sf::RenderWindow& window);
 	void switchTurn(Player& opponent);
-	void resetFocusedPiece();
-	void resetSquareColor(Square& square);
+	void resetMoveState(Square& square);
 	void highlightSquare(Square& square);
 	~Player();
 };

@@ -39,12 +39,12 @@ bool Pawn::movesForward(const Square& square, const Board& board) const
 	int xDifference = abs(currentSuare.getCoordinates().x - square.getCoordinates().x);
 	int yDifference = abs(currentSuare.getCoordinates().y - square.getCoordinates().y);
 
-	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK) &&
+	if (m_Color == Colors::getColor(Colors::Names::BLACK) &&
 		currentSuare.getCoordinates().x - square.getCoordinates().x > 0)
 	{
 		return false;
 	}
-	else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE) &&
+	else if (m_Color == Colors::getColor(Colors::Names::WHITE) &&
 		currentSuare.getCoordinates().x - square.getCoordinates().x < 0)
 	{
 		return false;
@@ -63,11 +63,11 @@ bool Pawn::capturesPiece(const Square& square, const Board& board) const
 
 	if ((targetCoords.y == currentCoords.y + 1 || targetCoords.y == currentCoords.y - 1))
 	{
-		if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
+		if (m_Color == Colors::getColor(Colors::Names::BLACK))
 		{
 			return (targetCoords.x == currentCoords.x + 1) ? square.hasEnemyPiece(m_Color) : false;
 		}
-		else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+		else if (m_Color == Colors::getColor(Colors::Names::WHITE))
 		{
 			return (targetCoords.x == currentCoords.x - 1) ? square.hasEnemyPiece(m_Color) : false;
 		}
@@ -78,11 +78,11 @@ bool Pawn::capturesPiece(const Square& square, const Board& board) const
 bool Pawn::doubleMoveIsLegal(const Square& square, const Board& board) const
 {
 	sf::Vector2i blockingSquareCoords;
-	if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
+	if (m_Color == Colors::getColor(Colors::Names::BLACK))
 	{
 		blockingSquareCoords = std::move(sf::Vector2i(square.getCoordinates().x - 1, square.getCoordinates().y));
 	}
-	else if (m_Color == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+	else if (m_Color == Colors::getColor(Colors::Names::WHITE))
 	{
 		blockingSquareCoords = sf::Vector2i(square.getCoordinates().x + 1, square.getCoordinates().y);
 	}
@@ -116,12 +116,9 @@ bool Pawn::isLegalMove(const Square& square, const Board& board)
 	{
 		return true;
 	}
-	else
+	else if (capturesPiece(square, board))
 	{
-		if (capturesPiece(square, board))
-		{
-			return true;
-		}
+		return true;
 	}
 	return false;
 }
@@ -129,9 +126,9 @@ bool Pawn::isLegalMove(const Square& square, const Board& board)
 bool Pawn::reachedEighthRank() const
 {
 	Square* currentSquare = getSquare();
-	if (getColor() == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
+	if (getColor() == Colors::getColor(Colors::Names::BLACK))
 		return currentSquare->getCoordinates().x == 7;
-	else if (getColor() == Colors::getInstance().getColor(Colors::ColorNames::BLACK))
+	else if (getColor() == Colors::getColor(Colors::Names::BLACK))
 		return currentSquare->getCoordinates().x == 1;
 }
 

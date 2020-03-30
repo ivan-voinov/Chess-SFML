@@ -4,7 +4,7 @@
 class Colors
 {
 public:
-	enum class ColorNames
+	enum class Names
 	{
 		WHITE,
 		BLACK,
@@ -14,12 +14,10 @@ public:
 	};
 
 private:
-	Colors();
-	const std::map<ColorNames, sf::Color> m_Colors;
+	static const std::map<Names, sf::Color> m_Colors;
 
 public:
-	static Colors& getInstance();
-	const sf::Color& getColor(const ColorNames& colorName) const;
+	static const sf::Color& getColor(const Names& colorName);
 	~Colors();
 };
 

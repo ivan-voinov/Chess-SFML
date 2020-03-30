@@ -41,8 +41,8 @@ void Piece::resize(const double squareSize)
 
 void Piece::updateSquareState(Square& square)
 {
-	sf::Color blackColor = Colors::getInstance().getColor(Colors::ColorNames::BLACK);
-	sf::Color whiteColor = Colors::getInstance().getColor(Colors::ColorNames::WHITE);
+	sf::Color blackColor = Colors::getColor(Colors::Names::BLACK);
+	sf::Color whiteColor = Colors::getColor(Colors::Names::WHITE);
 	Square& startSquare = *getSquare();
 
 	startSquare.setState(Square::State::IS_FREE);

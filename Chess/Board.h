@@ -22,6 +22,7 @@ public:
 	bool diagonalIsFree(const Square& startSquare, const Square& destSquare) const;
 	bool LineIsFree(const Square& startSquare, const Square& destSquare) const;
 	void buildBoard(const sf::RenderWindow& window);
+	void addSquare(const sf::Vector2i& coords, const sf::Vector2f& pos, const sf::Color& color);
 	void assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer);
 	std::unique_ptr<Piece> getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
 		const sf::Vector2f& squarePosition) const;

@@ -12,7 +12,7 @@ Player::Player(const sf::Color& playerColor)
 {
 	m_PlayerColor = playerColor;
 
-	if (playerColor == Colors::getInstance().getColor(Colors::ColorNames::WHITE))
+	if (playerColor == Colors::getColor(Colors::Names::WHITE))
 		m_IsPlayerTurn = true;
 	else
 		m_IsPlayerTurn = false;
@@ -125,31 +125,28 @@ bool Player::makeMove(Square& square, Player& opponent, const Board& board)
 	Piece* pieceCaptured = opponent.findPiece(square);
 	Square& startSquare = *focusedPiece->getSquare();
 
-	//Make the move
+	//Capture the piece
 	if (pieceCaptured)
 		opponent.removePiece(pieceCaptured->getId());
 
+	//Make the move
 	focusedPiece->move(square);
-	resetFocusedPiece();
-	resetSquareColor(startSquare);
+	resetMoveState(startSquare);
 
-	//If making a move leads to a checked state, revert the move because it's illegal
+	//If making a move does not lead to a checked state, complete the move
 	if (!isChecked(opponent, board))
 	{
 		focusedPiece->onSuccessfulMove();
-
 		if (pieceCaptured)
 			pieceCaptured->destroy();
-
 		return true;
 	}
+	//If making a move leads to a checked state, revert the move because it's illegal
 	else
 	{
 		focusedPiece->move(startSquare);
-
 		if (pieceCaptured)
 			opponent.addPiece(pieceCaptured->getId());
-
 		return false;
 	}
 }
@@ -161,36 +158,29 @@ void Player::processTurn(Player& opponent, Board& board, sf::RenderWindow& windo
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 
-	if (!pieceIsChosen())
+	if (!pieceIsChosen() && triggeredPiece)
 	{
-		if (triggeredPiece)
+		if (m_FocusedPieceId == triggeredPiece->getId())
 		{
-			if (m_FocusedPieceId == triggeredPiece->getId())
-			{
-				resetSquareColor(*focusedPiece->getSquare());
-				resetFocusedPiece();
-			}
-			else
-			{
-				m_FocusedPieceId = triggeredPiece->getId();
-				highlightSquare(*triggeredPiece->getSquare());
-			}
+			resetMoveState(*focusedPiece->getSquare());
+		}
+		else
+		{
+			m_FocusedPieceId = triggeredPiece->getId();
+			highlightSquare(*triggeredPiece->getSquare());
 		}
 	}
 	else
 	{ 
-		if (triggeredSquare)
+		if (triggeredSquare 
+			&& focusedPiece->isLegalMove(*board.getTriggeredSquare(sf::Mouse::getPosition(window)), board)
+			&& makeMove(*triggeredSquare, opponent, board))
 		{
-			if (focusedPiece->isLegalMove(*board.getTriggeredSquare(sf::Mouse::getPosition(window)), board))
-			{
-				if (makeMove(*triggeredSquare, opponent, board))
-					switchTurn(opponent);
-			}
-			else
-			{
-				resetSquareColor(*focusedPiece->getSquare());
-				resetFocusedPiece();
-			}
+				switchTurn(opponent);
+		}
+		else
+		{
+			resetMoveState(*focusedPiece->getSquare());
 		}
 	}
 }
@@ -201,19 +191,15 @@ void Player::switchTurn(Player& opponent)
 	opponent.m_IsPlayerTurn = !opponent.isPlayerTurn();
 }
 
-void Player::resetFocusedPiece()
+void Player::resetMoveState(Square& square)
 {
 	m_FocusedPieceId = -1;
-}
-
-void Player::resetSquareColor(Square& square)
-{
 	square.resetColor();
 }
 
 void Player::highlightSquare(Square& square)
 {
-	square.setColor(Colors::getInstance().getColor(Colors::ColorNames::GREEN));
+	square.setColor(Colors::getColor(Colors::Names::GREEN));
 }
 
 Player::~Player()
