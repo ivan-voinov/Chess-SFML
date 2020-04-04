@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "Player.h"
 #include "Square.h"
+#include <vector>
+#include <string>
 #include "Piece.h"
 #include "King.h"
+#include "Rook.h"
 #include "Board.h"
-#include <vector>
 #include "GameManager.h"
 
 
@@ -12,10 +14,68 @@ Player::Player(const sf::Color& playerColor)
 {
 	m_PlayerColor = playerColor;
 
-	if (playerColor == Colors::getColor(Colors::Names::WHITE))
+	if (Colors::isWhite(m_PlayerColor))
 		m_IsPlayerTurn = true;
 	else
 		m_IsPlayerTurn = false;
+}
+
+void Player::update(const std::string& event, Square& square, const Board& board)
+{
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
+	sf::Vector2i attackedSquareCoords;
+	sf::Vector2i rookStartCoords;
+
+	if (!event.compare("CASTLE"))
+	{
+		if (square.getCoordinates().y == 6)
+		{
+			attackedSquareCoords.y = 5;
+			rookStartCoords.y = 7;
+		}
+		if (square.getCoordinates().y == 2)
+		{
+			attackedSquareCoords.y = 3;
+			rookStartCoords.y = 0;
+		}
+		if (Colors::isWhite(m_PlayerColor))
+		{
+			attackedSquareCoords.x = 7;
+			rookStartCoords.x = 7;
+		}
+		else
+		{
+			attackedSquareCoords.x = 0;
+			rookStartCoords.x = 0;
+		}
+		Rook* rook = dynamic_cast<Rook*>(findPiece(*board.getSquare(rookStartCoords)));
+
+		if (castlingIsLegal(square, board, *focusedPiece, rook, attackedSquareCoords))
+			rook->move(*board.getSquare(attackedSquareCoords));
+	}
+	if (!event.compare("EN_PASSANT"))
+	{
+
+	}
+	if (!event.compare("PAWN_TRANSFORMATION"))
+	{
+
+	}
+}
+
+bool Player::castlingIsLegal(
+	Square& square,
+	const Board& board,
+	Piece& focusedPiece,
+	Rook* rook,
+	const sf::Vector2i attackedSquareCoords)
+{
+	return
+		rook &&
+		rook->hasCastle() &&
+		!m_Opponent->controlsSquare(*board.getSquare(attackedSquareCoords), board) &&
+		!isChecked(board) &&
+		makeMove(square, board, focusedPiece);
 }
 
 void Player::addPiece(int pieceId)
@@ -58,16 +118,10 @@ void Player::removePiece(int capturedPieceId)
 		[capturedPieceId](int gmObjId) {return gmObjId == capturedPieceId;}));
 }
 
-bool Player::isChecked(const Player& opponent, const Board& board) const
+bool Player::isChecked(const Board& board) const
 {
-	std::vector<Piece*> opponentPieces = GameManager::getInstance().getGameObjects<Piece>(opponent.m_PiecesIds);
 	Piece* king = getKing();
-	for (const auto& piece : opponentPieces)
-	{
-		if (piece->controlsSquare(*king->getSquare(), board))
-			return true;
-	}
-	return false;
+	return m_Opponent->controlsSquare(*king->getSquare(), board);
 }
 
 Piece* Player::findPiece(const Square& square) const
@@ -86,12 +140,17 @@ Piece* Player::getKing() const
 	return GameManager::getInstance().getGameObject<Piece>(m_KingId);
 }
 
+void Player::attachOpponent(Player& opponent)
+{
+	m_Opponent = &opponent;
+}
+
 void Player::setKing(int kingId)
 {
 	m_KingId = kingId;
 }
 
-bool Player::controlsSquare(const Square& square, const Board& board) const
+bool Player::controlsSquare(Square& square, const Board& board)
 {
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (const auto& piece : pieces)
@@ -119,76 +178,86 @@ bool Player::isPlayerTurn() const
 	return m_IsPlayerTurn;
 }
 
-bool Player::makeMove(Square& square, Player& opponent, const Board& board)
+bool Player::makeMove(Square& square, const Board& board, Piece& focusedPiece)
 {
-	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
-	Piece* pieceCaptured = opponent.findPiece(square);
-	Square& startSquare = *focusedPiece->getSquare();
+	Piece* pieceCaptured = m_Opponent->findPiece(square);
+	Square& startSquare = *focusedPiece.getSquare();
 
 	//Capture the piece
 	if (pieceCaptured)
-		opponent.removePiece(pieceCaptured->getId());
+		m_Opponent->removePiece(pieceCaptured->getId());
 
 	//Make the move
-	focusedPiece->move(square);
-	resetMoveState(startSquare);
+	focusedPiece.move(square);
 
 	//If making a move does not lead to a checked state, complete the move
-	if (!isChecked(opponent, board))
+	if (!isChecked(board))
 	{
-		focusedPiece->onSuccessfulMove();
 		if (pieceCaptured)
 			pieceCaptured->destroy();
+		onSuccessfulMove(startSquare, focusedPiece);
 		return true;
 	}
 	//If making a move leads to a checked state, revert the move because it's illegal
 	else
 	{
-		focusedPiece->move(startSquare);
+		focusedPiece.move(startSquare);
 		if (pieceCaptured)
-			opponent.addPiece(pieceCaptured->getId());
+			m_Opponent->addPiece(pieceCaptured->getId());
+		onFailedMove(startSquare);
 		return false;
 	}
 }
 
-void Player::processTurn(Player& opponent, Board& board, sf::RenderWindow& window)
+void Player::onSuccessfulMove(Square& square, Piece& piece)
+{
+	piece.onSuccessfulMove();
+	resetMoveState(square);
+	switchTurn();
+}
+
+void Player::onFailedMove(Square& square)
+{
+	resetMoveState(square);
+}
+
+void Player::processTurn(Board& board, sf::RenderWindow& window)
 {
 	Piece* triggeredPiece = getTriggeredPiece(sf::Mouse::getPosition(window));
 	Square* triggeredSquare = board.getTriggeredSquare(sf::Mouse::getPosition(window));
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 
-	if (!pieceIsChosen() && triggeredPiece)
+	if (!pieceIsChosen())
 	{
-		if (m_FocusedPieceId == triggeredPiece->getId())
+		if (triggeredPiece)
 		{
-			resetMoveState(*focusedPiece->getSquare());
-		}
-		else
-		{
-			m_FocusedPieceId = triggeredPiece->getId();
-			highlightSquare(*triggeredPiece->getSquare());
+			choosePiece(board, *triggeredPiece);
 		}
 	}
 	else
 	{ 
-		if (triggeredSquare 
-			&& focusedPiece->isLegalMove(*board.getTriggeredSquare(sf::Mouse::getPosition(window)), board)
-			&& makeMove(*triggeredSquare, opponent, board))
+		if (triggeredSquare && focusedPiece->isLegalMove(*triggeredSquare, board))
 		{
-				switchTurn(opponent);
+			makeMove(*triggeredSquare, board, *focusedPiece);
 		}
 		else
 		{
-			resetMoveState(*focusedPiece->getSquare());
+			onFailedMove(*focusedPiece->getSquare());
 		}
 	}
 }
 
-void Player::switchTurn(Player& opponent)
+void Player::choosePiece(const Board& board, Piece& triggeredPiece)
+{
+	m_FocusedPieceId = triggeredPiece.getId();
+	highlightSquare(*triggeredPiece.getSquare());
+}
+
+void Player::switchTurn()
 {
 	m_IsPlayerTurn = !m_IsPlayerTurn;
-	opponent.m_IsPlayerTurn = !opponent.isPlayerTurn();
+	m_Opponent->m_IsPlayerTurn = !m_Opponent->isPlayerTurn();
 }
 
 void Player::resetMoveState(Square& square)

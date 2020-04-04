@@ -3,6 +3,7 @@
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
+#include "Board.h"
 #include <iostream>
 
 
@@ -33,17 +34,24 @@ void King::onSuccessfulMove()
 	m_HasCastle = false;
 }
 
-bool King::isCastling(const Square& square) const
+bool King::isCastling(const Square& square, const Board& board) const
 {
-	sf::Color whiteColor = Colors::getColor(Colors::Names::WHITE);
 	sf::Vector2i squareCoords = square.getCoordinates();
-	if (m_Color == whiteColor)
+	if (Colors::isWhite(m_Color))
 	{
-		return squareCoords.x == 7 && (squareCoords.y == 2 || squareCoords.y == 6);
+		return 
+			m_HasCastle &&
+			squareCoords.x == 7 && 
+			(squareCoords.y == 2 || squareCoords.y == 6) &&
+			board.LineIsFree(*getSquare(), square);
 	}
 	else
 	{
-		return squareCoords.x == 0 && (squareCoords.y == 2 || squareCoords.y == 6);
+		return 
+			m_HasCastle && 
+			squareCoords.x == 0 && 
+			(squareCoords.y == 2 || squareCoords.y == 6) && 
+			board.LineIsFree(*getSquare(), square);
 	}
 }
 
@@ -57,10 +65,19 @@ bool King::controlsSquare(const Square& square, const Board& board) const
 	return (xDifference + yDifference == 1) || (xDifference == yDifference) && (xDifference == 1);
 }
 
-bool King::isLegalMove(const Square& square, const Board& board)
+bool King::isLegalMove(Square & square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;
+
+	if (isCastling(square, board))
+	{
+		//Let player know that a special rule for castling needs to be applied
+		notifyObserver("CASTLE", square, board);
+
+		//Need to return false to avoid making another move to the same square
+		return false;
+	}
 
 	return controlsSquare(square, board);
 }

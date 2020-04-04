@@ -43,7 +43,7 @@ bool Knight::controlsSquare(const Square& square, const Board& board) const
 	return (xDifference == 2 && yDifference == 1) || (xDifference == 1 && yDifference == 2);
 }
 
-bool Knight::isLegalMove(const Square& square, const Board& board)
+bool Knight::isLegalMove(Square& square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;

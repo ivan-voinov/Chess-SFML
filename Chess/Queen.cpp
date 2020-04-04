@@ -39,7 +39,7 @@ bool Queen::controlsSquare(const Square& square, const Board& board) const
 	return board.LineIsFree(currentSquare, square) || board.diagonalIsFree(currentSquare, square);
 }
 
-bool Queen::isLegalMove(const Square& square, const Board& board)
+bool Queen::isLegalMove(Square& square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;

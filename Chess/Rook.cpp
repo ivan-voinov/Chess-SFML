@@ -29,6 +29,11 @@ Rook::Rook(const sf::Vector2f& position, const sf::Color& color) :
 	m_PieceSprite.setTexture(m_PieceTexture);
 }
 
+bool Rook::hasCastle() const
+{
+	return m_HasCastle;
+}
+
 void Rook::onSuccessfulMove()
 {
 	m_HasCastle = false;
@@ -39,7 +44,7 @@ bool Rook::controlsSquare(const Square& square, const Board& board) const
 	return board.LineIsFree(*getSquare(), square);
 }
 
-bool Rook::isLegalMove(const Square& square, const Board& board)
+bool Rook::isLegalMove(Square& square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;

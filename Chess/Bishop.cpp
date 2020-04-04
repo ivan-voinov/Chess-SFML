@@ -38,7 +38,7 @@ bool Bishop::controlsSquare(const Square& square, const Board& board) const
 	return board.diagonalIsFree(*getSquare(), square);
 }
 
-bool Bishop::isLegalMove(const Square& square, const Board& board)
+bool Bishop::isLegalMove(Square& square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;

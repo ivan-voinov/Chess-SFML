@@ -141,16 +141,18 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 			piece.get()->setSquare(square->getId());
 
 			//If the piece is white, assign it to white player
-			if (piece.get()->getColor() == Colors::getColor(Colors::Names::WHITE))
+			if (Colors::isWhite(piece->getColor()))
 			{
+				piece->registerObserver(&whitePlayer);
 				whitePlayer.addPiece(piece->getId());
 				square->setState(Square::State::HAS_WHITE_PIECE);
 				if (square->getCoordinates().x == 7 && square->getCoordinates().y == 4)
 					whitePlayer.setKing(piece->getId());
 			}
 			//If the piece is black, assign it to black player
-			else if (piece.get()->getColor() == Colors::getColor(Colors::Names::BLACK))
+			else if (Colors::isBlack(piece->getColor()))
 			{
+				piece->registerObserver(&blackPlayer);
 				blackPlayer.addPiece(piece->getId());
 				square->setState(Square::State::HAS_BLACK_PIECE);
 				if (square->getCoordinates().x == 0 && square->getCoordinates().y == 4)

@@ -39,12 +39,12 @@ bool Pawn::movesForward(const Square& square, const Board& board) const
 	int xDifference = abs(currentSuare.getCoordinates().x - square.getCoordinates().x);
 	int yDifference = abs(currentSuare.getCoordinates().y - square.getCoordinates().y);
 
-	if (m_Color == Colors::getColor(Colors::Names::BLACK) &&
+	if (Colors::isBlack(m_Color) &&
 		currentSuare.getCoordinates().x - square.getCoordinates().x > 0)
 	{
 		return false;
 	}
-	else if (m_Color == Colors::getColor(Colors::Names::WHITE) &&
+	else if (Colors::isWhite(m_Color) &&
 		currentSuare.getCoordinates().x - square.getCoordinates().x < 0)
 	{
 		return false;
@@ -63,11 +63,11 @@ bool Pawn::capturesPiece(const Square& square, const Board& board) const
 
 	if ((targetCoords.y == currentCoords.y + 1 || targetCoords.y == currentCoords.y - 1))
 	{
-		if (m_Color == Colors::getColor(Colors::Names::BLACK))
+		if (Colors::isBlack(m_Color))
 		{
 			return (targetCoords.x == currentCoords.x + 1) ? square.hasEnemyPiece(m_Color) : false;
 		}
-		else if (m_Color == Colors::getColor(Colors::Names::WHITE))
+		else if (Colors::isWhite(m_Color))
 		{
 			return (targetCoords.x == currentCoords.x - 1) ? square.hasEnemyPiece(m_Color) : false;
 		}
@@ -107,7 +107,7 @@ bool Pawn::controlsSquare(const Square& square, const Board& board) const
 	return (xDifference + yDifference == 2) && (xDifference == yDifference);
 }
 
-bool Pawn::isLegalMove(const Square& square, const Board& board)
+bool Pawn::isLegalMove(Square& square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;
@@ -126,9 +126,9 @@ bool Pawn::isLegalMove(const Square& square, const Board& board)
 bool Pawn::reachedEighthRank() const
 {
 	Square* currentSquare = getSquare();
-	if (getColor() == Colors::getColor(Colors::Names::BLACK))
+	if (getColor() == Colors::getColor(Colors::Names::WHITE))
 		return currentSquare->getCoordinates().x == 7;
-	else if (getColor() == Colors::getColor(Colors::Names::BLACK))
+	else 
 		return currentSquare->getCoordinates().x == 1;
 }
 

@@ -15,6 +15,16 @@ const sf::Color& Colors::getColor(const Names& colorName)
 	return m_Colors.at(colorName);
 }
 
+const bool Colors::isWhite(const sf::Color& color)
+{
+	return color == m_Colors.at(Names::WHITE);
+}
+
+const bool Colors::isBlack(const sf::Color& color)
+{
+	return color == m_Colors.at(Names::BLACK);
+}
+
 Colors::~Colors()
 {
 }

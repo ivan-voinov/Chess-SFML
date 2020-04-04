@@ -175,6 +175,8 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="FilePaths.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IObserver.h" />
+    <ClInclude Include="ISubject.h" />
     <ClInclude Include="ITriggered.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="Knight.h" />
@@ -196,6 +198,8 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="ChessLogic.cpp" />
     <ClCompile Include="FileException.cpp" />
+    <ClCompile Include="IObserver.cpp" />
+    <ClCompile Include="ISubject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="FilePaths.cpp" />

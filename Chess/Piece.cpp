@@ -57,14 +57,32 @@ void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(m_PieceSprite, states);
 }
 
-bool Piece::isLegalMove(const Square& square, const Board& board)
+bool Piece::isLegalMove(Square & square, const Board& board)
 {
 	return !square.hasAllyPiece(m_Color);
 }
 
-bool Piece::isTriggered(const sf::Vector2i & mousePosition) const
+bool Piece::isTriggered(const sf::Vector2i& mousePosition) const
 {
 	return m_PieceSprite.getGlobalBounds().contains(sf::Vector2f(mousePosition)) ? true : false;
+}
+
+void Piece::registerObserver(IObserver* observer)
+{
+	m_Observers.push_back(observer);
+}
+
+void Piece::removeObserver(IObserver* observer)
+{
+
+}
+
+void Piece::notifyObserver(const std::string& event, Square& square, const Board& board) const
+{
+	for (const auto& observer : m_Observers)
+	{
+		observer->update(event, square, board);
+	}
 }
 
 Piece::~Piece()

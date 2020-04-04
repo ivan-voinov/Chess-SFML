@@ -18,6 +18,8 @@ private:
 
 public:
 	static const sf::Color& getColor(const Names& colorName);
+	static const bool isWhite(const sf::Color& color);
+	static const bool isBlack(const sf::Color& color);
 	~Colors();
 };
 
