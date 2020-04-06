@@ -13,12 +13,14 @@ class Player : public IObserver
 private:
 	Player* m_Opponent = nullptr;
 	int m_FocusedPieceId = -1;
+	int m_LastMovedPieceId = -1;
 	int m_KingId = -1;
 	std::vector<int> m_PiecesIds;
 	bool m_IsPlayerTurn;
 	bool m_Checked = false;
 	sf::Color m_PlayerColor;
 	virtual void update(const std::string& event, Square& square, const Board& board) override;
+	virtual void update(const std::string& event) override;
 	bool castlingIsLegal(
 		Square& square,
 		const Board& board,

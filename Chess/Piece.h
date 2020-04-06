@@ -34,6 +34,7 @@ public:
 	virtual void registerObserver(IObserver* observer) override;
 	virtual void removeObserver(IObserver* observer) override;
 	virtual void notifyObserver(const std::string& event, Square& square, const Board& board) const override;
+	virtual void notifyObserver(const std::string& event) const override;
 	~Piece();
 };
 

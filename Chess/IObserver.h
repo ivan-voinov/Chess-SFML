@@ -8,5 +8,6 @@ class IObserver
 {
 public:
 	virtual void update(const std::string& event, Square& square, const Board& board) = 0;
+	virtual void update(const std::string& event) = 0;
 };
 

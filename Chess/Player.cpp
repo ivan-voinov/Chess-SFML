@@ -5,6 +5,7 @@
 #include <string>
 #include "Piece.h"
 #include "King.h"
+#include "Pawn.h"
 #include "Rook.h"
 #include "Board.h"
 #include "GameManager.h"
@@ -55,11 +56,27 @@ void Player::update(const std::string& event, Square& square, const Board& board
 	}
 	if (!event.compare("EN_PASSANT"))
 	{
+		sf::Vector2i targetCoords = square.getCoordinates();
+		sf::Vector2i capturedPawnCoords = Colors::isWhite(m_PlayerColor) ?
+			sf::Vector2i(targetCoords.x + 1, targetCoords.y) : sf::Vector2i(targetCoords.x - 1, targetCoords.y);
+		Pawn* pawn = dynamic_cast<Pawn*>(m_Opponent->findPiece(*board.getSquare(capturedPawnCoords)));
+		if (pawn && pawn->enPassantIsActive())
+		{
+			m_Opponent->removePiece(pawn->getId());
+			if (makeMove(square, board, *focusedPiece))
+				pawn->destroy();
+			else
+				m_Opponent->addPiece(pawn->getId());
+		}
 
 	}
+}
+
+void Player::update(const std::string& event)
+{
 	if (!event.compare("PAWN_TRANSFORMATION"))
 	{
-
+		
 	}
 }
 
@@ -211,8 +228,12 @@ bool Player::makeMove(Square& square, const Board& board, Piece& focusedPiece)
 
 void Player::onSuccessfulMove(Square& square, Piece& piece)
 {
+	Pawn* lastMovedPawn = GameManager::getInstance().getGameObject<Pawn>(m_LastMovedPieceId);
+	if (lastMovedPawn && lastMovedPawn->enPassantIsActive())
+		lastMovedPawn->deactivateEnPassant();
 	piece.onSuccessfulMove();
 	resetMoveState(square);
+	m_LastMovedPieceId = piece.getId();
 	switchTurn();
 }
 
@@ -231,20 +252,14 @@ void Player::processTurn(Board& board, sf::RenderWindow& window)
 	if (!pieceIsChosen())
 	{
 		if (triggeredPiece)
-		{
 			choosePiece(board, *triggeredPiece);
-		}
 	}
 	else
 	{ 
 		if (triggeredSquare && focusedPiece->isLegalMove(*triggeredSquare, board))
-		{
 			makeMove(*triggeredSquare, board, *focusedPiece);
-		}
 		else
-		{
 			onFailedMove(*focusedPiece->getSquare());
-		}
 	}
 }
 

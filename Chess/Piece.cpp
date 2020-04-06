@@ -85,6 +85,14 @@ void Piece::notifyObserver(const std::string& event, Square& square, const Board
 	}
 }
 
+void Piece::notifyObserver(const std::string& event) const
+{
+	for (const auto& observer : m_Observers)
+	{
+		observer->update(event);
+	}
+}
+
 Piece::~Piece()
 {
 }

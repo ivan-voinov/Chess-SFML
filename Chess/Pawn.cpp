@@ -30,6 +30,22 @@ Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) :
 
 void Pawn::onSuccessfulMove()
 {
+	sf::Vector2i currentCoords = getSquare()->getCoordinates();
+
+	if (reachedEighthRank())
+		notifyObserver("PAWN_TRANSFORMATION");
+
+	if (Colors::isWhite(m_Color))
+	{
+		if (m_HasDoubleMove && currentCoords.x == 4)
+			m_EnPassantIsActive = true;
+	}
+	else
+	{
+
+		if (m_HasDoubleMove && currentCoords.x == 3)
+			m_EnPassantIsActive = true;
+	}
 	m_HasDoubleMove = false;
 }
 
@@ -58,21 +74,8 @@ bool Pawn::movesForward(const Square& square, const Board& board) const
 
 bool Pawn::capturesPiece(const Square& square, const Board& board) const
 {
-	sf::Vector2i currentCoords = getSquare()->getCoordinates();
-	sf::Vector2i targetCoords = square.getCoordinates();
-
-	if ((targetCoords.y == currentCoords.y + 1 || targetCoords.y == currentCoords.y - 1))
-	{
-		if (Colors::isBlack(m_Color))
-		{
-			return (targetCoords.x == currentCoords.x + 1) ? square.hasEnemyPiece(m_Color) : false;
-		}
-		else if (Colors::isWhite(m_Color))
-		{
-			return (targetCoords.x == currentCoords.x - 1) ? square.hasEnemyPiece(m_Color) : false;
-		}
-	}
-	return false;
+	if (movesDiagonally(square))
+		return square.hasEnemyPiece(m_Color);
 }
 
 bool Pawn::doubleMoveIsLegal(const Square& square, const Board& board) const
@@ -97,6 +100,30 @@ bool Pawn::freeToMove(const Square& square, const Board& board) const
 	return square.hasEnemyPiece(m_Color);
 }
 
+bool Pawn::enPassant(const Square& square, const Board& board) const
+{
+	return square.isFree() && movesDiagonally(square);
+}
+
+bool Pawn::movesDiagonally(const Square& square) const
+{
+	sf::Vector2i currentCoords = getSquare()->getCoordinates();
+	sf::Vector2i targetCoords = square.getCoordinates();
+
+	if ((targetCoords.y == currentCoords.y + 1 || targetCoords.y == currentCoords.y - 1))
+	{
+		if (Colors::isBlack(m_Color))
+		{
+			return (targetCoords.x == currentCoords.x + 1);
+		}
+		else if (Colors::isWhite(m_Color))
+		{
+			return (targetCoords.x == currentCoords.x - 1);
+		}
+	}
+	return false;
+}
+
 bool Pawn::controlsSquare(const Square& square, const Board& board) const
 {
 	sf::Vector2i squareCoordinates = square.getCoordinates();
@@ -111,6 +138,15 @@ bool Pawn::isLegalMove(Square& square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;
+
+	if (enPassant(square, board))
+	{
+		//Let player know that a special rule for capturing a pawn needs to be applied
+		notifyObserver("EN_PASSANT", square, board);
+
+		//Need to return false to avoid making another move to the same square
+		return false;
+	}
 
 	if (movesForward(square, board))
 	{
@@ -130,6 +166,16 @@ bool Pawn::reachedEighthRank() const
 		return currentSquare->getCoordinates().x == 7;
 	else 
 		return currentSquare->getCoordinates().x == 1;
+}
+
+bool Pawn::enPassantIsActive() const
+{
+	return m_EnPassantIsActive;
+}
+
+void Pawn::deactivateEnPassant()
+{
+	m_EnPassantIsActive = false;
 }
 
 Pawn::~Pawn()
