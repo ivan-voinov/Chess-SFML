@@ -81,10 +81,7 @@
     <ClInclude Include="Move.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IObserver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ISubject.h">
+    <ClInclude Include="MoveValidator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -99,9 +96,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Square.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ITriggered.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SquareBuilder.cpp">
@@ -155,10 +149,7 @@
     <ClCompile Include="Move.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IObserver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ISubject.cpp">
+    <ClCompile Include="MoveValidator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

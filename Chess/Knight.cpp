@@ -4,11 +4,13 @@
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include "Player.h"
 
 
-Knight::Knight(const sf::Vector2f& position, const sf::Color& color) :
-	Piece(position, color)
+Knight::Knight(const sf::Vector2f& position, const sf::Color& color) : Knight(position, -1, color)
+{
+}
+
+Knight::Knight(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
 	try
 	{
@@ -48,7 +50,7 @@ bool Knight::isLegalMove(Square& square, const Board& board)
 	if (!Piece::isLegalMove(square, board))
 		return false;
 
-	return controlsSquare(square, board);
+	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 Knight::~Knight()

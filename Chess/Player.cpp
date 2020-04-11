@@ -2,97 +2,122 @@
 #include "Player.h"
 #include "Square.h"
 #include <vector>
-#include <string>
 #include "Piece.h"
-#include "King.h"
-#include "Pawn.h"
-#include "Rook.h"
+#include "PieceHeaders.h"
 #include "Board.h"
 #include "GameManager.h"
 
 
 Player::Player(const sf::Color& playerColor)
 {
-	m_PlayerColor = playerColor;
+	m_Color = playerColor;
 
-	if (Colors::isWhite(m_PlayerColor))
+	if (Colors::isWhite(m_Color))
+	{
 		m_IsPlayerTurn = true;
+	}
 	else
 		m_IsPlayerTurn = false;
 }
 
-void Player::update(const std::string& event, Square& square, const Board& board)
+void Player::computeLegalMoves(const Board& board)
 {
-	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
-	sf::Vector2i attackedSquareCoords;
-	sf::Vector2i rookStartCoords;
-
-	if (!event.compare("CASTLE"))
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	Square* squareHolder = nullptr;
+	for (const auto& piece : pieces)
 	{
-		if (square.getCoordinates().y == 6)
-		{
-			attackedSquareCoords.y = 5;
-			rookStartCoords.y = 7;
-		}
-		if (square.getCoordinates().y == 2)
-		{
-			attackedSquareCoords.y = 3;
-			rookStartCoords.y = 0;
-		}
-		if (Colors::isWhite(m_PlayerColor))
-		{
-			attackedSquareCoords.x = 7;
-			rookStartCoords.x = 7;
-		}
-		else
-		{
-			attackedSquareCoords.x = 0;
-			rookStartCoords.x = 0;
-		}
-		Rook* rook = dynamic_cast<Rook*>(findPiece(*board.getSquare(rookStartCoords)));
-
-		if (castlingIsLegal(square, board, *focusedPiece, rook, attackedSquareCoords))
-			rook->move(*board.getSquare(attackedSquareCoords));
-	}
-	if (!event.compare("EN_PASSANT"))
-	{
-		sf::Vector2i targetCoords = square.getCoordinates();
-		sf::Vector2i capturedPawnCoords = Colors::isWhite(m_PlayerColor) ?
-			sf::Vector2i(targetCoords.x + 1, targetCoords.y) : sf::Vector2i(targetCoords.x - 1, targetCoords.y);
-		Pawn* pawn = dynamic_cast<Pawn*>(m_Opponent->findPiece(*board.getSquare(capturedPawnCoords)));
-		if (pawn && pawn->enPassantIsActive())
-		{
-			m_Opponent->removePiece(pawn->getId());
-			if (makeMove(square, board, *focusedPiece))
-				pawn->destroy();
-			else
-				m_Opponent->addPiece(pawn->getId());
-		}
-
+		piece->clearLegalSquares();
+		for (int i = 0; i < 8; i++)
+			for (int j = 0; j < 8; j++)
+			{
+				squareHolder = board.getSquare(std::move(sf::Vector2i(i, j)));
+				if (piece->isLegalMove(*squareHolder, board))
+					piece->addLegalSquare(squareHolder->getId());
+			}
 	}
 }
 
-void Player::update(const std::string& event)
+//void Player::update(const std::string& event, Square& square, const Board& board)
+//{
+//	if (!event.compare("PAWN_PROMOTION"))
+//	{
+//		if (isLegalMove(square, board, *focusedPiece))
+//		{
+//			displayPawnPromotionInterface(square, board);
+//			m_MoveIsPaused = true;
+//		}
+//	}
+//}
+
+void Player::displayPawnPromotionInterface(Square& square, const Board& board)
 {
-	if (!event.compare("PAWN_TRANSFORMATION"))
+	displayPiecesToChoose(getSquaresForDisplayedPieces(square, board));
+	backgroundBoard(board);
+}
+
+void Player::hidePawnPromotionInterface()
+{
+	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPieces);
+	for (const auto& piece : promotionPieces)
 	{
-		
+		piece->destroy();
+	}
+	m_PawnPromotionPieces.clear();
+}
+
+std::vector<std::reference_wrapper<Square>> Player::getSquaresForDisplayedPieces(Square& square, const Board& board) const
+{
+	sf::Vector2i currentCoords = square.getCoordinates();
+	std::vector<std::reference_wrapper<Square>> squaresForDisplayedPieces;
+	if (currentCoords.x == 7)
+	{
+		for (int i = currentCoords.x; i > 3; i--)
+			squaresForDisplayedPieces.push_back(*board.getSquare(std::move(sf::Vector2i(i, currentCoords.y))));
+	}
+	else
+	{
+		for (int i = currentCoords.x; i < 4; i++)
+			squaresForDisplayedPieces.push_back(*board.getSquare(std::move(sf::Vector2i(i, currentCoords.y))));
+	}
+	return std::move(squaresForDisplayedPieces);
+}
+
+void Player::displayPiecesToChoose(const std::vector<std::reference_wrapper<Square>>& squaresForDisplayedPieces)
+{
+	int i = 0;
+	for (const auto& square : squaresForDisplayedPieces)
+	{
+		std::unique_ptr<Piece> piece;
+		switch (i)
+		{
+			case 0:
+				piece = std::make_unique<Queen>(square.get().getPosition(), square.get().getId(), m_Color);
+				m_PawnPromotionPieces.push_back(piece->getId());
+				GameManager::getInstance().addGameObject(std::move(piece));
+				break;
+			case 1:
+				piece = std::make_unique<Knight>(square.get().getPosition(), square.get().getId(), m_Color);
+				m_PawnPromotionPieces.push_back(piece->getId());
+				GameManager::getInstance().addGameObject(std::move(piece));
+				break;
+			case 2:
+				piece = std::make_unique<Rook>(square.get().getPosition(), square.get().getId(), m_Color);
+				m_PawnPromotionPieces.push_back(piece->getId());
+				GameManager::getInstance().addGameObject(std::move(piece));
+				break;
+			case 3:
+				piece = std::make_unique<Bishop>(square.get().getPosition(), square.get().getId(), m_Color);
+				m_PawnPromotionPieces.push_back(piece->getId());
+				GameManager::getInstance().addGameObject(std::move(piece));
+				break;
+		}
+		i++;
 	}
 }
 
-bool Player::castlingIsLegal(
-	Square& square,
-	const Board& board,
-	Piece& focusedPiece,
-	Rook* rook,
-	const sf::Vector2i attackedSquareCoords)
+void Player::backgroundBoard(const Board& board) const
 {
-	return
-		rook &&
-		rook->hasCastle() &&
-		!m_Opponent->controlsSquare(*board.getSquare(attackedSquareCoords), board) &&
-		!isChecked(board) &&
-		makeMove(square, board, focusedPiece);
+
 }
 
 void Player::addPiece(int pieceId)
@@ -100,11 +125,22 @@ void Player::addPiece(int pieceId)
 	m_PiecesIds.push_back(pieceId);
 }
 
-Piece* Player::getTriggeredPiece(const sf::Vector2i& mousePosition)
+Piece* Player::getTriggeredPiece(const sf::Vector2i& mousePosition) const
 {
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
-	for (auto& piece : pieces)
+	for (const auto& piece : pieces)
+	{
+		if (piece->isTriggered(mousePosition))
+			return piece;
+	}
+	return nullptr;
+}
+
+Piece* Player::getTriggeredPromotedPiece(const sf::Vector2i& mousePosition) const
+{
+	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPieces);
+	for (const auto& piece : promotionPieces)
 	{
 		if (piece->isTriggered(mousePosition))
 			return piece;
@@ -132,13 +168,22 @@ void Player::removePiece(int capturedPieceId)
 	m_PiecesIds.erase(std::remove_if(
 		m_PiecesIds.begin(),
 		m_PiecesIds.end(),
-		[capturedPieceId](int gmObjId) {return gmObjId == capturedPieceId;}));
+		[&capturedPieceId](int gmObjId) {return gmObjId == capturedPieceId;}));
 }
 
 bool Player::isChecked(const Board& board) const
 {
 	Piece* king = getKing();
 	return m_Opponent->controlsSquare(*king->getSquare(), board);
+}
+
+bool Player::hasNoLegalMoves() const
+{
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	for (const auto& piece : pieces)
+		if (!piece->hasNoLegalSquares())
+			return false;
+	return true;
 }
 
 Piece* Player::findPiece(const Square& square) const
@@ -195,38 +240,21 @@ bool Player::isPlayerTurn() const
 	return m_IsPlayerTurn;
 }
 
-bool Player::makeMove(Square& square, const Board& board, Piece& focusedPiece)
+void Player::makeMove(Square& square, const Board& board, Piece& focusedPiece)
 {
 	Piece* pieceCaptured = m_Opponent->findPiece(square);
 	Square& startSquare = *focusedPiece.getSquare();
 
-	//Capture the piece
 	if (pieceCaptured)
+	{
 		m_Opponent->removePiece(pieceCaptured->getId());
-
-	//Make the move
-	focusedPiece.move(square);
-
-	//If making a move does not lead to a checked state, complete the move
-	if (!isChecked(board))
-	{
-		if (pieceCaptured)
-			pieceCaptured->destroy();
-		onSuccessfulMove(startSquare, focusedPiece);
-		return true;
+		pieceCaptured->destroy();
 	}
-	//If making a move leads to a checked state, revert the move because it's illegal
-	else
-	{
-		focusedPiece.move(startSquare);
-		if (pieceCaptured)
-			m_Opponent->addPiece(pieceCaptured->getId());
-		onFailedMove(startSquare);
-		return false;
-	}
+	focusedPiece.move(square, false);
+	onSuccessfulMove(board, startSquare, focusedPiece);
 }
 
-void Player::onSuccessfulMove(Square& square, Piece& piece)
+void Player::onSuccessfulMove(const Board& board, Square& square, Piece& piece)
 {
 	Pawn* lastMovedPawn = GameManager::getInstance().getGameObject<Pawn>(m_LastMovedPieceId);
 	if (lastMovedPawn && lastMovedPawn->enPassantIsActive())
@@ -234,6 +262,7 @@ void Player::onSuccessfulMove(Square& square, Piece& piece)
 	piece.onSuccessfulMove();
 	resetMoveState(square);
 	m_LastMovedPieceId = piece.getId();
+	m_Opponent->computeLegalMoves(board);
 	switchTurn();
 }
 
@@ -242,7 +271,7 @@ void Player::onFailedMove(Square& square)
 	resetMoveState(square);
 }
 
-void Player::processTurn(Board& board, sf::RenderWindow& window)
+bool Player::processTurn(Board& board, sf::RenderWindow& window)
 {
 	Piece* triggeredPiece = getTriggeredPiece(sf::Mouse::getPosition(window));
 	Square* triggeredSquare = board.getTriggeredSquare(sf::Mouse::getPosition(window));
@@ -252,21 +281,28 @@ void Player::processTurn(Board& board, sf::RenderWindow& window)
 	if (!pieceIsChosen())
 	{
 		if (triggeredPiece)
+		{
 			choosePiece(board, *triggeredPiece);
+		}
 	}
 	else
-	{ 
-		if (triggeredSquare && focusedPiece->isLegalMove(*triggeredSquare, board))
+	{
+		if (triggeredSquare && focusedPiece->findLegalSquare(*triggeredSquare))
+		{
 			makeMove(*triggeredSquare, board, *focusedPiece);
+			return true;
+		}
 		else
 			onFailedMove(*focusedPiece->getSquare());
 	}
+	return false;
 }
 
 void Player::choosePiece(const Board& board, Piece& triggeredPiece)
 {
 	m_FocusedPieceId = triggeredPiece.getId();
 	highlightSquare(*triggeredPiece.getSquare());
+	triggeredPiece.highLightLegalSquares();
 }
 
 void Player::switchTurn()
@@ -277,6 +313,7 @@ void Player::switchTurn()
 
 void Player::resetMoveState(Square& square)
 {
+	GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId)->hideLegalSquares();
 	m_FocusedPieceId = -1;
 	square.resetColor();
 }
@@ -284,6 +321,18 @@ void Player::resetMoveState(Square& square)
 void Player::highlightSquare(Square& square)
 {
 	square.setColor(Colors::getColor(Colors::Names::GREEN));
+}
+
+const sf::Color& Player::getColor() const
+{
+	return m_Color;
+}
+
+void Player::setMoveValidator(MoveValidator& moveValidator)
+{
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	for (const auto& piece : pieces)
+		piece->setMoveValidator(moveValidator);
 }
 
 Player::~Player()

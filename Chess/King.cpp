@@ -1,4 +1,4 @@
-#include "pch.h"
+ #include "pch.h"
 #include "King.h"
 #include "FilePaths.h"
 #include "FileException.h"
@@ -7,8 +7,11 @@
 #include <iostream>
 
 
-King::King(const sf::Vector2f& position, const sf::Color& color) :
-	Piece(position, color)
+King::King(const sf::Vector2f& position, const sf::Color& color) : King(position, -1, color)
+{
+}
+
+King::King(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
 	try
 	{
@@ -55,6 +58,13 @@ bool King::isCastling(const Square& square, const Board& board) const
 	}
 }
 
+void King::move(Square& square, bool isMockingMove)
+{
+	if (!isMockingMove && square == m_CastleSquareId)
+		m_MoveValidator->castle(square);
+	Piece::move(square, isMockingMove);
+}
+
 bool King::controlsSquare(const Square& square, const Board& board) const
 {
 	sf::Vector2i squareCoordinates = square.getCoordinates();
@@ -65,21 +75,20 @@ bool King::controlsSquare(const Square& square, const Board& board) const
 	return (xDifference + yDifference == 1) || (xDifference == yDifference) && (xDifference == 1);
 }
 
-bool King::isLegalMove(Square & square, const Board& board)
+bool King::isLegalMove(Square& square, const Board& board)
 {
 	if (!Piece::isLegalMove(square, board))
 		return false;
 
 	if (isCastling(square, board))
 	{
-		//Let player know that a special rule for castling needs to be applied
-		notifyObserver("CASTLE", square, board);
-
-		//Need to return false to avoid making another move to the same square
-		return false;
+		bool castleIsLegal = m_MoveValidator->castleIsLegal(square, *this);
+		if (castleIsLegal)
+			m_CastleSquareId = square.getId();
+		return castleIsLegal;
 	}
 
-	return controlsSquare(square, board);
+	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 King::~King()

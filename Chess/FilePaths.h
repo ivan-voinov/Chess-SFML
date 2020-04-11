@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <string>
 
 class FilePaths
 {
@@ -18,7 +19,9 @@ public:
 		BLACK_KNIGHT,
 		BLACK_PAWN,
 		BLACK_QUEEN,
-		BLACK_ROOK
+		BLACK_ROOK,
+
+		CHECKMATE
 	};
 
 private:

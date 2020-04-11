@@ -1,13 +1,10 @@
 #pragma once
-#define NDEBUG
 #include <SFML/Graphics.hpp>
 #include <cassert>
-#include <unordered_map>
-#include "Board.h"
-#include "GameObject.h"
 #include "ChessLogic.h"
 
 class Player;
+class GameObject;
 	
 class GameManager
 {
@@ -16,8 +13,8 @@ private:
 	sf::Event m_Event;
 	ChessLogic m_ChessLogic;
 	std::vector<std::unique_ptr<GameObject>> m_GameObjects;
-
 	GameManager();
+
 public:
 	static GameManager& getInstance();
 	void runGame();

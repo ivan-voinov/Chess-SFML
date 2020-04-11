@@ -1,10 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Square.h"
 #include "SquareBuilder.h"
 #include "Player.h"
 
 class GameManager;
+class Square;
 
 class Board
 {
@@ -24,8 +24,7 @@ public:
 	void buildBoard(const sf::RenderWindow& window);
 	void addSquare(const sf::Vector2i& coords, const sf::Vector2f& pos, const sf::Color& color);
 	void assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer);
-	std::unique_ptr<Piece> getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
-		const sf::Vector2f& squarePosition) const;
+	std::unique_ptr<Piece> getStartingSquarePiece(const Square& square) const;
 	~Board();
 };
 

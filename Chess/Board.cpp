@@ -73,13 +73,13 @@ bool Board::LineIsFree(const Square& startSquare, const Square& destSquare) cons
 	if (isVertical)
 	{
 		for (i; i < endPoint.x; i++)
-			if (!getSquare(sf::Vector2i(i,j))->isFree())
+			if (!getSquare(sf::Vector2i(i, j))->isFree())
 				return false;
 	}
 	else
 	{
 		for (j; j < endPoint.y; j++)
-			if (!destSquare.isFree())
+			if (!getSquare(sf::Vector2i(i, j))->isFree())
 				return false;
 	}
 	return true;
@@ -120,7 +120,7 @@ bool Board::diagonalIsFree(const Square& startSquare, const Square& destSquare) 
 	for (int i = startPoint.x + 1; i < endPoint.x; i++)
 	{
 		j = isMainDiagonal ? (j + 1) : (j - 1);
-		if (!getSquare(sf::Vector2i(i,j))->isFree())
+		if (!getSquare(sf::Vector2i(i, j))->isFree())
 			return false;
 	}
 	return true;
@@ -133,17 +133,14 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 	for (const auto& square : board)
 	{
 		//Build the piece
-		std::unique_ptr<Piece> piece = getStartingSquarePiece(square->getCoordinates(), square->getPosition());
+		std::unique_ptr<Piece> piece = getStartingSquarePiece(*square);
 
 		//If built successfully, give it a reference to it's square and assign to a player
-		if (piece != nullptr)
+		if (piece)
 		{
-			piece.get()->setSquare(square->getId());
-
 			//If the piece is white, assign it to white player
 			if (Colors::isWhite(piece->getColor()))
 			{
-				piece->registerObserver(&whitePlayer);
 				whitePlayer.addPiece(piece->getId());
 				square->setState(Square::State::HAS_WHITE_PIECE);
 				if (square->getCoordinates().x == 7 && square->getCoordinates().y == 4)
@@ -152,7 +149,6 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 			//If the piece is black, assign it to black player
 			else if (Colors::isBlack(piece->getColor()))
 			{
-				piece->registerObserver(&blackPlayer);
 				blackPlayer.addPiece(piece->getId());
 				square->setState(Square::State::HAS_BLACK_PIECE);
 				if (square->getCoordinates().x == 0 && square->getCoordinates().y == 4)
@@ -164,56 +160,59 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 }
 
 //Return the correct piece for the square at the start of the game
-std::unique_ptr<Piece> Board::getStartingSquarePiece(const sf::Vector2i& squareCoordinates,
-	const sf::Vector2f& squarePosition) const
+std::unique_ptr<Piece> Board::getStartingSquarePiece(const Square& square) const
 {
+	sf::Vector2f squarePosition = square.getPosition();
+	sf::Vector2i squareCoordinates = square.getCoordinates();
+	int squareId = square.getId();
+
 	//Return black pawn
 	if (squareCoordinates.x == 1)
-		return std::make_unique<Pawn>(squarePosition, Colors::getColor(Colors::Names::BLACK));
+		return std::make_unique<Pawn>(squarePosition, squareId, Colors::getColor(Colors::Names::BLACK));
 
 	//Return white pawn
 	if (squareCoordinates.x == 6)
-		return std::make_unique<Pawn>(squarePosition, Colors::getColor(Colors::Names::WHITE));
+		return std::make_unique<Pawn>(squarePosition, squareId, Colors::getColor(Colors::Names::WHITE));
 
 	//Return black rook
 	if (squareCoordinates == sf::Vector2i(0,0) || squareCoordinates == sf::Vector2i(0,7))
-		return std::make_unique<Rook>(squarePosition, Colors::getColor(Colors::Names::BLACK));
+		return std::make_unique<Rook>(squarePosition, squareId, Colors::getColor(Colors::Names::BLACK));
 
 	//Return white rook
 	if (squareCoordinates == sf::Vector2i(7,0) || squareCoordinates == sf::Vector2i(7,7))
-		return std::make_unique<Rook>(squarePosition, Colors::getColor(Colors::Names::WHITE));
+		return std::make_unique<Rook>(squarePosition, squareId, Colors::getColor(Colors::Names::WHITE));
 
 	//Return black knight
 	if (squareCoordinates == sf::Vector2i(0,1) || squareCoordinates == sf::Vector2i(0,6))
-		return std::make_unique<Knight>(squarePosition, Colors::getColor(Colors::Names::BLACK));
+		return std::make_unique<Knight>(squarePosition, squareId, Colors::getColor(Colors::Names::BLACK));
 
 	//Return white knight
 	if (squareCoordinates == sf::Vector2i(7,1) || squareCoordinates == sf::Vector2i(7,6))
-		return std::make_unique<Knight>(squarePosition, Colors::getColor(Colors::Names::WHITE));
+		return std::make_unique<Knight>(squarePosition, squareId, Colors::getColor(Colors::Names::WHITE));
 
 	//Return black bishop
 	if (squareCoordinates == sf::Vector2i(0,2) || squareCoordinates == sf::Vector2i(0,5))
-		return std::make_unique<Bishop>(squarePosition, Colors::getColor(Colors::Names::BLACK));
+		return std::make_unique<Bishop>(squarePosition, squareId, Colors::getColor(Colors::Names::BLACK));
 
 	//Return white bishop
 	if (squareCoordinates == sf::Vector2i(7,2) || squareCoordinates == sf::Vector2i(7,5))
-		return std::make_unique<Bishop>(squarePosition, Colors::getColor(Colors::Names::WHITE));
+		return std::make_unique<Bishop>(squarePosition, squareId, Colors::getColor(Colors::Names::WHITE));
 
 	//Return black queen
 	if (squareCoordinates == sf::Vector2i(0,3))
-		return std::make_unique<Queen>(squarePosition, Colors::getColor(Colors::Names::BLACK));
+		return std::make_unique<Queen>(squarePosition, squareId, Colors::getColor(Colors::Names::BLACK));
 
 	//Return white queen
 	if (squareCoordinates == sf::Vector2i(7,3))
-		return std::make_unique<Queen>(squarePosition, Colors::getColor(Colors::Names::WHITE));
+		return std::make_unique<Queen>(squarePosition, squareId, Colors::getColor(Colors::Names::WHITE));
 
 	//Return black king
 	if (squareCoordinates == sf::Vector2i(0,4))
-		return std::make_unique<King>(squarePosition, Colors::getColor(Colors::Names::BLACK));
+		return std::make_unique<King>(squarePosition, squareId, Colors::getColor(Colors::Names::BLACK));
 
 	//Return white king
 	if (squareCoordinates == sf::Vector2i(7,4))
-		return std::make_unique<King>(squarePosition, Colors::getColor(Colors::Names::WHITE));
+		return std::make_unique<King>(squarePosition, squareId, Colors::getColor(Colors::Names::WHITE));
 
 	return nullptr;
 }

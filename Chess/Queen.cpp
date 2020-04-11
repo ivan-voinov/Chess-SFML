@@ -4,11 +4,13 @@
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
-#include "Bishop.h"
 #include "Board.h"
 
-Queen::Queen(const sf::Vector2f& position, const sf::Color& color) :
-	Piece(position, color)
+Queen::Queen(const sf::Vector2f& position, const sf::Color& color) : Queen(position, -1, color)
+{
+}
+
+Queen::Queen(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
 	try
 	{
@@ -44,7 +46,7 @@ bool Queen::isLegalMove(Square& square, const Board& board)
 	if (!Piece::isLegalMove(square, board))
 		return false;
 
-	return controlsSquare(square, board);
+	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 

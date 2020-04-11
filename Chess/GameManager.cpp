@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "GameManager.h"
 #include "Player.h"
+#include "GameObject.h"
 
 GameManager::GameManager()
-
 {
 	m_Window.create(sf::VideoMode(700, 700), "Chess", sf::Style::Default);
+	m_Window.setFramerateLimit(60);
 }
 
 void GameManager::addGameObject(std::unique_ptr<GameObject> gameObject)

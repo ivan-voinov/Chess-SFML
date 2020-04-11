@@ -17,11 +17,17 @@ Square::Square(const sf::Color& color,
 	this->m_Position = position;
 	this->m_Size = size;
 	this->m_State = state;
+	this->m_PreviousState = State::IS_FREE;
 
 	m_Shape.setFillColor(m_Color);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 	m_Shape.setPosition(m_Position);
 	m_Shape.setSize(sf::Vector2f(m_Size, m_Size));
+
+	m_LegalMoveShape.setFillColor(sf::Color::Green);
+	m_LegalMoveShape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	m_LegalMoveShape.setPosition(m_Position);
+	m_LegalMoveShape.setRadius(m_Shape.getGlobalBounds().width / 4);
 }
 
 Square::Square(Square&& square)
@@ -32,6 +38,7 @@ Square::Square(Square&& square)
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
 	this->m_State = square.m_State;
+	this->m_PreviousState = square.m_PreviousState;
 }
 
 Square& Square::operator=(Square&& square)
@@ -46,6 +53,7 @@ Square& Square::operator=(Square&& square)
 	this->m_Position = square.m_Position;
 	this->m_Size = square.m_Size;
 	this->m_State = square.m_State;
+	this->m_PreviousState = square.m_PreviousState;
 
 	return *this;
 }
@@ -65,6 +73,26 @@ void Square::setColor(const sf::Color& color)
 void Square::setState(const State& state)
 {
 	m_State = state;
+}
+
+void Square::saveCurrentState()
+{
+	m_PreviousState = m_State;
+}
+
+void Square::restoreState()
+{
+	m_State = m_PreviousState;
+}
+
+void Square::setPreviousState(const State& state)
+{
+	m_PreviousState = state;
+}
+
+const Square::State& Square::getPreviousState() const
+{
+	return m_PreviousState;
 }
 
 bool Square::isFree() const

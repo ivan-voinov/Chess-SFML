@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "FilePaths.h"
+#include <string>
 
 static const std::string ASSETS_PATH = "Assets";
+static const std::string SOUNDS_PATH = ASSETS_PATH + "/Sounds";
 static const std::string PIECES_PATH = ASSETS_PATH + "/Pieces";
 
 FilePaths::FilePaths() :
@@ -19,7 +21,8 @@ FilePaths::FilePaths() :
 	{FileNames::BLACK_KNIGHT, PIECES_PATH + "/blackKnight.png"},
 	{FileNames::BLACK_PAWN, PIECES_PATH + "/blackPawn.png"},
 	{FileNames::BLACK_QUEEN, PIECES_PATH + "/blackQueen.png"},
-	{FileNames::BLACK_ROOK, PIECES_PATH + "/blackRook.png"}
+	{FileNames::BLACK_ROOK, PIECES_PATH + "/blackRook.png"},
+	{FileNames::CHECKMATE, SOUNDS_PATH + "/checkmate.wav"}
 }
 
 {

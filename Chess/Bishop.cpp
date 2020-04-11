@@ -8,7 +8,12 @@
 
 
 Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :
-	Piece(position, color)
+	Bishop (position, -1, color)
+{
+}
+
+Bishop::Bishop(const sf::Vector2f& position, int squareId, const sf::Color& color) :
+	Piece(position, squareId, color)
 {
 	try
 	{
@@ -43,7 +48,7 @@ bool Bishop::isLegalMove(Square& square, const Board& board)
 	if (!Piece::isLegalMove(square, board))
 		return false;
 	
-	return controlsSquare(square, board);
+	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 Bishop::~Bishop()

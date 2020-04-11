@@ -7,8 +7,11 @@
 #include "Board.h"
 
 
-Rook::Rook(const sf::Vector2f& position, const sf::Color& color) :
-	Piece(position, color)
+Rook::Rook(const sf::Vector2f& position, const sf::Color& color) : Rook(position, -1, color)
+{
+}
+
+Rook::Rook(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
 	try
 	{
@@ -49,7 +52,7 @@ bool Rook::isLegalMove(Square& square, const Board& board)
 	if (!Piece::isLegalMove(square, board))
 		return false;
 
-	return controlsSquare(square, board);
+	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 
