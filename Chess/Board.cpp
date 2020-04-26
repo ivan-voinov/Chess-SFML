@@ -150,7 +150,7 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 	for (const auto& square : board)
 	{
 		//Build the piece
-		std::unique_ptr<Piece> piece = getStartingSquarePiece(*square);
+		std::unique_ptr<Piece> piece = getStartSquarePiece(*square);
 
 		//If built successfully, give it a reference to it's square and assign to a player
 		if (piece)
@@ -177,7 +177,7 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 }
 
 //Return the correct piece for the square at the start of the game
-std::unique_ptr<Piece> Board::getStartingSquarePiece(const Square& square) const
+std::unique_ptr<Piece> Board::getStartSquarePiece(const Square& square) const
 {
 	sf::Vector2f squarePosition = square.getPosition();
 	sf::Vector2i squareCoordinates = square.getCoordinates();
@@ -243,7 +243,7 @@ void Board::buildBoard(const sf::RenderWindow& window)
 		{
 			sf::Vector2f squarePosition =
 				std::move(sf::Vector2f(window.getSize().x / 4 + j * m_SquareSize, window.getSize().y / 4 + i * m_SquareSize));
-			sf::Vector2i squareCoordinates = std::move(sf::Vector2i(i,j));
+			sf::Vector2i squareCoordinates = std::move(sf::Vector2i(i, j));
 
 			sf::Color squareColor = getStartSquareColor(std::move(sf::Vector2i(i, j)));
 			addSquare(squareCoordinates, squarePosition, squareColor);

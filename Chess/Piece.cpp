@@ -1,7 +1,10 @@
 #include "pch.h"
+#include <iostream>
 #include "Piece.h"
 #include "Square.h"
 #include "GameManager.h"
+#include "FilePaths.h"
+#include "FileException.h"
 
 
 Piece::Piece(const sf::Vector2f& position, const sf::Color& color) : Piece(position, -1, color)
@@ -12,6 +15,26 @@ Piece::Piece(const sf::Vector2f& position, int squareId, const sf::Color& color)
 {
 	m_Color = color;
 	m_SquareId = squareId;
+}
+
+void Piece::loadTexture(const sf::Color& color, const std::string& piecePath)
+{
+	try
+	{
+		if (!m_PieceTexture.loadFromFile(piecePath))
+			throw FileException("Error loading the texture from file: " + piecePath);
+	}
+	catch (FileException& fileException)
+	{
+		std::cout << fileException.what();
+	}
+	m_PieceSprite.setTexture(m_PieceTexture);
+}
+
+void Piece::setOriginAndPosition(const sf::Vector2f& position)
+{
+	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
+	m_PieceSprite.setPosition(position);
 }
 
 const sf::Color& Piece::getColor() const

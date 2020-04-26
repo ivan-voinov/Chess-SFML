@@ -12,26 +12,15 @@ Knight::Knight(const sf::Vector2f& position, const sf::Color& color) : Knight(po
 
 Knight::Knight(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	try
-	{
-		std::string knightPath;
+	std::string queenPath;
+	if (color == sf::Color::Black)
+		queenPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_KNIGHT);
+	else
+		queenPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KNIGHT);
 
-		if (color == sf::Color::Black)
-			knightPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_KNIGHT);
-		else
-			knightPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KNIGHT);
-
-		if (!m_PieceTexture.loadFromFile(knightPath))
-			throw FileException("Error loading the texture from file: " + knightPath);
-	}
-	catch (FileException& fileException)
-	{
-		std::cout << fileException.what();
-	}
-	m_PieceSprite.setTexture(m_PieceTexture);
+	loadTexture(color, queenPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
-	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
-	m_PieceSprite.setPosition(position);
+	setOriginAndPosition(position);
 }
 
 void Knight::onSuccessfulMove()

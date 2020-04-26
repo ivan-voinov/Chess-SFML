@@ -17,6 +17,9 @@ protected:
 	std::vector<int> m_LegalSquaresIds;
 	MoveValidator* m_MoveValidator = nullptr;
 
+	void loadTexture(const sf::Color& color, const std::string& piecePath);
+	void setOriginAndPosition(const sf::Vector2f& position);
+
 public:
 	Piece(const sf::Vector2f& position, const sf::Color& color);
 	Piece(const sf::Vector2f& position, int squareId, const sf::Color& color);

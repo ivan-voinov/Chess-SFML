@@ -12,26 +12,15 @@ Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) : Pawn(position
 
 Pawn::Pawn(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	try
-	{
-		std::string pawnPath;
+	std::string pawnPath;
+	if (color == sf::Color::Black)
+		pawnPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_PAWN);
+	else
+		pawnPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_PAWN);
 
-		if (color == sf::Color::Black)
-			pawnPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_PAWN);
-		else
-			pawnPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_PAWN);
-
-		if (!m_PieceTexture.loadFromFile(pawnPath))
-			throw FileException("Error loading the texture from file: " + pawnPath);
-	}
-	catch (FileException& fileException)
-	{
-		std::cout << fileException.what();
-	}
-	m_PieceSprite.setTexture(m_PieceTexture);
+	loadTexture(color, pawnPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
-	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
-	m_PieceSprite.setPosition(position);
+	setOriginAndPosition(position);
 }
 
 void Pawn::move(Square& square, bool isMockingMove)

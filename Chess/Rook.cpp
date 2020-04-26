@@ -13,26 +13,15 @@ Rook::Rook(const sf::Vector2f& position, const sf::Color& color) : Rook(position
 
 Rook::Rook(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	try
-	{
-		std::string rookPath;
+	std::string rookPath;
+	if (color == sf::Color::Black)
+		rookPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_ROOK);
+	else
+		rookPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_ROOK);
 
-		if (color == sf::Color::Black)
-			rookPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_ROOK);
-		else
-			rookPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_ROOK);
-
-		if (!m_PieceTexture.loadFromFile(rookPath))
-			throw FileException("Error loading the texture from file: " + rookPath);
-	}
-	catch (FileException& fileException)
-	{
-		std::cout << fileException.what();
-	}
-	m_PieceSprite.setTexture(m_PieceTexture);
+	loadTexture(color, rookPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
-	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
-	m_PieceSprite.setPosition(position);
+	setOriginAndPosition(position);
 }
 
 bool Rook::hasCastle() const

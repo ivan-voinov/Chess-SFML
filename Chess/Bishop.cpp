@@ -15,26 +15,15 @@ Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :
 Bishop::Bishop(const sf::Vector2f& position, int squareId, const sf::Color& color) :
 	Piece(position, squareId, color)
 {
-	try
-	{
-		std::string bishopPath;
+	std::string bishopPath;
+	if (color == sf::Color::Black)
+		bishopPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_BISHOP);
+	else
+		bishopPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_BISHOP);
 
-		if (color == sf::Color::Black)
-			bishopPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_BISHOP);
-		else
-			bishopPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_BISHOP);
-
-		if (!m_PieceTexture.loadFromFile(bishopPath))
-			throw FileException("Error loading the texture from file: " + bishopPath);
-	}
-	catch (FileException& fileException)
-	{
-		std::cout << fileException.what();
-	}
-	m_PieceSprite.setTexture(m_PieceTexture);
+	loadTexture(color, bishopPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
-	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
-	m_PieceSprite.setPosition(position);
+	setOriginAndPosition(position);
 }
 
 void Bishop::onSuccessfulMove()
