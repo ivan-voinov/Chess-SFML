@@ -17,7 +17,7 @@ Piece::Piece(const sf::Vector2f& position, int squareId, const sf::Color& color)
 	m_SquareId = squareId;
 }
 
-void Piece::loadTexture(const sf::Color& color, const std::string& piecePath)
+void Piece::loadTexture(const std::string& piecePath)
 {
 	try
 	{

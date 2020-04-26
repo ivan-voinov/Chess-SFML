@@ -21,7 +21,7 @@ Bishop::Bishop(const sf::Vector2f& position, int squareId, const sf::Color& colo
 	else
 		bishopPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_BISHOP);
 
-	loadTexture(color, bishopPath);
+	loadTexture(bishopPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

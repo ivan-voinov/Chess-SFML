@@ -18,7 +18,7 @@ Pawn::Pawn(const sf::Vector2f& position, int squareId, const sf::Color& color) :
 	else
 		pawnPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_PAWN);
 
-	loadTexture(color, pawnPath);
+	loadTexture(pawnPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

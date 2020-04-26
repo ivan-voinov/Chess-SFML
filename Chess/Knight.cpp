@@ -18,7 +18,7 @@ Knight::Knight(const sf::Vector2f& position, int squareId, const sf::Color& colo
 	else
 		knightPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KNIGHT);
 
-	loadTexture(color, knightPath);
+	loadTexture(knightPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

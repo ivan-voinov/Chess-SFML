@@ -19,7 +19,7 @@ King::King(const sf::Vector2f& position, int squareId, const sf::Color& color) :
 	else
 		kingPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KING);
 
-	loadTexture(color, kingPath);
+	loadTexture(kingPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

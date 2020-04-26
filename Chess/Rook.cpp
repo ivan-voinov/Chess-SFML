@@ -19,7 +19,7 @@ Rook::Rook(const sf::Vector2f& position, int squareId, const sf::Color& color) :
 	else
 		rookPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_ROOK);
 
-	loadTexture(color, rookPath);
+	loadTexture(rookPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

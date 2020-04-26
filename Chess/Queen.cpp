@@ -18,7 +18,7 @@ Queen::Queen(const sf::Vector2f& position, int squareId, const sf::Color& color)
 	else
 		queenPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_QUEEN);
 
-	loadTexture(color, queenPath);
+	loadTexture(queenPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }
