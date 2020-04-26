@@ -13,6 +13,8 @@ private:
 	static constexpr double m_SquareSize = 55;
 	std::vector<int> m_SquareIds;
 
+	sf::Color getStartSquareColor(const sf::Vector2i& squareCoords) const;
+
 public:
 	Board();
 	static const double getSquareSize();

@@ -4,9 +4,19 @@
 #include "PieceHeaders.h"
 #include "GameManager.h"
 
+#define MAX_X 8
 
 Board::Board()
 {
+}
+
+sf::Color Board::getStartSquareColor(const sf::Vector2i& squareCoords) const
+{
+	int x = squareCoords.x;
+	int y = squareCoords.y;
+
+	return (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0) ? std::move(Colors::getColor(Colors::Names::LIGHT_BROWN)) : 
+		std::move(Colors::getColor(Colors::Names::DARK_BROWN));
 }
 
 const double Board::getSquareSize()
@@ -16,7 +26,7 @@ const double Board::getSquareSize()
 
 Square* Board::getSquare(const sf::Vector2i coords) const
 {
-	int squareId = coords.x * 8 + coords.y;
+	int squareId = coords.x * MAX_X + coords.y;
 	return GameManager::getInstance().getGameObject<Square>(m_SquareIds.at(squareId));
 }
 
@@ -235,16 +245,8 @@ void Board::buildBoard(const sf::RenderWindow& window)
 				std::move(sf::Vector2f(window.getSize().x / 4 + j * m_SquareSize, window.getSize().y / 4 + i * m_SquareSize));
 			sf::Vector2i squareCoordinates = std::move(sf::Vector2i(i,j));
 
-			if (i % 2 == 0 && j % 2 == 0 || i % 2 != 0 && j % 2 != 0)
-			{
-				//Build a white square
-				addSquare(squareCoordinates, squarePosition, Colors::getColor(Colors::Names::LIGHT_BROWN));
-			}
-			else
-			{
-				//Build a black square
-				addSquare(squareCoordinates, squarePosition, Colors::getColor(Colors::Names::DARK_BROWN));
-			}
+			sf::Color squareColor = getStartSquareColor(std::move(sf::Vector2i(i, j)));
+			addSquare(squareCoordinates, squarePosition, squareColor);
 		}
 	}
 }
