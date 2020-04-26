@@ -18,6 +18,7 @@ public:
 	static const double getSquareSize();
 	Square* getSquare(const sf::Vector2i coords) const;
 	Square* getTriggeredSquare(const sf::Vector2i& mousePosition);
+	void setOpacity(sf::Uint8 opacity);
 	void swapCoordinates(sf::Vector2i& coords1, sf::Vector2i& coords2) const;
 	bool diagonalIsFree(const Square& startSquare, const Square& destSquare) const;
 	bool LineIsFree(const Square& startSquare, const Square& destSquare) const;

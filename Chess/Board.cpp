@@ -22,13 +22,20 @@ Square* Board::getSquare(const sf::Vector2i coords) const
 
 Square* Board::getTriggeredSquare(const sf::Vector2i& mousePosition)
 {
-	std::vector<Square*> board = GameManager::getInstance().getGameObjects<Square>(m_SquareIds);
-	for (auto& square : board)
+	std::vector<Square*> squares = GameManager::getInstance().getGameObjects<Square>(m_SquareIds);
+	for (auto& square : squares)
 	{
 		if (square->isTriggered(mousePosition))
 			return square;
 	}
 	return nullptr;
+}
+
+void Board::setOpacity(sf::Uint8 opacity)
+{
+	std::vector<Square*> squares = GameManager::getInstance().getGameObjects<Square>(m_SquareIds);
+	for (auto& square : squares)
+		square->setOpacity(opacity);
 }
 
 void Board::swapCoordinates(sf::Vector2i& coords1, sf::Vector2i& coords2) const

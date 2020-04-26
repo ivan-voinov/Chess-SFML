@@ -30,6 +30,9 @@ King::King(const sf::Vector2f& position, int squareId, const sf::Color& color) :
 		std::cout << fileException.what();
 	}
 	m_PieceSprite.setTexture(m_PieceTexture);
+	//Must set the origin and position only after setting texture to apply the origin correctly
+	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
+	m_PieceSprite.setPosition(position);
 }
 
 void King::onSuccessfulMove()
@@ -61,7 +64,7 @@ bool King::isCastling(const Square& square, const Board& board) const
 void King::move(Square& square, bool isMockingMove)
 {
 	if (!isMockingMove && square == m_CastleSquareId)
-		m_MoveValidator->castle(square);
+		m_MoveValidator->castle();
 	Piece::move(square, isMockingMove);
 }
 

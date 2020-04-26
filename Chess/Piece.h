@@ -26,8 +26,7 @@ public:
 	void updateSquareState(Square& square, bool isMockingMove);
 	void clearLegalSquares();
 	void addLegalSquare(int squareId);
-	void highLightLegalSquares() const;
-	void hideLegalSquares() const;
+	void toggleLegalSquares() const;
 	bool findLegalSquare(const Square& square) const;
 	bool hasNoLegalSquares() const;
 	void setMoveValidator(MoveValidator& moveValidator);

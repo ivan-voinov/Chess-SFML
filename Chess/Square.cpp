@@ -20,42 +20,21 @@ Square::Square(const sf::Color& color,
 	this->m_PreviousState = State::IS_FREE;
 
 	m_Shape.setFillColor(m_Color);
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
-	m_Shape.setPosition(m_Position);
 	m_Shape.setSize(sf::Vector2f(m_Size, m_Size));
+	m_Shape.setOrigin(m_Shape.getLocalBounds().width / 2, m_Shape.getLocalBounds().height / 2);
+	m_Shape.setPosition(m_Position);
 
 	m_LegalMoveShape.setFillColor(sf::Color::Green);
-	m_LegalMoveShape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	m_LegalMoveShape.setRadius(m_Shape.getLocalBounds().width / 8);
+	m_LegalMoveShape.setOrigin(m_LegalMoveShape.getLocalBounds().width / 2, m_LegalMoveShape.getLocalBounds().height / 2);
 	m_LegalMoveShape.setPosition(m_Position);
-	m_LegalMoveShape.setRadius(m_Shape.getGlobalBounds().width / 4);
-}
+	m_LegalMoveShape.setOutlineColor(sf::Color::Black);
+	m_LegalMoveShape.setOutlineThickness(2);
 
-Square::Square(Square&& square)
-{
-	this->m_Shape = square.m_Shape;
-	this->m_Color = square.m_Color;
-	this->m_Coordinates = square.m_Coordinates;
-	this->m_Position = square.m_Position;
-	this->m_Size = square.m_Size;
-	this->m_State = square.m_State;
-	this->m_PreviousState = square.m_PreviousState;
-}
-
-Square& Square::operator=(Square&& square)
-{
-	// Self-assignment detection
-	if (&square == this)
-		return *this;
-
-	this->m_Shape = square.m_Shape;
-	this->m_Color = square.m_Color;
-	this->m_Coordinates = square.m_Coordinates;
-	this->m_Position = square.m_Position;
-	this->m_Size = square.m_Size;
-	this->m_State = square.m_State;
-	this->m_PreviousState = square.m_PreviousState;
-
-	return *this;
+	m_CheckShape.setFillColor(sf::Color(255, 0, 0, 200));
+	m_CheckShape.setRadius(m_Shape.getLocalBounds().width / 2);
+	m_CheckShape.setOrigin(m_CheckShape.getLocalBounds().width / 2, m_CheckShape.getLocalBounds().height / 2);
+	m_CheckShape.setPosition(m_Position);
 }
 
 void Square::resetColor()
@@ -64,10 +43,26 @@ void Square::resetColor()
 	m_Shape.setFillColor(m_Color);
 }
 
+void Square::setDisplayCheck(bool isDisplayed)
+{
+	m_CheckShapeIsDisplayed = isDisplayed;
+}
+
+void Square::toggleLegalMoveDisplay()
+{
+	m_LegalMoveShapeIsDisplayed = !m_LegalMoveShapeIsDisplayed;
+}
+
 void Square::setColor(const sf::Color& color)
 {
 	m_Color = color;
 	m_Shape.setFillColor(color);
+}
+
+void Square::setOpacity(sf::Uint8 opacity)
+{
+	m_Color = std::move(sf::Color(m_Color.r, m_Color.g, m_Color.b, opacity));
+	m_Shape.setFillColor(m_Color);
 }
 
 void Square::setState(const State& state)
@@ -149,6 +144,12 @@ const sf::Vector2f& Square::getPosition() const
 void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_Shape, states);
+	if (m_CheckShapeIsDisplayed)
+		target.draw(m_CheckShape, states);
+	if (m_LegalMoveShapeIsDisplayed)
+		target.draw(m_LegalMoveShape, states);
+	if (m_LegalCaptureShapeIsDisplayed)
+		target.draw(m_LegalCaptureShape, states);
 }
 
 bool Square::isTriggered(const sf::Vector2i& mousePosition) const

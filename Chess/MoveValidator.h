@@ -22,8 +22,8 @@ public:
 	bool isLegalMove(Square& square, Piece& piece);
 	bool castleIsLegal(Square& square, Piece& piece);
 	bool enPassantIsLegal(Square& square, Piece& piece);
-	void castle(Square& square) const;
-	void enPassant(Square& square) const;
+	void castle() const;
+	void enPassant() const;
 	void setPlayers(Player& player, Player& opponent);
 	void setBoard(Board& board);
 };

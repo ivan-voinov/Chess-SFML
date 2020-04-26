@@ -12,8 +12,6 @@ Piece::Piece(const sf::Vector2f& position, int squareId, const sf::Color& color)
 {
 	m_Color = color;
 	m_SquareId = squareId;
-	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
-	m_PieceSprite.setPosition(position);
 }
 
 const sf::Color& Piece::getColor() const
@@ -59,18 +57,11 @@ void Piece::addLegalSquare(int squareId)
 	m_LegalSquaresIds.push_back(squareId);
 }
 
-void Piece::highLightLegalSquares() const
+void Piece::toggleLegalSquares() const
 {
 	std::vector<Square*> legalSquares = GameManager::getInstance().getGameObjects<Square>(m_LegalSquaresIds);
 	for (const auto& square : legalSquares)
-		square->setColor(sf::Color::Green);
-}
-
-void Piece::hideLegalSquares() const
-{
-	std::vector<Square*> legalSquares = GameManager::getInstance().getGameObjects<Square>(m_LegalSquaresIds);
-	for (const auto& square : legalSquares)
-		square->resetColor();
+		square->toggleLegalMoveDisplay();
 }
 
 bool Piece::findLegalSquare(const Square& square) const

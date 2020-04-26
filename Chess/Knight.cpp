@@ -29,6 +29,9 @@ Knight::Knight(const sf::Vector2f& position, int squareId, const sf::Color& colo
 		std::cout << fileException.what();
 	}
 	m_PieceSprite.setTexture(m_PieceTexture);
+	//Must set the origin and position only after setting texture to apply the origin correctly
+	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
+	m_PieceSprite.setPosition(position);
 }
 
 void Knight::onSuccessfulMove()

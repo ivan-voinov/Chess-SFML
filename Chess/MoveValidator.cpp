@@ -128,12 +128,12 @@ bool MoveValidator::enPassantIsLegal(Square& square, Piece& piece)
 	return enPassantIsLegal;
 }
 
-void MoveValidator::castle(Square& square) const
+void MoveValidator::castle() const
 {
 	m_Castle();
 }
 
-void MoveValidator::enPassant(Square& square) const
+void MoveValidator::enPassant() const
 {
 	m_EnPassant();
 }

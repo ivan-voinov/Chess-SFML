@@ -17,12 +17,17 @@ public:
 private:
 	sf::RectangleShape m_Shape;
 	sf::CircleShape m_LegalMoveShape;
+	sf::CircleShape m_CheckShape;
+	sf::CircleShape m_LegalCaptureShape;
 	sf::Color m_Color;
 	sf::Vector2i m_Coordinates;
 	sf::Vector2f m_Position;
 	State m_State;
 	State m_PreviousState;
 	double m_Size;
+	bool m_CheckShapeIsDisplayed = false;
+	bool m_LegalMoveShapeIsDisplayed = false;
+	bool m_LegalCaptureShapeIsDisplayed = false;
 
 	sf::Color getInitialColor() const;
 
@@ -34,10 +39,11 @@ public:
 		double size,
 		const State& state
 		);
-	Square(Square&& square);
-	Square& operator=(Square&& square);
 	void resetColor();
+	void setDisplayCheck(bool isDisplayed);
+	void toggleLegalMoveDisplay();
 	void setColor(const sf::Color& color);
+	void setOpacity(sf::Uint8 opacity);
 	void setState(const State& state);
 	void saveCurrentState();
 	void restoreState();
