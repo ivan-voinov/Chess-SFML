@@ -102,7 +102,7 @@ bool Piece::isLegalMove(Square& square, const Board& board)
 
 bool Piece::isTriggered(const sf::Vector2i& mousePosition) const
 {
-	return m_PieceSprite.getGlobalBounds().contains(sf::Vector2f(mousePosition)) ? true : false;
+	return m_PieceSprite.getGlobalBounds().contains(sf::Vector2f(mousePosition));
 }
 
 Piece::~Piece()

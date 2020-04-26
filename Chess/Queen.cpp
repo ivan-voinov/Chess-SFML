@@ -29,7 +29,7 @@ Queen::Queen(const sf::Vector2f& position, int squareId, const sf::Color& color)
 		std::cout << fileException.what();
 	}
 	m_PieceSprite.setTexture(m_PieceTexture);
-	//Must set the origin and position only after setting texture to apply the origin correctly
+	//Must set the origin and position only after setting the texture to apply the origin correctly
 	m_PieceSprite.setOrigin(m_PieceSprite.getGlobalBounds().width / 2, m_PieceSprite.getGlobalBounds().height / 2);
 	m_PieceSprite.setPosition(position);
 }

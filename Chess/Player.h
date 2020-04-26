@@ -39,7 +39,7 @@ public:
 	bool isChecked(const Board& board) const;
 	bool hasNoLegalMoves() const;
 	bool controlsSquare(Square& square, const Board& board);
-	void resizePieces(const double squareSize);
+	void resizePieces(double squareSize);
 	bool pieceIsChosen() const;
 	bool isPlayerTurn() const;
 	void makeMove(Square& square, Board& board, Piece& focusedPiece);

@@ -8,6 +8,12 @@
 #include "Board.h"
 #include "GameManager.h"
 
+#define MAX_X 8
+#define MAX_Y 8
+#define MAX_OPACITY 255
+#define HALF_OPACITY 127
+
+
 
 Player::Player(const sf::Color& playerColor)
 {
@@ -28,8 +34,8 @@ void Player::computeLegalMoves(const Board& board)
 	for (const auto& piece : pieces)
 	{
 		piece->clearLegalSquares();
-		for (int i = 0; i < 8; i++)
-			for (int j = 0; j < 8; j++)
+		for (int i = 0; i < MAX_X; i++)
+			for (int j = 0; j < MAX_Y; j++)
 			{
 				squareHolder = board.getSquare(std::move(sf::Vector2i(i, j)));
 				if (piece->isLegalMove(*squareHolder, board))
@@ -42,13 +48,13 @@ void Player::onPawnPromotionTriggered(Square& square, Board& board)
 {
 	displayPiecesToChoose(getSquaresForDisplayedPieces(square, board));
 	m_MoveIsPaused = true;
-	board.setOpacity(50);
+	board.setOpacity(HALF_OPACITY);
 }
 
 void Player::onPawnPromotionCompleted(Board& board)
 {
 	m_MoveIsPaused = false;
-	board.setOpacity(100);
+	board.setOpacity(MAX_OPACITY);
 	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPieces);
 	for (const auto& piece : promotionPieces)
 	{
@@ -195,7 +201,7 @@ bool Player::controlsSquare(Square& square, const Board& board)
 	return false;
 }
 
-void Player::resizePieces(const double squareSize)
+void Player::resizePieces(double squareSize)
 {
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (auto& piece : pieces)
