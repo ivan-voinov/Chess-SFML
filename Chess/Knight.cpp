@@ -12,13 +12,13 @@ Knight::Knight(const sf::Vector2f& position, const sf::Color& color) : Knight(po
 
 Knight::Knight(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	std::string queenPath;
+	std::string knightPath;
 	if (color == sf::Color::Black)
-		queenPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_KNIGHT);
+		knightPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_KNIGHT);
 	else
-		queenPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KNIGHT);
+		knightPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KNIGHT);
 
-	loadTexture(color, queenPath);
+	loadTexture(color, knightPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }
