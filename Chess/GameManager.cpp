@@ -29,14 +29,17 @@ void GameManager::readInput()
 		switch (m_Event.type)
 		{
 			case sf::Event::Closed:
-			{
 				m_Window.close();
 				break;
-			}
+
 			case sf::Event::MouseButtonPressed:
-			{
 				m_ChessLogic.onClick(m_Window);
-			}
+				break;
+
+			case sf::Event::Resized:
+				sf::FloatRect visibleArea(0, 0, m_Event.size.width, m_Event.size.height);
+				m_Window.setView(sf::View(visibleArea));
+				break;
 		}
 	}
 }
