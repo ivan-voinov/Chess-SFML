@@ -6,6 +6,7 @@
 #include "Piece.h"
 #include "Rook.h"
 #include "Pawn.h"
+#include "Colors.h"
 #include <iostream>
 
 MoveValidator::MoveValidator()
@@ -104,8 +105,8 @@ bool MoveValidator::enPassantIsLegal(Square& square, Piece& piece)
 {
 	if (piece.getColor() != m_Player->getColor())
 		swapPlayers();
-	sf::Vector2i targetCoords = square.getCoordinates();
-	sf::Vector2i capturedPawnCoords = Colors::isWhite(piece.getColor()) ?
+	const sf::Vector2i& targetCoords = square.getCoordinates();
+	const sf::Vector2i& capturedPawnCoords = Colors::isWhite(piece.getColor()) ?
 		sf::Vector2i(targetCoords.x + 1, targetCoords.y) : sf::Vector2i(targetCoords.x - 1, targetCoords.y);
 
 	bool enPassantIsLegal = false;

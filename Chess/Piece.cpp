@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "FilePaths.h"
 #include "FileException.h"
+#include "Colors.h"
 
 
 Piece::Piece(const sf::Vector2f& position, const sf::Color& color) : Piece(position, -1, color)

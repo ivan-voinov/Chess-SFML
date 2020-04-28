@@ -1,10 +1,10 @@
 #include "pch.h"
-#include <iostream>
 #include "Queen.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
 #include "Board.h"
+#include "MoveValidator.h"
 
 Queen::Queen(const sf::Vector2f& position, const sf::Color& color) : Queen(position, -1, color)
 {
@@ -29,7 +29,7 @@ void Queen::onSuccessfulMove()
 
 bool Queen::controlsSquare(const Square& square, const Board& board) const
 {
-	Square& currentSquare = *getSquare();
+	const Square& currentSquare = *getSquare();
 	return board.LineIsFree(currentSquare, square) || board.diagonalIsFree(currentSquare, square);
 }
 

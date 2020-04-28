@@ -10,7 +10,8 @@ public:
 		BLACK,
 		GREEN,
 		DARK_BROWN,
-		LIGHT_BROWN
+		LIGHT_BROWN,
+		RED
 	};
 
 private:

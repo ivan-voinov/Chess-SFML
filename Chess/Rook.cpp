@@ -1,10 +1,10 @@
 #include "pch.h"
-#include <iostream>
 #include "Rook.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
 #include "Board.h"
+#include "MoveValidator.h"
 
 
 Rook::Rook(const sf::Vector2f& position, const sf::Color& color) : Rook(position, -1, color)

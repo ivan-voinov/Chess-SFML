@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "ITriggered.h"
-#include "Colors.h"
 #include "GameObject.h"
 
 class Square : public GameObject, public ITriggered
@@ -19,18 +18,23 @@ private:
 	sf::CircleShape m_LegalMoveShape;
 	sf::CircleShape m_CheckShape;
 	std::vector<sf::VertexArray> m_LegalCaptureShapes;
+
 	sf::Color m_Color;
 	sf::Vector2i m_Coordinates;
 	sf::Vector2f m_Position;
 	State m_State;
 	State m_PreviousState;
 	double m_Size;
+
 	bool m_CheckShapeIsDisplayed = false;
 	bool m_LegalMoveShapeIsDisplayed = false;
 	bool m_LegalCaptureShapeIsDisplayed = false;
 
 	const sf::Color& getInitialColor() const;
+	void initializeSquareShape();
 	void initializeLegalCaptureShape();
+	void initializeLegalMoveShape();
+	void initializeCheckShape();
 
 public:
 	Square();

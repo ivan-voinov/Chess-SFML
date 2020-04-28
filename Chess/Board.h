@@ -1,10 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "SquareBuilder.h"
-#include "Player.h"
 
 class GameManager;
 class Square;
+class Player;
+class Piece;
 
 class Board
 {
@@ -13,7 +13,7 @@ private:
 	static constexpr double m_SquareSize = 55;
 	std::vector<int> m_SquareIds;
 
-	sf::Color getStartSquareColor(const sf::Vector2i& squareCoords) const;
+	const sf::Color& getStartSquareColor(const sf::Vector2i& squareCoords) const;
 
 public:
 	Board();

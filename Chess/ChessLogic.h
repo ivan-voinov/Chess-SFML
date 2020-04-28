@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Board.h"
 #include "MoveHistory.h"
+#include "MoveValidator.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 

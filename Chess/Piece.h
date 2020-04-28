@@ -2,10 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include "ITriggered.h"
 #include "GameObject.h"
-#include "MoveValidator.h"
 
 class Square;
 class Board;
+class MoveValidator;
 
 class Piece : public GameObject, public ITriggered
 {

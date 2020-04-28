@@ -2,9 +2,6 @@
 #include <SFML/Graphics.hpp>
 #include <cassert>
 #include "ChessLogic.h"
-
-class Player;
-class GameObject;
 	
 class GameManager
 {

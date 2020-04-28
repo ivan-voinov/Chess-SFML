@@ -1,10 +1,11 @@
 #include "pch.h"
-#include <iostream>
 #include "Pawn.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
 #include "Board.h"
+#include "MoveValidator.h"
+#include "Colors.h"
 
 Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) : Pawn(position, -1, color)
 {
@@ -34,7 +35,7 @@ void Pawn::move(Square& square, bool isMockingMove)
 
 void Pawn::onSuccessfulMove()
 {
-	sf::Vector2i currentCoords = getSquare()->getCoordinates();
+	const sf::Vector2i& currentCoords = getSquare()->getCoordinates();
 
 	if (Colors::isWhite(m_Color))
 	{
@@ -108,8 +109,8 @@ bool Pawn::enPassant(const Square& square, const Board& board) const
 
 bool Pawn::movesDiagonally(const Square& square) const
 {
-	sf::Vector2i currentCoords = getSquare()->getCoordinates();
-	sf::Vector2i targetCoords = square.getCoordinates();
+	const sf::Vector2i& currentCoords = getSquare()->getCoordinates();
+	const sf::Vector2i& targetCoords = square.getCoordinates();
 
 	if ((targetCoords.y == currentCoords.y + 1 || targetCoords.y == currentCoords.y - 1))
 	{
@@ -127,8 +128,8 @@ bool Pawn::movesDiagonally(const Square& square) const
 
 bool Pawn::controlsSquare(const Square& square, const Board& board) const
 {
-	sf::Vector2i squareCoordinates = square.getCoordinates();
-	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
+	const sf::Vector2i& squareCoordinates = square.getCoordinates();
+	const sf::Vector2i& thisCoordinates = getSquare()->getCoordinates();
 	int xDifference = abs(squareCoordinates.x - thisCoordinates.x);
 	int yDifference = abs(squareCoordinates.y - thisCoordinates.y);
 
@@ -160,7 +161,7 @@ bool Pawn::isLegalMove(Square& square, const Board& board)
 
 bool Pawn::canBePromoted(const Square& square) const
 {
-	if (getColor() == Colors::getColor(Colors::Names::WHITE))
+	if (Colors::isWhite(m_Color))
 		return square.getCoordinates().x == 0;
 	else 
 		return square.getCoordinates().x == 7;

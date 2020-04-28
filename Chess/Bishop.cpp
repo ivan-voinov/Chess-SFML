@@ -1,10 +1,11 @@
 #include "pch.h"
-#include <iostream>
 #include "Bishop.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
 #include "Board.h"
+#include "MoveValidator.h"
+#include "Colors.h"
 
 
 Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :

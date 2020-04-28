@@ -1,9 +1,10 @@
 #include "pch.h"
-#include <iostream>
 #include "Knight.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include "Square.h"
+#include "MoveValidator.h"
+#include "Colors.h"
 
 
 Knight::Knight(const sf::Vector2f& position, const sf::Color& color) : Knight(position, -1, color)

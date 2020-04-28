@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Square.h"
+#include "Colors.h"
 #include "GameManager.h"
 
 Square::Square()
-{}
+{
+}
 
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
@@ -19,24 +21,18 @@ Square::Square(const sf::Color& color,
 	this->m_State = state;
 	this->m_PreviousState = State::IS_FREE;
 
+	initializeSquareShape();
+	initializeLegalCaptureShape();
+	initializeLegalMoveShape();
+	initializeCheckShape();
+}
+
+void Square::initializeSquareShape()
+{
 	m_Shape.setFillColor(m_Color);
 	m_Shape.setSize(sf::Vector2f(m_Size, m_Size));
 	m_Shape.setOrigin(m_Shape.getLocalBounds().width / 2, m_Shape.getLocalBounds().height / 2);
 	m_Shape.setPosition(m_Position);
-
-	m_LegalMoveShape.setFillColor(Colors::getColor(Colors::Names::GREEN));
-	m_LegalMoveShape.setRadius(m_Shape.getLocalBounds().width / 8);
-	m_LegalMoveShape.setOrigin(m_LegalMoveShape.getLocalBounds().width / 2, m_LegalMoveShape.getLocalBounds().height / 2);
-	m_LegalMoveShape.setPosition(m_Position);
-	m_LegalMoveShape.setOutlineColor(sf::Color::Black);
-	m_LegalMoveShape.setOutlineThickness(2);
-
-	initializeLegalCaptureShape();
-
-	m_CheckShape.setFillColor(sf::Color(255, 0, 0, 200));
-	m_CheckShape.setRadius(m_Shape.getLocalBounds().width / 2);
-	m_CheckShape.setOrigin(m_CheckShape.getLocalBounds().width / 2, m_CheckShape.getLocalBounds().height / 2);
-	m_CheckShape.setPosition(m_Position);
 }
 
 void Square::initializeLegalCaptureShape()
@@ -45,41 +41,62 @@ void Square::initializeLegalCaptureShape()
 	{
 		sf::VertexArray triangle(sf::Triangles, 3);
 		const sf::Color& green = Colors::getColor(Colors::Names::GREEN);
+		const sf::Vector2f& squareCenter = m_Position;
+		float halfSquareSide = m_Shape.getLocalBounds().width / 2;
+		float quarterSquareSide = halfSquareSide / 2;
+
 		triangle[0].color = green;
 		triangle[1].color = green;
 		triangle[2].color = green;
-		float halfSquareSide = m_Shape.getLocalBounds().width / 2;
-		float quarterSquareSide = halfSquareSide / 2;
-		const sf::Vector2f& squareCenter = m_Position;
+
 		sf::Vector2f topLeftPoint(squareCenter.x - halfSquareSide, squareCenter.y - halfSquareSide);
 		sf::Vector2f bottomLeftPoint(squareCenter.x + halfSquareSide, squareCenter.y - halfSquareSide);
 		sf::Vector2f topRightPoint(squareCenter.x - halfSquareSide, squareCenter.y + halfSquareSide);
 		sf::Vector2f bottomRightPoint(squareCenter.x + halfSquareSide, squareCenter.y + halfSquareSide);
+
 		switch (i)
 		{
 		case 0:
-			triangle[0].position = std::move(topLeftPoint);
-			triangle[1].position = std::move(sf::Vector2f(topLeftPoint.x + quarterSquareSide, topLeftPoint.y));
-			triangle[2].position = std::move(sf::Vector2f(topLeftPoint.x, topLeftPoint.y + quarterSquareSide));
+			triangle[0].position = topLeftPoint;
+			triangle[1].position = sf::Vector2f(topLeftPoint.x + quarterSquareSide, topLeftPoint.y);
+			triangle[2].position = sf::Vector2f(topLeftPoint.x, topLeftPoint.y + quarterSquareSide);
 			break;
 		case 1:
-			triangle[0].position = std::move(bottomLeftPoint);
-			triangle[1].position = std::move(sf::Vector2f(bottomLeftPoint.x - quarterSquareSide, bottomLeftPoint.y));
-			triangle[2].position = std::move(sf::Vector2f(bottomLeftPoint.x, bottomLeftPoint.y + quarterSquareSide));
+			triangle[0].position = bottomLeftPoint;
+			triangle[1].position = sf::Vector2f(bottomLeftPoint.x - quarterSquareSide, bottomLeftPoint.y);
+			triangle[2].position = sf::Vector2f(bottomLeftPoint.x, bottomLeftPoint.y + quarterSquareSide);
 			break;
 		case 2:
-			triangle[0].position = std::move(bottomRightPoint);
-			triangle[1].position = std::move(sf::Vector2f(bottomRightPoint.x - quarterSquareSide, bottomRightPoint.y));
-			triangle[2].position = std::move(sf::Vector2f(bottomRightPoint.x, bottomRightPoint.y - quarterSquareSide));
+			triangle[0].position = bottomRightPoint;
+			triangle[1].position = sf::Vector2f(bottomRightPoint.x - quarterSquareSide, bottomRightPoint.y);
+			triangle[2].position = sf::Vector2f(bottomRightPoint.x, bottomRightPoint.y - quarterSquareSide);
 			break;
 		case 3:
-			triangle[0].position = std::move(topRightPoint);
-			triangle[1].position = std::move(sf::Vector2f(topRightPoint.x + quarterSquareSide, topRightPoint.y));
-			triangle[2].position = std::move(sf::Vector2f(topRightPoint.x, topRightPoint.y - quarterSquareSide));
+			triangle[0].position = topRightPoint;
+			triangle[1].position = sf::Vector2f(topRightPoint.x + quarterSquareSide, topRightPoint.y);
+			triangle[2].position = sf::Vector2f(topRightPoint.x, topRightPoint.y - quarterSquareSide);
 			break;
 		}
 		m_LegalCaptureShapes.push_back(std::move(triangle));
 	}
+}
+
+void Square::initializeLegalMoveShape()
+{
+	m_LegalMoveShape.setFillColor(Colors::getColor(Colors::Names::GREEN));
+	m_LegalMoveShape.setRadius(m_Shape.getLocalBounds().width / 8);
+	m_LegalMoveShape.setOrigin(m_LegalMoveShape.getLocalBounds().width / 2, m_LegalMoveShape.getLocalBounds().height / 2);
+	m_LegalMoveShape.setPosition(m_Position);
+	m_LegalMoveShape.setOutlineColor(sf::Color::Black);
+	m_LegalMoveShape.setOutlineThickness(2);
+}
+
+void Square::initializeCheckShape()
+{
+	m_CheckShape.setFillColor(Colors::getColor(Colors::Names::RED));
+	m_CheckShape.setRadius(m_Shape.getLocalBounds().width / 2);
+	m_CheckShape.setOrigin(m_CheckShape.getLocalBounds().width / 2, m_CheckShape.getLocalBounds().height / 2);
+	m_CheckShape.setPosition(m_Position);
 }
 
 void Square::resetColor()
@@ -154,8 +171,8 @@ bool Square::hasAllyPiece(const sf::Color& color) const
 	if (isFree())
 		return false;
 
-	sf::Color blackColor = Colors::getColor(Colors::Names::BLACK);
-	sf::Color whiteColor = Colors::getColor(Colors::Names::WHITE);
+	const sf::Color& blackColor = Colors::getColor(Colors::Names::BLACK);
+	const sf::Color& whiteColor = Colors::getColor(Colors::Names::WHITE);
 	return (m_State == State::HAS_BLACK_PIECE && color == blackColor) ||
 		   (m_State == State::HAS_WHITE_PIECE && color == whiteColor);
 }
@@ -165,8 +182,8 @@ bool Square::hasEnemyPiece(const sf::Color& color) const
 	if (isFree())
 		return false;
 
-	sf::Color blackColor = Colors::getColor(Colors::Names::BLACK);
-	sf::Color whiteColor = Colors::getColor(Colors::Names::WHITE);
+	const sf::Color& blackColor = Colors::getColor(Colors::Names::BLACK);
+	const sf::Color& whiteColor = Colors::getColor(Colors::Names::WHITE);
 	return (m_State == State::HAS_BLACK_PIECE && color == whiteColor) ||
 		   (m_State == State::HAS_WHITE_PIECE && color == blackColor);
 }

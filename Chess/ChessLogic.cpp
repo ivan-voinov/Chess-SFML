@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "ChessLogic.h"
-#include "GameManager.h"
 #include "FilePaths.h"
 #include "FileException.h"
 #include <iostream>

@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 #include "Square.h"
-#include <vector>
-#include "Piece.h"
-#include "King.h"
+#include "Colors.h"
 #include "PieceHeaders.h"
 #include "Board.h"
 #include "GameManager.h"
@@ -18,13 +16,7 @@
 Player::Player(const sf::Color& playerColor)
 {
 	m_Color = playerColor;
-
-	if (Colors::isWhite(m_Color))
-	{
-		m_IsPlayerTurn = true;
-	}
-	else
-		m_IsPlayerTurn = false;
+	m_IsPlayerTurn = Colors::isWhite(m_Color);
 }
 
 void Player::computeLegalMoves(const Board& board)
@@ -55,17 +47,17 @@ void Player::onPawnPromotionCompleted(Board& board)
 {
 	m_MoveIsPaused = false;
 	board.setOpacity(MAX_OPACITY);
-	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPieces);
+	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPiecesIds);
 	for (const auto& piece : promotionPieces)
 	{
 		piece->destroy();
 	}
-	m_PawnPromotionPieces.clear();
+	m_PawnPromotionPiecesIds.clear();
 }
 
 std::vector<std::reference_wrapper<Square>> Player::getSquaresForDisplayedPieces(Square& square, const Board& board) const
 {
-	sf::Vector2i currentCoords = square.getCoordinates();
+	const sf::Vector2i& currentCoords = square.getCoordinates();
 	std::vector<std::reference_wrapper<Square>> squaresForDisplayedPieces;
 	if (currentCoords.x == 7)
 	{
@@ -77,7 +69,7 @@ std::vector<std::reference_wrapper<Square>> Player::getSquaresForDisplayedPieces
 		for (int i = currentCoords.x; i < 4; i++)
 			squaresForDisplayedPieces.push_back(*board.getSquare(std::move(sf::Vector2i(i, currentCoords.y))));
 	}
-	return std::move(squaresForDisplayedPieces);
+	return squaresForDisplayedPieces;
 }
 
 void Player::displayPiecesToChoose(const std::vector<std::reference_wrapper<Square>>& squaresForDisplayedPieces)
@@ -90,25 +82,19 @@ void Player::displayPiecesToChoose(const std::vector<std::reference_wrapper<Squa
 		{
 			case 0:
 				piece = std::make_unique<Queen>(square.get().getPosition(), square.get().getId(), m_Color);
-				m_PawnPromotionPieces.push_back(piece->getId());
-				GameManager::getInstance().addGameObject(std::move(piece));
 				break;
 			case 1:
 				piece = std::make_unique<Knight>(square.get().getPosition(), square.get().getId(), m_Color);
-				m_PawnPromotionPieces.push_back(piece->getId());
-				GameManager::getInstance().addGameObject(std::move(piece));
 				break;
 			case 2:
 				piece = std::make_unique<Rook>(square.get().getPosition(), square.get().getId(), m_Color);
-				m_PawnPromotionPieces.push_back(piece->getId());
-				GameManager::getInstance().addGameObject(std::move(piece));
 				break;
 			case 3:
 				piece = std::make_unique<Bishop>(square.get().getPosition(), square.get().getId(), m_Color);
-				m_PawnPromotionPieces.push_back(piece->getId());
-				GameManager::getInstance().addGameObject(std::move(piece));
 				break;
 		}
+		m_PawnPromotionPiecesIds.push_back(piece->getId());
+		GameManager::getInstance().addGameObject(std::move(piece));
 		i++;
 	}
 }
@@ -132,7 +118,7 @@ Piece* Player::getTriggeredPiece(const sf::Vector2i& mousePosition) const
 
 Piece* Player::getTriggeredPromotedPiece(const sf::Vector2i& mousePosition) const
 {
-	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPieces);
+	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPiecesIds);
 	for (const auto& piece : promotionPieces)
 	{
 		if (piece->isTriggered(mousePosition))
@@ -240,14 +226,7 @@ void Player::onSuccessfulMove(Board& board, Square& startSquare, Piece& piece)
 	piece.onSuccessfulMove();
 	resetMoveState(startSquare);
 	m_LastMovedPieceId = piece.getId();
-	King* enemyKing = m_Opponent->getKing();
-	King* king = getKing();
-	if (m_Opponent->isChecked(board))
-		enemyKing->getSquare()->setDisplayCheck(true);
-	if (*king == piece)
-		startSquare.setDisplayCheck(false);
-	else
-		king->getSquare()->setDisplayCheck(false);
+	updateCheckedState(board, startSquare, piece);
 	m_Opponent->computeLegalMoves(board);
 	switchTurn();
 }
@@ -307,6 +286,18 @@ void Player::resetMoveState(Square& square)
 void Player::highlightSquare(Square& square)
 {
 	square.setColor(Colors::getColor(Colors::Names::GREEN));
+}
+
+void Player::updateCheckedState(Board& board, Square& startSquare, Piece& piece) const
+{
+	King* enemyKing = m_Opponent->getKing();
+	King* king = getKing();
+	if (m_Opponent->isChecked(board))
+		enemyKing->getSquare()->setDisplayCheck(true);
+	if (*king == piece)
+		startSquare.setDisplayCheck(false);
+	else
+		king->getSquare()->setDisplayCheck(false);
 }
 
 const sf::Color& Player::getColor() const

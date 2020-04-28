@@ -1,6 +1,5 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Colors.h"
 
 class Board;
 class Square;
@@ -16,7 +15,7 @@ private:
 	int m_LastMovedPieceId = -1;
 	int m_KingId = -1;
 	std::vector<int> m_PiecesIds;
-	std::vector<int> m_PawnPromotionPieces;
+	std::vector<int> m_PawnPromotionPiecesIds;
 	bool m_MoveIsPaused = false;
 	bool m_IsPlayerTurn;
 	sf::Color m_Color;
@@ -51,6 +50,7 @@ public:
 	void resetMoveState(Square& square);
 	void highlightSquare(Square& square);
 	void setMoveValidator(MoveValidator& moveValidator);
+	void updateCheckedState(Board& board, Square& startSquare, Piece& piece) const;
 	const sf::Color& getColor() const;
 	~Player();
 };

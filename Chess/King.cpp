@@ -4,8 +4,8 @@
 #include "FileException.h"
 #include "Square.h"
 #include "Board.h"
-#include <iostream>
-
+#include "MoveValidator.h"
+#include "Colors.h"
 
 King::King(const sf::Vector2f& position, const sf::Color& color) : King(position, -1, color)
 {
@@ -31,7 +31,7 @@ void King::onSuccessfulMove()
 
 bool King::isCastling(const Square& square, const Board& board) const
 {
-	sf::Vector2i squareCoords = square.getCoordinates();
+	const sf::Vector2i& squareCoords = square.getCoordinates();
 	if (Colors::isWhite(m_Color))
 	{
 		return 
@@ -59,12 +59,12 @@ void King::move(Square& square, bool isMockingMove)
 
 bool King::controlsSquare(const Square& square, const Board& board) const
 {
-	sf::Vector2i squareCoordinates = square.getCoordinates();
-	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
+	const sf::Vector2i& squareCoordinates = square.getCoordinates();
+	const sf::Vector2i& thisCoordinates = getSquare()->getCoordinates();
 	int xDifference = abs(squareCoordinates.x - thisCoordinates.x);
 	int yDifference = abs(squareCoordinates.y - thisCoordinates.y);
 
-	return (xDifference + yDifference == 1) || (xDifference == yDifference) && (xDifference == 1);
+	return (xDifference == yDifference) && (xDifference == 1) || (xDifference + yDifference == 1);
 }
 
 bool King::isLegalMove(Square& square, const Board& board)
