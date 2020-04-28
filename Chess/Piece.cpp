@@ -80,11 +80,18 @@ void Piece::addLegalSquare(int squareId)
 	m_LegalSquaresIds.push_back(squareId);
 }
 
-void Piece::toggleLegalSquares() const
+void Piece::displayLegalMoves() const
 {
 	std::vector<Square*> legalSquares = GameManager::getInstance().getGameObjects<Square>(m_LegalSquaresIds);
 	for (const auto& square : legalSquares)
-		square->toggleLegalMoveDisplay();
+		square->displayLegalMove();
+}
+
+void Piece::hideLegalMoves() const
+{
+	std::vector<Square*> legalSquares = GameManager::getInstance().getGameObjects<Square>(m_LegalSquaresIds);
+	for (const auto& square : legalSquares)
+		square->hideLegalMove();
 }
 
 bool Piece::findLegalSquare(const Square& square) const

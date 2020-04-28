@@ -288,7 +288,7 @@ void Player::choosePiece(const Board& board, Piece& triggeredPiece)
 {
 	m_FocusedPieceId = triggeredPiece.getId();
 	highlightSquare(*triggeredPiece.getSquare());
-	triggeredPiece.toggleLegalSquares();
+	triggeredPiece.displayLegalMoves();
 }
 
 void Player::switchTurn()
@@ -299,7 +299,7 @@ void Player::switchTurn()
 
 void Player::resetMoveState(Square& square)
 {
-	GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId)->toggleLegalSquares();
+	GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId)->hideLegalMoves();
 	m_FocusedPieceId = -1;
 	square.resetColor();
 }

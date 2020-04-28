@@ -24,17 +24,62 @@ Square::Square(const sf::Color& color,
 	m_Shape.setOrigin(m_Shape.getLocalBounds().width / 2, m_Shape.getLocalBounds().height / 2);
 	m_Shape.setPosition(m_Position);
 
-	m_LegalMoveShape.setFillColor(sf::Color::Green);
+	m_LegalMoveShape.setFillColor(Colors::getColor(Colors::Names::GREEN));
 	m_LegalMoveShape.setRadius(m_Shape.getLocalBounds().width / 8);
 	m_LegalMoveShape.setOrigin(m_LegalMoveShape.getLocalBounds().width / 2, m_LegalMoveShape.getLocalBounds().height / 2);
 	m_LegalMoveShape.setPosition(m_Position);
 	m_LegalMoveShape.setOutlineColor(sf::Color::Black);
 	m_LegalMoveShape.setOutlineThickness(2);
 
+	initializeLegalCaptureShape();
+
 	m_CheckShape.setFillColor(sf::Color(255, 0, 0, 200));
 	m_CheckShape.setRadius(m_Shape.getLocalBounds().width / 2);
 	m_CheckShape.setOrigin(m_CheckShape.getLocalBounds().width / 2, m_CheckShape.getLocalBounds().height / 2);
 	m_CheckShape.setPosition(m_Position);
+}
+
+void Square::initializeLegalCaptureShape()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		sf::VertexArray triangle(sf::Triangles, 3);
+		const sf::Color& green = Colors::getColor(Colors::Names::GREEN);
+		triangle[0].color = green;
+		triangle[1].color = green;
+		triangle[2].color = green;
+		float halfSquareSide = m_Shape.getLocalBounds().width / 2;
+		float quarterSquareSide = halfSquareSide / 2;
+		const sf::Vector2f& squareCenter = m_Position;
+		sf::Vector2f topLeftPoint(squareCenter.x - halfSquareSide, squareCenter.y - halfSquareSide);
+		sf::Vector2f bottomLeftPoint(squareCenter.x + halfSquareSide, squareCenter.y - halfSquareSide);
+		sf::Vector2f topRightPoint(squareCenter.x - halfSquareSide, squareCenter.y + halfSquareSide);
+		sf::Vector2f bottomRightPoint(squareCenter.x + halfSquareSide, squareCenter.y + halfSquareSide);
+		switch (i)
+		{
+		case 0:
+			triangle[0].position = std::move(topLeftPoint);
+			triangle[1].position = std::move(sf::Vector2f(topLeftPoint.x + quarterSquareSide, topLeftPoint.y));
+			triangle[2].position = std::move(sf::Vector2f(topLeftPoint.x, topLeftPoint.y + quarterSquareSide));
+			break;
+		case 1:
+			triangle[0].position = std::move(bottomLeftPoint);
+			triangle[1].position = std::move(sf::Vector2f(bottomLeftPoint.x - quarterSquareSide, bottomLeftPoint.y));
+			triangle[2].position = std::move(sf::Vector2f(bottomLeftPoint.x, bottomLeftPoint.y + quarterSquareSide));
+			break;
+		case 2:
+			triangle[0].position = std::move(bottomRightPoint);
+			triangle[1].position = std::move(sf::Vector2f(bottomRightPoint.x - quarterSquareSide, bottomRightPoint.y));
+			triangle[2].position = std::move(sf::Vector2f(bottomRightPoint.x, bottomRightPoint.y - quarterSquareSide));
+			break;
+		case 3:
+			triangle[0].position = std::move(topRightPoint);
+			triangle[1].position = std::move(sf::Vector2f(topRightPoint.x + quarterSquareSide, topRightPoint.y));
+			triangle[2].position = std::move(sf::Vector2f(topRightPoint.x, topRightPoint.y - quarterSquareSide));
+			break;
+		}
+		m_LegalCaptureShapes.push_back(std::move(triangle));
+	}
 }
 
 void Square::resetColor()
@@ -48,9 +93,18 @@ void Square::setDisplayCheck(bool isDisplayed)
 	m_CheckShapeIsDisplayed = isDisplayed;
 }
 
-void Square::toggleLegalMoveDisplay()
+void Square::displayLegalMove()
 {
-	m_LegalMoveShapeIsDisplayed = !m_LegalMoveShapeIsDisplayed;
+	if (isFree())
+		m_LegalMoveShapeIsDisplayed = true;
+	else
+		m_LegalCaptureShapeIsDisplayed = true;
+}
+
+void Square::hideLegalMove()
+{
+	m_LegalCaptureShapeIsDisplayed = false;
+	m_LegalMoveShapeIsDisplayed = false;
 }
 
 void Square::setColor(const sf::Color& color)
@@ -117,12 +171,12 @@ bool Square::hasEnemyPiece(const sf::Color& color) const
 		   (m_State == State::HAS_WHITE_PIECE && color == blackColor);
 }
 
-sf::Color Square::getColor() const
+const sf::Color& Square::getColor() const
 {
 	return m_Color;
 }
 
-sf::Color Square::getInitialColor() const
+const sf::Color& Square::getInitialColor() const
 {
 	if ((m_Coordinates.x % 2 == 0) && (m_Coordinates.y % 2 == 0) ||
 		(m_Coordinates.x % 2 == 1) && (m_Coordinates.y % 2 == 1))
@@ -149,7 +203,10 @@ void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	if (m_LegalMoveShapeIsDisplayed)
 		target.draw(m_LegalMoveShape, states);
 	if (m_LegalCaptureShapeIsDisplayed)
-		target.draw(m_LegalCaptureShape, states);
+	{
+		for (const auto& triangle : m_LegalCaptureShapes)
+			target.draw(triangle, states);
+	}
 }
 
 bool Square::isTriggered(const sf::Vector2i& mousePosition) const

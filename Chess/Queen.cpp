@@ -41,7 +41,6 @@ bool Queen::isLegalMove(Square& square, const Board& board)
 	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
 }
 
-
 Queen::~Queen()
 {
 }
