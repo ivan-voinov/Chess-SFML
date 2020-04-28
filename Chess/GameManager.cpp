@@ -3,10 +3,14 @@
 #include "Player.h"
 #include "GameObject.h"
 
+#define MAX_FPS 60
+#define WINDOW_SIZE_X 700
+#define WINDOW_SIZE_Y 700
+
 GameManager::GameManager()
 {
-	m_Window.create(sf::VideoMode(700, 700), "Chess", sf::Style::Default);
-	m_Window.setFramerateLimit(60);
+	m_Window.create(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "Chess", sf::Style::Default);
+	m_Window.setFramerateLimit(MAX_FPS);
 }
 
 void GameManager::addGameObject(std::unique_ptr<GameObject> gameObject)
