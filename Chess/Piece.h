@@ -2,22 +2,23 @@
 #include <SFML/Graphics.hpp>
 #include "ITriggered.h"
 #include "GameObject.h"
+#include "IOpaque.h"
+#include "ResourceManager.h"
 
 class Square;
 class Board;
 class MoveValidator;
 
-class Piece : public GameObject, public ITriggered
+class Piece : public GameObject, public ITriggered, public IOpaque
 {
 protected:
 	int m_SquareId;
-	sf::Texture m_PieceTexture;
 	sf::Sprite m_PieceSprite;
 	sf::Color m_Color;
 	std::vector<int> m_LegalSquaresIds;
 	MoveValidator* m_MoveValidator = nullptr;
 
-	void loadTexture(const std::string& piecePath);
+	void setSpriteTexture(const sf::Texture& texture);
 	void setOriginAndPosition(const sf::Vector2f& position);
 
 public:
@@ -34,12 +35,14 @@ public:
 	bool findLegalSquare(const Square& square) const;
 	bool hasNoLegalSquares() const;
 	void setMoveValidator(MoveValidator& moveValidator);
+	void setSquare(const Square& square);
 	virtual void move(Square& square, bool isMockingMove);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void onSuccessfulMove() = 0;
 	virtual bool controlsSquare(const Square& square, const Board& board) const = 0;
 	virtual bool isLegalMove(Square & square, const Board& board);
 	virtual bool isTriggered(const sf::Vector2i& mousePosition) const override;
-	~Piece();
+	virtual void setOpacity(sf::Uint8 opacity) override;
+	virtual ~Piece();
 };
 

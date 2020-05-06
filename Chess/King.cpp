@@ -1,11 +1,10 @@
  #include "pch.h"
 #include "King.h"
-#include "FilePaths.h"
-#include "FileException.h"
 #include "Square.h"
 #include "Board.h"
 #include "MoveValidator.h"
 #include "Colors.h"
+#include "GameManager.h"
 
 King::King(const sf::Vector2f& position, const sf::Color& color) : King(position, -1, color)
 {
@@ -13,13 +12,11 @@ King::King(const sf::Vector2f& position, const sf::Color& color) : King(position
 
 King::King(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	std::string kingPath;
-	if (color == sf::Color::Black)
-		kingPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_KING);
-	else
-		kingPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KING);
+	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture& kingPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteKing") :
+		textureManager.getResource("blackKing");
 
-	loadTexture(kingPath);
+	setSpriteTexture(kingPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }
@@ -52,8 +49,10 @@ bool King::isCastling(const Square& square, const Board& board) const
 
 void King::move(Square& square, bool isMockingMove)
 {
-	if (!isMockingMove && square == m_CastleSquareId)
-		m_MoveValidator->castle();
+	const Square& currentSquare = *getSquare();
+	//Detect castle: If the target square is 2 squares away from the king, that means castling rules should be applied
+	if (!isMockingMove && abs(square.getCoordinates().y - currentSquare.getCoordinates().y) == 2)
+		m_MoveValidator->castle(square, *this);
 	Piece::move(square, isMockingMove);
 }
 
@@ -73,12 +72,7 @@ bool King::isLegalMove(Square& square, const Board& board)
 		return false;
 
 	if (isCastling(square, board))
-	{
-		bool castleIsLegal = m_MoveValidator->castleIsLegal(square, *this);
-		if (castleIsLegal)
-			m_CastleSquareId = square.getId();
-		return castleIsLegal;
-	}
+		return m_MoveValidator->castleIsLegal(square, *this);
 
 	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
 }

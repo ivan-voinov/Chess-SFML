@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "Knight.h"
-#include "FilePaths.h"
-#include "FileException.h"
 #include "Square.h"
 #include "MoveValidator.h"
 #include "Colors.h"
+#include "GameManager.h"
 
 
 Knight::Knight(const sf::Vector2f& position, const sf::Color& color) : Knight(position, -1, color)
@@ -13,13 +12,11 @@ Knight::Knight(const sf::Vector2f& position, const sf::Color& color) : Knight(po
 
 Knight::Knight(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	std::string knightPath;
-	if (color == sf::Color::Black)
-		knightPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_KNIGHT);
-	else
-		knightPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_KNIGHT);
+	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture& knightPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteKnight") :
+		textureManager.getResource("blackKnight");
 
-	loadTexture(knightPath);
+	setSpriteTexture(knightPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

@@ -7,6 +7,7 @@ private:
 	bool m_HasDoubleMove = true;
 	bool m_EnPassantIsActive = false;
 	int m_EnPassantSquareId = -1;
+	int m_PromotionSquareId = -1;
 
 	bool moveForwardIsLegal(const Square& square, const Board& board) const;
 	bool capturesPiece(const Square& square, const Board& board) const;

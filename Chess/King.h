@@ -5,7 +5,6 @@ class King : public Piece
 {
 private:
 	bool m_HasCastle = true;
-	int m_CastleSquareId = -1;
 
 public:
 	King(const sf::Vector2f& position, const sf::Color& color);

@@ -2,8 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include "ITriggered.h"
 #include "GameObject.h"
+#include "IOpaque.h"
 
-class Square : public GameObject, public ITriggered
+class Square : public GameObject, public ITriggered, public IOpaque
 {
 public:
 	enum class State
@@ -37,7 +38,6 @@ private:
 	void initializeCheckShape();
 
 public:
-	Square();
 	Square(const sf::Color& color,
 		const sf::Vector2i& coordinates,
 		const sf::Vector2f& position,
@@ -49,7 +49,6 @@ public:
 	void displayLegalMove();
 	void hideLegalMove();
 	void setColor(const sf::Color& color);
-	void setOpacity(sf::Uint8 opacity);
 	void setState(const State& state);
 	void saveCurrentState();
 	void restoreState();
@@ -63,6 +62,7 @@ public:
 	const sf::Vector2f& getPosition() const;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual bool isTriggered(const sf::Vector2i& mousePosition) const override;
+	virtual void setOpacity(sf::Uint8 opacity) override;
 	~Square();
 };
 

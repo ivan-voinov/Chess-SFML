@@ -173,8 +173,9 @@
     <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="FileException.h" />
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="FilePaths.h" />
+    <ClInclude Include="AssetPaths.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IOpaque.h" />
     <ClInclude Include="ITriggered.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="Knight.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Rook.h" />
     <ClInclude Include="Square.h" />
     <ClInclude Include="SquareBuilder.h" />
+    <ClInclude Include="ResourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bishop.cpp" />
@@ -199,7 +201,7 @@
     <ClCompile Include="FileException.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="FilePaths.cpp" />
+    <ClCompile Include="AssetPaths.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="King.cpp" />
     <ClCompile Include="Knight.cpp" />
@@ -219,6 +221,7 @@
     <ClCompile Include="Rook.cpp" />
     <ClCompile Include="Square.cpp" />
     <ClCompile Include="SquareBuilder.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

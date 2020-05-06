@@ -61,6 +61,16 @@ void GameManager::draw()
 	m_Window.display();
 }
 
+const ResourceManager<sf::Texture>& GameManager::getTextureManager() const
+{
+	return m_TextureManager;
+}
+
+const ResourceManager<sf::SoundBuffer>& GameManager::getAudioManager() const
+{
+	return m_AudioManager;
+}
+
 void GameManager::runGame()
 {
 	m_ChessLogic.initializeGame(m_Window);

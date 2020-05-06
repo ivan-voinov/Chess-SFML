@@ -42,7 +42,7 @@ Square* Board::getTriggeredSquare(const sf::Vector2i& mousePosition)
 	return nullptr;
 }
 
-void Board::setOpacity(sf::Uint8 opacity)
+void Board::setOpacity(sf::Uint8 opacity) const
 {
 	std::vector<Square*> squares = GameManager::getInstance().getGameObjects<Square>(m_SquareIds);
 	for (auto& square : squares)

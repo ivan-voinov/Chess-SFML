@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Queen.h"
-#include "FilePaths.h"
-#include "FileException.h"
 #include "Square.h"
 #include "Board.h"
 #include "MoveValidator.h"
+#include "Colors.h"
+#include "GameManager.h"
 
 Queen::Queen(const sf::Vector2f& position, const sf::Color& color) : Queen(position, -1, color)
 {
@@ -12,13 +12,11 @@ Queen::Queen(const sf::Vector2f& position, const sf::Color& color) : Queen(posit
 
 Queen::Queen(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	std::string queenPath;
-	if (color == sf::Color::Black)
-		queenPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_QUEEN);
-	else
-		queenPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_QUEEN);
+	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture& queenPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteQueen") :
+		textureManager.getResource("blackQueen");
 
-	loadTexture(queenPath);
+	setSpriteTexture(queenPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

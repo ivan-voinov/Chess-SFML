@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <cassert>
 #include "ChessLogic.h"
+#include "ResourceManager.h"
 	
 class GameManager
 {
@@ -9,6 +10,9 @@ private:
 	sf::RenderWindow m_Window;
 	sf::Event m_Event;
 	ChessLogic m_ChessLogic;
+	ResourceManager<sf::Texture> m_TextureManager;
+	ResourceManager<sf::SoundBuffer> m_AudioManager;
+
 	std::vector<std::unique_ptr<GameObject>> m_GameObjects;
 	GameManager();
 
@@ -20,6 +24,8 @@ public:
 	void readInput();
 	void update();
 	void draw();
+	const ResourceManager<sf::Texture>& getTextureManager() const;
+	const ResourceManager<sf::SoundBuffer>& getAudioManager() const;
 
 	template<typename T>
 	T* getGameObject(int id)

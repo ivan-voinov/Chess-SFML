@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ChessLogic.h"
-#include "FilePaths.h"
+#include "AssetPaths.h"
 #include "FileException.h"
 #include <iostream>
 
@@ -9,20 +9,7 @@ ChessLogic::ChessLogic() :
 	m_WhitePlayer(sf::Color::White),
 	m_BlackPlayer(sf::Color::Black)
 {
-	try
-	{
-		std::string checkmateAudioPath;
-		std::string stalemateAudioPath;
-
-		checkmateAudioPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::CHECKMATE);
-		if (!m_CheckmateAudio.loadFromFile(checkmateAudioPath))
-			throw FileException("Error loading the texture from file: " + checkmateAudioPath);
-	}
-	catch (FileException& fileException)
-	{
-		std::cout << fileException.what();
-	}
-	m_CheckmateSound.setBuffer(m_CheckmateAudio);
+	m_CheckmateSound.setBuffer(m_AudioManager.getResource("checkMate"));
 }
 
 ChessLogic::GameState ChessLogic::getGameState(const Player& currentPlayer) const

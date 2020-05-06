@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "Rook.h"
-#include "FilePaths.h"
-#include "FileException.h"
 #include "Square.h"
 #include "Board.h"
 #include "MoveValidator.h"
-
+#include "Colors.h"
+#include "GameManager.h"
 
 Rook::Rook(const sf::Vector2f& position, const sf::Color& color) : Rook(position, -1, color)
 {
@@ -13,13 +12,11 @@ Rook::Rook(const sf::Vector2f& position, const sf::Color& color) : Rook(position
 
 Rook::Rook(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	std::string rookPath;
-	if (color == sf::Color::Black)
-		rookPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_ROOK);
-	else
-		rookPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_ROOK);
+	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture& rookPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteRook") :
+		textureManager.getResource("blackRook");
 
-	loadTexture(rookPath);
+	setSpriteTexture(rookPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

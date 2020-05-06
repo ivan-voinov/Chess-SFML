@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "Pawn.h"
-#include "FilePaths.h"
-#include "FileException.h"
 #include "Square.h"
 #include "Board.h"
 #include "MoveValidator.h"
 #include "Colors.h"
+#include "GameManager.h"
 
 Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) : Pawn(position, -1, color)
 {
@@ -13,24 +12,25 @@ Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) : Pawn(position
 
 Pawn::Pawn(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	std::string pawnPath;
-	if (color == sf::Color::Black)
-		pawnPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::BLACK_PAWN);
-	else
-		pawnPath = FilePaths::getInstance().getFilePath(FilePaths::FileNames::WHITE_PAWN);
+	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture& pawnPath = Colors::isWhite(m_Color) ? textureManager.getResource("whitePawn") :
+		textureManager.getResource("blackPawn");
 
-	loadTexture(pawnPath);
+	setSpriteTexture(pawnPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }
 
 void Pawn::move(Square& square, bool isMockingMove)
 {
-	if (!isMockingMove && square == m_EnPassantSquareId)
-	{
-		m_MoveValidator->enPassant();
-	}
 	Piece::move(square, isMockingMove);
+	if (!isMockingMove)
+	{
+		if (square == m_EnPassantSquareId)
+			m_MoveValidator->enPassant(square, *this);
+		if (square == m_PromotionSquareId)
+			m_MoveValidator->onPawnPromotionTriggered(square, *this);
+	}
 }
 
 void Pawn::onSuccessfulMove()
@@ -152,7 +152,7 @@ bool Pawn::isLegalMove(Square& square, const Board& board)
 	{
 		if (canBePromoted(square) && m_MoveValidator->isLegalMove(square, *this))
 		{
-			//Promotion code
+			m_PromotionSquareId = square.getId();
 		}
 		return m_MoveValidator->isLegalMove(square, *this);
 	}

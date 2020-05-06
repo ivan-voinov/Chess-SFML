@@ -12,7 +12,6 @@
 #define HALF_OPACITY 127
 
 
-
 Player::Player(const sf::Color& playerColor)
 {
 	m_Color = playerColor;
@@ -36,23 +35,34 @@ void Player::computeLegalMoves(const Board& board)
 	}
 }
 
-void Player::onPawnPromotionTriggered(Square& square, Board& board)
+void Player::onPawnPromotionTriggered(Square& square, Piece& piece, const Board& board)
 {
 	displayPiecesToChoose(getSquaresForDisplayedPieces(square, board));
+	removePiece(piece.getId());
+	piece.destroy();
 	m_MoveIsPaused = true;
 	board.setOpacity(HALF_OPACITY);
+	setOpacity(HALF_OPACITY);
 }
 
-void Player::onPawnPromotionCompleted(Board& board)
+void Player::onPawnPromotionCompleted(Board& board, Piece& promotedPiece)
 {
+	const int queenIndex = 0;
+	addPiece(promotedPiece.getId());
 	m_MoveIsPaused = false;
 	board.setOpacity(MAX_OPACITY);
+	setOpacity(MAX_OPACITY);
 	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPiecesIds);
+	promotedPiece.setSquare(*promotionPieces.at(queenIndex)->getSquare());
 	for (const auto& piece : promotionPieces)
 	{
-		piece->destroy();
+		if (*piece != promotedPiece)
+			piece->destroy();
 	}
 	m_PawnPromotionPiecesIds.clear();
+	//TODO: update checked state
+	m_Opponent->computeLegalMoves(board);
+	switchTurn();
 }
 
 std::vector<std::reference_wrapper<Square>> Player::getSquaresForDisplayedPieces(Square& square, const Board& board) const
@@ -107,7 +117,6 @@ void Player::addPiece(int pieceId)
 Piece* Player::getTriggeredPiece(const sf::Vector2i& mousePosition) const
 {
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
-	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 	for (const auto& piece : pieces)
 	{
 		if (piece->isTriggered(mousePosition))
@@ -208,6 +217,7 @@ void Player::makeMove(Square& square, Board& board, Piece& focusedPiece)
 {
 	Piece* pieceCaptured = m_Opponent->findPiece(square);
 	Square& startSquare = *focusedPiece.getSquare();
+	resetMoveState(startSquare);
 
 	if (pieceCaptured)
 	{
@@ -215,18 +225,19 @@ void Player::makeMove(Square& square, Board& board, Piece& focusedPiece)
 		pieceCaptured->destroy();
 	}
 	focusedPiece.move(square, false);
-	onSuccessfulMove(board, startSquare, focusedPiece);
+	//If the pawn is being promoted, don't complete the turn
+	if (!m_MoveIsPaused)
+		onSuccessfulMove(board, startSquare , &focusedPiece);
 }
 
-void Player::onSuccessfulMove(Board& board, Square& startSquare, Piece& piece)
+void Player::onSuccessfulMove(Board& board, Square& startSquare, Piece* piece)
 {
 	Pawn* lastMovedPawn = GameManager::getInstance().getGameObject<Pawn>(m_LastMovedPieceId);
 	if (lastMovedPawn && lastMovedPawn->enPassantIsActive())
 		lastMovedPawn->deactivateEnPassant();
-	piece.onSuccessfulMove();
-	resetMoveState(startSquare);
-	m_LastMovedPieceId = piece.getId();
-	updateCheckedState(board, startSquare, piece);
+	piece->onSuccessfulMove();
+	m_LastMovedPieceId = piece->getId();
+	updateCheckedState(board, startSquare, *piece);
 	m_Opponent->computeLegalMoves(board);
 	switchTurn();
 }
@@ -243,22 +254,37 @@ bool Player::processTurn(Board& board, sf::RenderWindow& window)
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 
-	if (!pieceIsChosen())
+	if (!m_MoveIsPaused)
 	{
-		if (triggeredPiece)
+		if (!pieceIsChosen())
 		{
-			choosePiece(board, *triggeredPiece);
+			if (triggeredPiece)
+			{
+				choosePiece(board, *triggeredPiece);
+			}
+		}
+		else
+		{
+			if (triggeredSquare && focusedPiece->findLegalSquare(*triggeredSquare))
+			{
+				makeMove(*triggeredSquare, board, *focusedPiece);
+				//If the pawn was promoted, return false because the move has not been completed
+				if (!m_MoveIsPaused)
+					return true;
+				return false;
+			}
+			else
+				onFailedMove(*focusedPiece->getSquare());
 		}
 	}
 	else
 	{
-		if (triggeredSquare && focusedPiece->findLegalSquare(*triggeredSquare))
+		Piece* piece = getTriggeredPromotedPiece(sf::Mouse::getPosition(window));
+		if (piece)
 		{
-			makeMove(*triggeredSquare, board, *focusedPiece);
+			onPawnPromotionCompleted(board, *piece);
 			return true;
 		}
-		else
-			onFailedMove(*focusedPiece->getSquare());
 	}
 	return false;
 }
@@ -310,6 +336,13 @@ void Player::setMoveValidator(MoveValidator& moveValidator)
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (const auto& piece : pieces)
 		piece->setMoveValidator(moveValidator);
+}
+
+void Player::setOpacity(sf::Uint8 opacity) const
+{
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	for (const auto& piece : pieces)
+		piece->setOpacity(opacity);
 }
 
 Player::~Player()

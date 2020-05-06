@@ -1,10 +1,7 @@
 #include "pch.h"
-#include <iostream>
 #include "Piece.h"
 #include "Square.h"
 #include "GameManager.h"
-#include "FilePaths.h"
-#include "FileException.h"
 #include "Colors.h"
 
 
@@ -18,18 +15,9 @@ Piece::Piece(const sf::Vector2f& position, int squareId, const sf::Color& color)
 	m_SquareId = squareId;
 }
 
-void Piece::loadTexture(const std::string& piecePath)
+void Piece::setSpriteTexture(const sf::Texture& texture)
 {
-	try
-	{
-		if (!m_PieceTexture.loadFromFile(piecePath))
-			throw FileException("Error loading the texture from file: " + piecePath);
-	}
-	catch (FileException& fileException)
-	{
-		std::cout << fileException.what();
-	}
-	m_PieceSprite.setTexture(m_PieceTexture);
+	m_PieceSprite.setTexture(texture);
 }
 
 void Piece::setOriginAndPosition(const sf::Vector2f& position)
@@ -50,7 +38,7 @@ Square* Piece::getSquare() const
 
 void Piece::resize(const double squareSize)
 {
-	m_PieceSprite.setScale(squareSize / m_PieceTexture.getSize().x, squareSize / m_PieceTexture.getSize().y);
+	m_PieceSprite.setScale(squareSize / m_PieceSprite.getLocalBounds().width, squareSize / m_PieceSprite.getLocalBounds().height);
 }
 
 void Piece::updateSquareState(Square& square, bool isMockingMove)
@@ -114,11 +102,16 @@ void Piece::setMoveValidator(MoveValidator& moveValidator)
 	m_MoveValidator = &moveValidator;
 }
 
+void Piece::setSquare(const Square& square)
+{
+	m_SquareId = square.getId();
+	m_PieceSprite.setPosition(square.getPosition());
+}
+
 void Piece::move(Square& square, bool isMockingMove)
 {
 	updateSquareState(square, isMockingMove);
-	m_SquareId = square.getId();
-	m_PieceSprite.setPosition(square.getPosition());
+	setSquare(square);
 }
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -134,6 +127,12 @@ bool Piece::isLegalMove(Square& square, const Board& board)
 bool Piece::isTriggered(const sf::Vector2i& mousePosition) const
 {
 	return m_PieceSprite.getGlobalBounds().contains(sf::Vector2f(mousePosition));
+}
+
+void Piece::setOpacity(sf::Uint8 opacity)
+{
+	m_Color = std::move(sf::Color(m_Color.r, m_Color.g, m_Color.b, opacity));
+	m_PieceSprite.setColor(m_Color);
 }
 
 Piece::~Piece()

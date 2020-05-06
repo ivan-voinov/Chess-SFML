@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "IOpaque.h"
 
 class Board;
 class Square;
@@ -25,8 +26,8 @@ private:
 
 public:
 	Player(const sf::Color& playerColor);
-	void onPawnPromotionTriggered(Square& square, Board& board);
-	void onPawnPromotionCompleted(Board& board);
+	void onPawnPromotionTriggered(Square& square, Piece& piece, const Board& board);
+	void onPawnPromotionCompleted(Board& board, Piece& promotedPiece);
 	void computeLegalMoves(const Board& board);
 	void addPiece(int pieceId);
 	Piece* getTriggeredPiece(const sf::Vector2i& mousePosition) const;
@@ -42,7 +43,7 @@ public:
 	bool pieceIsChosen() const;
 	bool isPlayerTurn() const;
 	void makeMove(Square& square, Board& board, Piece& focusedPiece);
-	void onSuccessfulMove(Board& board, Square& square, Piece& piece);
+	void onSuccessfulMove(Board& board, Square& startSquare, Piece* piece);
 	void onFailedMove(Square& square);
 	bool processTurn(Board& board, sf::RenderWindow& window);
 	void choosePiece(const Board& board, Piece& triggeredPiece);
@@ -52,6 +53,7 @@ public:
 	void setMoveValidator(MoveValidator& moveValidator);
 	void updateCheckedState(Board& board, Square& startSquare, Piece& piece) const;
 	const sf::Color& getColor() const;
+	void setOpacity(sf::Uint8 opacity) const;
 	~Player();
 };
 

@@ -3,10 +3,6 @@
 #include "Colors.h"
 #include "GameManager.h"
 
-Square::Square()
-{
-}
-
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
 	const sf::Vector2f& position,
@@ -130,12 +126,6 @@ void Square::setColor(const sf::Color& color)
 	m_Shape.setFillColor(color);
 }
 
-void Square::setOpacity(sf::Uint8 opacity)
-{
-	m_Color = std::move(sf::Color(m_Color.r, m_Color.g, m_Color.b, opacity));
-	m_Shape.setFillColor(m_Color);
-}
-
 void Square::setState(const State& state)
 {
 	m_State = state;
@@ -229,6 +219,12 @@ void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 bool Square::isTriggered(const sf::Vector2i& mousePosition) const
 {
 	return m_Shape.getGlobalBounds().contains(sf::Vector2f(mousePosition));
+}
+
+void Square::setOpacity(sf::Uint8 opacity)
+{
+	m_Color = std::move(sf::Color(m_Color.r, m_Color.g, m_Color.b, opacity));
+	m_Shape.setFillColor(m_Color);
 }
 
 Square::~Square()

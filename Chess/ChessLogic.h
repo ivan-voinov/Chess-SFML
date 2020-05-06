@@ -5,6 +5,7 @@
 #include "MoveValidator.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include "ResourceManager.h"
 
 class ChessLogic
 {
@@ -14,8 +15,7 @@ private:
 	Player m_BlackPlayer;
 	MoveHistory m_MoveHistory;
 	MoveValidator m_MoveValidator;
-	sf::SoundBuffer m_CheckmateAudio;
-	sf::SoundBuffer m_StalemateAudio;
+	ResourceManager<sf::SoundBuffer> m_AudioManager;
 	sf::Sound m_CheckmateSound;
 	sf::Sound m_StalemateSound;
 	bool m_GameOver = false;
