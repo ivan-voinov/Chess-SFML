@@ -136,8 +136,7 @@ bool Piece::isTriggered(const sf::Vector2i& mousePosition) const
 
 void Piece::setOpacity(sf::Uint8 opacity)
 {
-	m_Color = std::move(sf::Color(m_Color.r, m_Color.g, m_Color.b, opacity));
-	m_PieceSprite.setColor(m_Color);
+	m_PieceSprite.setColor(sf::Color(255, 255, 255, opacity));
 }
 
 Piece::~Piece()

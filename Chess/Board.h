@@ -1,13 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "ILineValidator.h"
-#include "ISquareGetter.h"
 
 class Square;
 class Player;
 class Piece;
 
-class Board : public ILineValidator, public ISquareGetter
+class Board : public ILineValidator
 {
 private:
 	static constexpr int m_BoardSize = 8;
@@ -22,8 +21,8 @@ private:
 public:
 	Board();
 	static const double getSquareSize();
-	Square* getSquare(const sf::Vector2i coords) const override;
-	Square* getTriggeredSquare(const sf::Vector2i& mousePosition) override;
+	Square* getSquare(const sf::Vector2i coords) const;
+	Square* getTriggeredSquare(const sf::Vector2i& mousePosition);
 	void setOpacity(sf::Uint8 opacity) const;
 	bool diagonalIsFree(const Square& startSquare, const Square& destSquare) const override;
 	bool LineIsFree(const Square& startSquare, const Square& destSquare) const override;

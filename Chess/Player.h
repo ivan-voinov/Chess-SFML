@@ -2,7 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include "MoveValidator.h"
 
-class ISquareGetter;
+class Board;
 class Square;
 class Piece;
 class King;
@@ -13,10 +13,12 @@ class Pawn;
 class Player : public MoveValidator
 {
 private:
-	ISquareGetter* m_SquareGetter = nullptr;
+	Board* m_Board = nullptr;
 	Player* m_Opponent = nullptr;
 	int m_FocusedPieceId = -1;
 	int m_LastMovedPieceId = -1;
+	int m_FocusedSquareId = -1;
+	int m_CheckSquareId = -1;
 	int m_KingId = -1;
 	std::vector<int> m_PiecesIds;
 	std::vector<int> m_PawnPromotionPiecesIds;
@@ -33,7 +35,7 @@ private:
 
 public:
 	Player(const sf::Color& playerColor);
-	void attachSquareGetter(ISquareGetter* squareGetter);
+	void attachSquareGetter(Board* squareGetter);
 	void onPawnPromotionTriggered(Square& square, Piece& piece) override;
 	void onPawnPromotionCompleted(Piece& promotedPiece);
 	void computeLegalMoves();
@@ -51,15 +53,15 @@ public:
 	bool pieceIsChosen() const;
 	bool isPlayerTurn() const;
 	void makeMove(Square& square, Piece& focusedPiece);
-	void onSuccessfulMove(Square& startSquare, Piece* piece);
+	void onSuccessfulMove(Piece* piece);
 	void onFailedMove(Square& square);
 	bool processTurn(sf::RenderWindow& window);
 	void choosePiece(Piece& triggeredPiece);
 	void switchTurn();
-	void resetMoveState(Square& square);
+	void resetMoveState();
 	void highlightSquare(Square& square);
 	void attachMoveValidatorToPieces();
-	void updateCheckedState(Square& startSquare, Piece& piece) const;
+	void updateCheckedState();
 	const sf::Color& getColor() const;
 	void setOpacity(sf::Uint8 opacity) const;
 	bool isLegalMove(Square& square, Piece& piece) override;

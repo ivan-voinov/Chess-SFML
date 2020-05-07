@@ -177,7 +177,6 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="ILineValidator.h" />
     <ClInclude Include="IOpaque.h" />
-    <ClInclude Include="ISquareGetter.h" />
     <ClInclude Include="ITriggered.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="Knight.h" />
@@ -201,8 +200,6 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="ChessLogic.cpp" />
     <ClCompile Include="FileException.cpp" />
-    <ClCompile Include="ILineValidator.cpp" />
-    <ClCompile Include="ISquareGetter.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="AssetPaths.cpp" />
