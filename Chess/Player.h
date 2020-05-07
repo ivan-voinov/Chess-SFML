@@ -1,6 +1,5 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "IOpaque.h"
 #include "MoveValidator.h"
 
 class ISquareGetter;

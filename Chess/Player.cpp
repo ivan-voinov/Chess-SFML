@@ -338,7 +338,7 @@ const sf::Color& Player::getColor() const
 	return m_Color;
 }
 
-void Player::setMoveValidator()
+void Player::attachMoveValidatorToPieces()
 {
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (const auto& piece : pieces)

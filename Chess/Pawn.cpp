@@ -28,7 +28,7 @@ void Pawn::move(Square& square, bool isMockingMove)
 	{
 		if (square == m_EnPassantSquareId)
 			m_MoveValidator->enPassant(square, *this);
-		if (square == m_PromotionSquareId)
+		if (canBePromoted(square))
 			m_MoveValidator->onPawnPromotionTriggered(square, *this);
 	}
 }
@@ -150,10 +150,6 @@ bool Pawn::isLegalMove(Square& square)
 	}
 	if (moveForwardIsLegal(square) || capturesPiece(square))
 	{
-		if (canBePromoted(square) && m_MoveValidator->isLegalMove(square, *this))
-		{
-			m_PromotionSquareId = square.getId();
-		}
 		return m_MoveValidator->isLegalMove(square, *this);
 	}
 	return false;
