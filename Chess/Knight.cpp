@@ -25,7 +25,7 @@ void Knight::onSuccessfulMove()
 {
 }
 
-bool Knight::controlsSquare(const Square& square, const Board& board) const
+bool Knight::controlsSquare(const Square& square) const
 {
 	sf::Vector2i squareCoordinates = square.getCoordinates();
 	sf::Vector2i thisCoordinates = getSquare()->getCoordinates();
@@ -35,12 +35,12 @@ bool Knight::controlsSquare(const Square& square, const Board& board) const
 	return (xDifference == 2 && yDifference == 1) || (xDifference == 1 && yDifference == 2);
 }
 
-bool Knight::isLegalMove(Square& square, const Board& board)
+bool Knight::isLegalMove(Square& square)
 {
-	if (!Piece::isLegalMove(square, board))
+	if (!Piece::isLegalMove(square))
 		return false;
 
-	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
+	return controlsSquare(square) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 Knight::~Knight()

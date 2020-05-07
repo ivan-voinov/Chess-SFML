@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Bishop.h"
 #include "Square.h"
-#include "Board.h"
 #include "MoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
+#include "ILineValidator.h"
 
 
 Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :
@@ -28,17 +28,17 @@ void Bishop::onSuccessfulMove()
 {
 }
 
-bool Bishop::controlsSquare(const Square& square, const Board& board) const
+bool Bishop::controlsSquare(const Square& square) const
 {
-	return board.diagonalIsFree(*getSquare(), square);
+	return m_LineValidator->diagonalIsFree(*getSquare(), square);
 }
 
-bool Bishop::isLegalMove(Square& square, const Board& board)
+bool Bishop::isLegalMove(Square& square)
 {
-	if (!Piece::isLegalMove(square, board))
+	if (!Piece::isLegalMove(square))
 		return false;
 	
-	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
+	return controlsSquare(square) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 Bishop::~Bishop()

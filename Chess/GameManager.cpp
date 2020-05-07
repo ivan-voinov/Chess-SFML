@@ -28,9 +28,10 @@ void GameManager::removeGameObject(int id)
 
 void GameManager::readInput()
 {
-	while (m_Window.pollEvent(m_Event))
+	sf::Event event;
+	while (m_Window.pollEvent(event))
 	{
-		switch (m_Event.type)
+		switch (event.type)
 		{
 			case sf::Event::Closed:
 				m_Window.close();
@@ -41,7 +42,7 @@ void GameManager::readInput()
 				break;
 
 			case sf::Event::Resized:
-				sf::FloatRect visibleArea(0, 0, m_Event.size.width, m_Event.size.height);
+				sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
 				m_Window.setView(sf::View(visibleArea));
 				break;
 		}

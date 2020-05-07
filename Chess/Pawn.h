@@ -9,11 +9,11 @@ private:
 	int m_EnPassantSquareId = -1;
 	int m_PromotionSquareId = -1;
 
-	bool moveForwardIsLegal(const Square& square, const Board& board) const;
-	bool capturesPiece(const Square& square, const Board& board) const;
-	bool doubleMoveIsLegal(const Square& square, const Board& board) const;
-	bool freeToMove(const Square& square, const Board& board) const;
-	bool enPassant(const Square& square, const Board& board) const;
+	bool moveForwardIsLegal(const Square& square) const;
+	bool capturesPiece(const Square& square) const;
+	bool doubleMoveIsLegal(const Square& square) const;
+	bool freeToMove(const Square& square) const;
+	bool enPassant(const Square& square) const;
 	bool movesDiagonally(const Square& square) const;
 
 public:
@@ -21,8 +21,8 @@ public:
 	Pawn(const sf::Vector2f& position, int squareId, const sf::Color& color);
 	virtual void move(Square& square, bool isMockingMove) override;
 	virtual void onSuccessfulMove() override;
-	virtual bool controlsSquare(const Square& square, const Board& board) const override;
-	virtual bool isLegalMove(Square& square, const Board& board) override;
+	virtual bool controlsSquare(const Square& square) const override;
+	virtual bool isLegalMove(Square& square) override;
 	bool canBePromoted(const Square& square) const;
 	bool enPassantIsActive() const;
 	void deactivateEnPassant();

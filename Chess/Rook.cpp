@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Rook.h"
 #include "Square.h"
-#include "Board.h"
 #include "MoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
+#include "ILineValidator.h"
 
 Rook::Rook(const sf::Vector2f& position, const sf::Color& color) : Rook(position, -1, color)
 {
@@ -31,17 +31,17 @@ void Rook::onSuccessfulMove()
 	m_HasCastle = false;
 }
 
-bool Rook::controlsSquare(const Square& square, const Board& board) const
+bool Rook::controlsSquare(const Square& square) const
 {
-	return board.LineIsFree(*getSquare(), square);
+	return m_LineValidator->LineIsFree(*getSquare(), square);
 }
 
-bool Rook::isLegalMove(Square& square, const Board& board)
+bool Rook::isLegalMove(Square& square)
 {
-	if (!Piece::isLegalMove(square, board))
+	if (!Piece::isLegalMove(square))
 		return false;
 
-	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
+	return controlsSquare(square) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 

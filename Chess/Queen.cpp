@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Queen.h"
 #include "Square.h"
-#include "Board.h"
 #include "MoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
+#include "ILineValidator.h"
 
 Queen::Queen(const sf::Vector2f& position, const sf::Color& color) : Queen(position, -1, color)
 {
@@ -25,18 +25,18 @@ void Queen::onSuccessfulMove()
 {
 }
 
-bool Queen::controlsSquare(const Square& square, const Board& board) const
+bool Queen::controlsSquare(const Square& square) const
 {
 	const Square& currentSquare = *getSquare();
-	return board.LineIsFree(currentSquare, square) || board.diagonalIsFree(currentSquare, square);
+	return m_LineValidator->LineIsFree(currentSquare, square) || m_LineValidator->diagonalIsFree(currentSquare, square);
 }
 
-bool Queen::isLegalMove(Square& square, const Board& board)
+bool Queen::isLegalMove(Square& square)
 {
-	if (!Piece::isLegalMove(square, board))
+	if (!Piece::isLegalMove(square))
 		return false;
 
-	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
+	return controlsSquare(square) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 Queen::~Queen()

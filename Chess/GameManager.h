@@ -8,7 +8,6 @@ class GameManager
 {
 private:
 	sf::RenderWindow m_Window;
-	sf::Event m_Event;
 	ChessLogic m_ChessLogic;
 	ResourceManager<sf::Texture> m_TextureManager;
 	ResourceManager<sf::SoundBuffer> m_AudioManager;

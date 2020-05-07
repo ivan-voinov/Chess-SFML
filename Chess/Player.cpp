@@ -29,7 +29,7 @@ void Player::computeLegalMoves(const Board& board)
 			for (int j = 0; j < MAX_Y; j++)
 			{
 				squareHolder = board.getSquare(std::move(sf::Vector2i(i, j)));
-				if (piece->isLegalMove(*squareHolder, board))
+				if (piece->isLegalMove(*squareHolder))
 					piece->addLegalSquare(squareHolder->getId());
 			}
 	}
@@ -190,7 +190,7 @@ bool Player::controlsSquare(Square& square, const Board& board)
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (const auto& piece : pieces)
 	{
-		if (piece->controlsSquare(square, board))
+		if (piece->controlsSquare(square))
 			return true;
 	}
 	return false;

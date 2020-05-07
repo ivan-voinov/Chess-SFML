@@ -6,8 +6,8 @@
 #include "ResourceManager.h"
 
 class Square;
-class Board;
 class MoveValidator;
+class ILineValidator;
 
 class Piece : public GameObject, public ITriggered, public IOpaque
 {
@@ -17,6 +17,7 @@ protected:
 	sf::Color m_Color;
 	std::vector<int> m_LegalSquaresIds;
 	MoveValidator* m_MoveValidator = nullptr;
+	ILineValidator* m_LineValidator = nullptr;
 
 	void setSpriteTexture(const sf::Texture& texture);
 	void setOriginAndPosition(const sf::Vector2f& position);
@@ -36,11 +37,12 @@ public:
 	bool hasNoLegalSquares() const;
 	void setMoveValidator(MoveValidator& moveValidator);
 	void setSquare(const Square& square);
+	void attachLineValidator(ILineValidator* lineValidator);
 	virtual void move(Square& square, bool isMockingMove);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void onSuccessfulMove() = 0;
-	virtual bool controlsSquare(const Square& square, const Board& board) const = 0;
-	virtual bool isLegalMove(Square & square, const Board& board);
+	virtual bool controlsSquare(const Square& square) const = 0;
+	virtual bool isLegalMove(Square & square);
 	virtual bool isTriggered(const sf::Vector2i& mousePosition) const override;
 	virtual void setOpacity(sf::Uint8 opacity) override;
 	virtual ~Piece();

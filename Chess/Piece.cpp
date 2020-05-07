@@ -108,6 +108,11 @@ void Piece::setSquare(const Square& square)
 	m_PieceSprite.setPosition(square.getPosition());
 }
 
+void Piece::attachLineValidator(ILineValidator* lineValidator)
+{
+	m_LineValidator = lineValidator;
+}
+
 void Piece::move(Square& square, bool isMockingMove)
 {
 	updateSquareState(square, isMockingMove);
@@ -119,7 +124,7 @@ void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(m_PieceSprite, states);
 }
 
-bool Piece::isLegalMove(Square& square, const Board& board)
+bool Piece::isLegalMove(Square& square)
 {
 	return !square.hasAllyPiece(m_Color);
 }

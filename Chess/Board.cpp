@@ -156,6 +156,7 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 		//If built successfully, give it a reference to it's square and assign to a player
 		if (piece)
 		{
+			piece->attachLineValidator(this);
 			//If the piece is white, assign it to white player
 			if (Colors::isWhite(piece->getColor()))
 			{

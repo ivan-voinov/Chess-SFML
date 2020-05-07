@@ -1,10 +1,10 @@
  #include "pch.h"
 #include "King.h"
 #include "Square.h"
-#include "Board.h"
 #include "MoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
+#include "ILineValidator.h"
 
 King::King(const sf::Vector2f& position, const sf::Color& color) : King(position, -1, color)
 {
@@ -26,7 +26,7 @@ void King::onSuccessfulMove()
 	m_HasCastle = false;
 }
 
-bool King::isCastling(const Square& square, const Board& board) const
+bool King::isCastling(const Square& square) const
 {
 	const sf::Vector2i& squareCoords = square.getCoordinates();
 	if (Colors::isWhite(m_Color))
@@ -35,7 +35,7 @@ bool King::isCastling(const Square& square, const Board& board) const
 			m_HasCastle &&
 			squareCoords.x == 7 && 
 			(squareCoords.y == 2 || squareCoords.y == 6) &&
-			board.LineIsFree(*getSquare(), square);
+			m_LineValidator->LineIsFree(*getSquare(), square);
 	}
 	else
 	{
@@ -43,7 +43,7 @@ bool King::isCastling(const Square& square, const Board& board) const
 			m_HasCastle && 
 			squareCoords.x == 0 && 
 			(squareCoords.y == 2 || squareCoords.y == 6) && 
-			board.LineIsFree(*getSquare(), square);
+			m_LineValidator->LineIsFree(*getSquare(), square);
 	}
 }
 
@@ -56,7 +56,7 @@ void King::move(Square& square, bool isMockingMove)
 	Piece::move(square, isMockingMove);
 }
 
-bool King::controlsSquare(const Square& square, const Board& board) const
+bool King::controlsSquare(const Square& square) const
 {
 	const sf::Vector2i& squareCoordinates = square.getCoordinates();
 	const sf::Vector2i& thisCoordinates = getSquare()->getCoordinates();
@@ -66,15 +66,15 @@ bool King::controlsSquare(const Square& square, const Board& board) const
 	return (xDifference == yDifference) && (xDifference == 1) || (xDifference + yDifference == 1);
 }
 
-bool King::isLegalMove(Square& square, const Board& board)
+bool King::isLegalMove(Square& square)
 {
-	if (!Piece::isLegalMove(square, board))
+	if (!Piece::isLegalMove(square))
 		return false;
 
-	if (isCastling(square, board))
+	if (isCastling(square))
 		return m_MoveValidator->castleIsLegal(square, *this);
 
-	return controlsSquare(square, board) && m_MoveValidator->isLegalMove(square, *this);
+	return controlsSquare(square) && m_MoveValidator->isLegalMove(square, *this);
 }
 
 King::~King()

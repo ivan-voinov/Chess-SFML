@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Pawn.h"
 #include "Square.h"
-#include "Board.h"
 #include "MoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
+#include "ILineValidator.h"
 
 Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) : Pawn(position, -1, color)
 {
@@ -50,7 +50,7 @@ void Pawn::onSuccessfulMove()
 	m_HasDoubleMove = false;
 }
 
-bool Pawn::moveForwardIsLegal(const Square& square, const Board& board) const
+bool Pawn::moveForwardIsLegal(const Square& square) const
 {
 	const Square& currentSuare = *getSquare();
 	int xDifference = abs(currentSuare.getCoordinates().x - square.getCoordinates().x);
@@ -68,19 +68,19 @@ bool Pawn::moveForwardIsLegal(const Square& square, const Board& board) const
 	}
 
 	if (xDifference == 2 && yDifference == 0)
-		return m_HasDoubleMove && doubleMoveIsLegal(square, board) && !square.hasEnemyPiece(m_Color);
+		return m_HasDoubleMove && doubleMoveIsLegal(square) && !square.hasEnemyPiece(m_Color);
 	else 
 		return xDifference == 1 && yDifference == 0 && !square.hasEnemyPiece(m_Color);
 }
 
-bool Pawn::capturesPiece(const Square& square, const Board& board) const
+bool Pawn::capturesPiece(const Square& square) const
 {
 	if (movesDiagonally(square))
 		return square.hasEnemyPiece(m_Color);
 	return false;
 }
 
-bool Pawn::doubleMoveIsLegal(const Square& square, const Board& board) const
+bool Pawn::doubleMoveIsLegal(const Square& square) const
 {
 	sf::Vector2i blockingSquareCoords;
 	if (m_Color == Colors::getColor(Colors::Names::BLACK))
@@ -91,18 +91,18 @@ bool Pawn::doubleMoveIsLegal(const Square& square, const Board& board) const
 	{
 		blockingSquareCoords = sf::Vector2i(square.getCoordinates().x + 1, square.getCoordinates().y);
 	}
-	return board.getSquare(blockingSquareCoords)->isFree();
+	return m_LineValidator->LineIsFree(*getSquare(), square);
 }
 
-bool Pawn::freeToMove(const Square& square, const Board& board) const
+bool Pawn::freeToMove(const Square& square) const
 {
-	if (m_HasDoubleMove && doubleMoveIsLegal(square, board))
+	if (m_HasDoubleMove && doubleMoveIsLegal(square))
 		return false;
 
 	return square.hasEnemyPiece(m_Color);
 }
 
-bool Pawn::enPassant(const Square& square, const Board& board) const
+bool Pawn::enPassant(const Square& square) const
 {
 	return square.isFree() && movesDiagonally(square);
 }
@@ -126,7 +126,7 @@ bool Pawn::movesDiagonally(const Square& square) const
 	return false;
 }
 
-bool Pawn::controlsSquare(const Square& square, const Board& board) const
+bool Pawn::controlsSquare(const Square& square) const
 {
 	const sf::Vector2i& squareCoordinates = square.getCoordinates();
 	const sf::Vector2i& thisCoordinates = getSquare()->getCoordinates();
@@ -136,19 +136,19 @@ bool Pawn::controlsSquare(const Square& square, const Board& board) const
 	return (xDifference + yDifference == 2) && (xDifference == yDifference);
 }
 
-bool Pawn::isLegalMove(Square& square, const Board& board)
+bool Pawn::isLegalMove(Square& square)
 {
-	if (!Piece::isLegalMove(square, board))
+	if (!Piece::isLegalMove(square))
 		return false;
 
-	if (enPassant(square, board))
+	if (enPassant(square))
 	{
 		bool enPassantIsLegal = m_MoveValidator->enPassantIsLegal(square, *this);
 		if (enPassantIsLegal)
 			m_EnPassantSquareId = square.getId();
 		return enPassantIsLegal;
 	}
-	if (moveForwardIsLegal(square, board) || capturesPiece(square, board))
+	if (moveForwardIsLegal(square) || capturesPiece(square))
 	{
 		if (canBePromoted(square) && m_MoveValidator->isLegalMove(square, *this))
 		{
