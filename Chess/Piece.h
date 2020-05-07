@@ -35,7 +35,7 @@ public:
 	void hideLegalMoves() const;
 	bool findLegalSquare(const Square& square) const;
 	bool hasNoLegalSquares() const;
-	void setMoveValidator(MoveValidator& moveValidator);
+	void attachMoveValidator(MoveValidator* moveValidator);
 	void setSquare(const Square& square);
 	void attachLineValidator(ILineValidator* lineValidator);
 	virtual void move(Square& square, bool isMockingMove);

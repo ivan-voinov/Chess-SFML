@@ -48,6 +48,7 @@ void Player::onPawnPromotionTriggered(Square& square, Piece& piece)
 	m_MoveIsPaused = true;
 	//board.setOpacity(HALF_OPACITY);
 	setOpacity(HALF_OPACITY);
+	m_Opponent->setOpacity(HALF_OPACITY);
 }
 
 void Player::onPawnPromotionCompleted(Piece& promotedPiece)
@@ -57,6 +58,7 @@ void Player::onPawnPromotionCompleted(Piece& promotedPiece)
 	m_MoveIsPaused = false;
 	//board.setOpacity(MAX_OPACITY);
 	setOpacity(MAX_OPACITY);
+	m_Opponent->setOpacity(MAX_OPACITY);
 	std::vector<Piece*> promotionPieces = GameManager::getInstance().getGameObjects<Piece>(m_PawnPromotionPiecesIds);
 	promotedPiece.setSquare(*promotionPieces.at(queenIndex)->getSquare());
 	for (const auto& piece : promotionPieces)
@@ -336,11 +338,11 @@ const sf::Color& Player::getColor() const
 	return m_Color;
 }
 
-void Player::setMoveValidator(MoveValidator& moveValidator)
+void Player::setMoveValidator()
 {
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (const auto& piece : pieces)
-		piece->setMoveValidator(moveValidator);
+		piece->attachMoveValidator(this);
 }
 
 void Player::setOpacity(sf::Uint8 opacity) const
@@ -348,6 +350,119 @@ void Player::setOpacity(sf::Uint8 opacity) const
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (const auto& piece : pieces)
 		piece->setOpacity(opacity);
+}
+
+Rook* Player::getCastleRook(const Square& square, const Piece& piece) const
+{
+	sf::Vector2i rookCoords;
+	if (square.getCoordinates().y == 6)
+		rookCoords.y = 7;
+
+	if (square.getCoordinates().y == 2)
+		rookCoords.y = 0;
+
+	if (Colors::isWhite(piece.getColor()))
+		rookCoords.x = 7;
+	else
+		rookCoords.x = 0;
+
+	return dynamic_cast<Rook*>(findPiece(*m_SquareGetter->getSquare(rookCoords)));
+}
+
+Square* Player::getCastleAttackedSquare(const Square& square, const Piece& piece) const
+{
+	sf::Vector2i attackedSquareCoords;
+
+	if (square.getCoordinates().y == 6)
+		attackedSquareCoords.y = 5;
+
+	if (square.getCoordinates().y == 2)
+		attackedSquareCoords.y = 3;
+
+	if (Colors::isWhite(piece.getColor()))
+		attackedSquareCoords.x = 7;
+	else
+		attackedSquareCoords.x = 0;
+
+	return m_SquareGetter->getSquare(attackedSquareCoords);
+}
+
+Pawn* Player::getCapturedEnPassantPawn(const Square& square, const Piece& piece) const
+{
+	const sf::Vector2i& targetCoords = square.getCoordinates();
+	const sf::Vector2i capturedPawnCoords = Colors::isWhite(piece.getColor()) ?
+		sf::Vector2i(targetCoords.x + 1, targetCoords.y) : sf::Vector2i(targetCoords.x - 1, targetCoords.y);
+	return dynamic_cast<Pawn*>(m_Opponent->findPiece(*m_SquareGetter->getSquare(capturedPawnCoords)));
+}
+
+bool Player::isLegalMove(Square& square, Piece& piece)
+{
+	bool isLegalMove = false;
+	Piece* pieceCaptured = m_Opponent->findPiece(square);
+	Square& startSquare = *piece.getSquare();
+
+	if (pieceCaptured)
+		m_Opponent->removePiece(pieceCaptured->getId());
+
+	piece.move(square, true);
+
+	if (!isChecked())
+		isLegalMove = true;
+	else
+		isLegalMove = false;
+
+	if (pieceCaptured)
+		m_Opponent->addPiece(pieceCaptured->getId());
+	piece.move(startSquare, true);
+	return isLegalMove;
+}
+
+bool Player::castleIsLegal(Square& square, Piece& piece)
+{
+	bool castleIsLegal = false;
+	Rook* castleRook = getCastleRook(square, piece);
+	Square* attackedSquare = getCastleAttackedSquare(square, piece);
+
+	if (castleRook &&
+		castleRook->hasCastle() &&
+		!m_Opponent->controlsSquare(*attackedSquare) &&
+		!isChecked())
+	{
+		Square* startSquare = castleRook->getSquare();
+		castleRook->move(*attackedSquare, true);
+		castleIsLegal = isLegalMove(square, piece);
+		castleRook->move(*startSquare, true);
+	}
+	return castleIsLegal;
+}
+
+bool Player::enPassantIsLegal(Square& square, Piece& piece)
+{
+	bool enPassantIsLegal = false;
+	Pawn* pawn = getCapturedEnPassantPawn(square, piece);
+
+	if (pawn && pawn->enPassantIsActive())
+	{
+		m_Opponent->removePiece(pawn->getId());
+		enPassantIsLegal = isLegalMove(square, piece);
+		m_Opponent->addPiece(pawn->getId());
+	}
+	return enPassantIsLegal;
+}
+
+void Player::castle(Square& square, Piece& piece) const
+{
+	Rook* castleRook = getCastleRook(square, piece);
+	Square* attackedSquare = getCastleAttackedSquare(square, piece);
+	castleRook->move(*attackedSquare, false);
+}
+
+void Player::enPassant(Square& square, Piece& piece) const
+{
+	Pawn* pawn = getCapturedEnPassantPawn(square, piece);
+	pawn->getSquare()->setState(Square::State::IS_FREE);
+	m_Opponent->removePiece(pawn->getId());
+	pawn->destroy();
 }
 
 Player::~Player()

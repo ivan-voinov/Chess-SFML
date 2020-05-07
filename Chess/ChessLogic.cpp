@@ -41,11 +41,8 @@ void ChessLogic::initializeGame(const sf::RenderWindow& window)
 	m_WhitePlayer.resizePieces(m_Board.getSquareSize());
 	m_BlackPlayer.resizePieces(m_Board.getSquareSize());
 
-	m_MoveValidator.setPlayers(m_WhitePlayer, m_BlackPlayer);
-	m_MoveValidator.setBoard(m_Board);
-
-	m_WhitePlayer.setMoveValidator(m_MoveValidator);
-	m_BlackPlayer.setMoveValidator(m_MoveValidator);
+	m_WhitePlayer.attachMoveValidatorToPieces();
+	m_BlackPlayer.attachMoveValidatorToPieces();
 
 	m_WhitePlayer.attachSquareGetter(&m_Board);
 	m_BlackPlayer.attachSquareGetter(&m_Board);

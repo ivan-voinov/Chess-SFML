@@ -211,7 +211,6 @@
     <ClCompile Include="Knight.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="MoveHistory.cpp" />
-    <ClCompile Include="MoveValidator.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

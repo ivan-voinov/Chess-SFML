@@ -97,9 +97,9 @@ bool Piece::hasNoLegalSquares() const
 	return m_LegalSquaresIds.empty();
 }
 
-void Piece::setMoveValidator(MoveValidator& moveValidator)
+void Piece::attachMoveValidator(MoveValidator* moveValidator)
 {
-	m_MoveValidator = &moveValidator;
+	m_MoveValidator = moveValidator;
 }
 
 void Piece::setSquare(const Square& square)

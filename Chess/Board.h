@@ -3,7 +3,6 @@
 #include "ILineValidator.h"
 #include "ISquareGetter.h"
 
-class GameManager;
 class Square;
 class Player;
 class Piece;

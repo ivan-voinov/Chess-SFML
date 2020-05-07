@@ -2,7 +2,6 @@
 #include "Player.h"
 #include "Board.h"
 #include "MoveHistory.h"
-#include "MoveValidator.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "ResourceManager.h"
@@ -14,7 +13,6 @@ private:
 	Player m_WhitePlayer;
 	Player m_BlackPlayer;
 	MoveHistory m_MoveHistory;
-	MoveValidator m_MoveValidator;
 	ResourceManager<sf::SoundBuffer> m_AudioManager;
 	sf::Sound m_CheckmateSound;
 	sf::Sound m_StalemateSound;
