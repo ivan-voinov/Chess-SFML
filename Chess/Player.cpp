@@ -253,13 +253,16 @@ void Player::onSuccessfulMove(Piece* piece)
 
 void Player::onFailedMove(Square& square)
 {
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
+	//If the piece was dragged on illegal square (drag and drop), reset its position to the starting square
+	focusedPiece->setPosition(static_cast<sf::Vector2i>(focusedPiece->getSquare()->getPosition()));
 	resetMoveState();
 }
 
-bool Player::processTurn(sf::RenderWindow& window)
+bool Player::processTurn(const sf::Vector2i& mousePosition)
 {
-	Piece* triggeredPiece = getTriggeredPiece(sf::Mouse::getPosition(window));
-	Square* triggeredSquare = m_Board->getTriggeredSquare(sf::Mouse::getPosition(window));
+	Piece* triggeredPiece = getTriggeredPiece(mousePosition);
+	Square* triggeredSquare = m_Board->getTriggeredSquare(mousePosition);
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 
@@ -288,7 +291,7 @@ bool Player::processTurn(sf::RenderWindow& window)
 	}
 	else
 	{
-		Piece* piece = getTriggeredPromotedPiece(sf::Mouse::getPosition(window));
+		Piece* piece = getTriggeredPromotedPiece(mousePosition);
 		if (piece)
 		{
 			onPawnPromotionCompleted(*piece);
@@ -361,6 +364,13 @@ void Player::setOpacity(sf::Uint8 opacity) const
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (const auto& piece : pieces)
 		piece->setOpacity(opacity);
+}
+
+void Player::dragFocusedPiece(const sf::Vector2i& mousePosition) const
+{
+	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
+	if (focusedPiece)
+		focusedPiece->setPosition(mousePosition);
 }
 
 Rook* Player::getCastleRook(const Square& square, const Piece& piece) const

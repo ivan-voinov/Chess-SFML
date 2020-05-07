@@ -37,6 +37,7 @@ public:
 	bool hasNoLegalSquares() const;
 	void attachMoveValidator(MoveValidator* moveValidator);
 	void setSquare(const Square& square);
+	void setPosition(const sf::Vector2i& position);
 	void attachLineValidator(ILineValidator* lineValidator);
 	virtual void move(Square& square, bool isMockingMove);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

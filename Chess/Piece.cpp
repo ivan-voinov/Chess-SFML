@@ -108,6 +108,11 @@ void Piece::setSquare(const Square& square)
 	m_PieceSprite.setPosition(square.getPosition());
 }
 
+void Piece::setPosition(const sf::Vector2i& position)
+{
+	m_PieceSprite.setPosition(static_cast<sf::Vector2f>(position));
+}
+
 void Piece::attachLineValidator(ILineValidator* lineValidator)
 {
 	m_LineValidator = lineValidator;

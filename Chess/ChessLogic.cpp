@@ -50,17 +50,17 @@ void ChessLogic::initializeGame(const sf::RenderWindow& window)
 	m_WhitePlayer.computeLegalMoves();
 }
 
-void ChessLogic::onClick(sf::RenderWindow& window)
+void ChessLogic::onClick(const sf::Vector2i mousePosition)
 {
 	if (!m_GameOver)
 	{
-		if (m_WhitePlayer.isPlayerTurn() && m_WhitePlayer.processTurn(window))
+		if (m_WhitePlayer.isPlayerTurn() && m_WhitePlayer.processTurn(mousePosition))
 		{
 			GameState gameState = std::move(getGameState(m_BlackPlayer));
 			if (gameState != GameState::IN_PLAY)
 				gameOver(gameState);
 		}
-		else if (m_BlackPlayer.isPlayerTurn() && m_BlackPlayer.processTurn(window))
+		else if (m_BlackPlayer.isPlayerTurn() && m_BlackPlayer.processTurn(mousePosition))
 		{
 			GameState gameState = std::move(getGameState(m_WhitePlayer));
 			if (gameState != GameState::IN_PLAY)
@@ -69,6 +69,14 @@ void ChessLogic::onClick(sf::RenderWindow& window)
 	}
 	//TODO: ELSE transition to another screen / restart the game
 	//TODO: DRAW without stalemate
+}
+
+void ChessLogic::onMouseMoved(const sf::Vector2i mousePosition)
+{
+	if (m_WhitePlayer.isPlayerTurn())
+		m_WhitePlayer.dragFocusedPiece(mousePosition);
+	else
+		m_BlackPlayer.dragFocusedPiece(mousePosition);
 }
 
 void ChessLogic::gameOver(const GameState& gameOutcome)

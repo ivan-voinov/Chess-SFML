@@ -11,6 +11,8 @@ private:
 	ChessLogic m_ChessLogic;
 	ResourceManager<sf::Texture> m_TextureManager;
 	ResourceManager<sf::SoundBuffer> m_AudioManager;
+	bool m_MouseButtonIsDown = false;
+	bool m_Dragging = false;
 
 	std::vector<std::unique_ptr<GameObject>> m_GameObjects;
 	GameManager();

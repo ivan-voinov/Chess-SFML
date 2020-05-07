@@ -55,7 +55,7 @@ public:
 	void makeMove(Square& square, Piece& focusedPiece);
 	void onSuccessfulMove(Piece* piece);
 	void onFailedMove(Square& square);
-	bool processTurn(sf::RenderWindow& window);
+	bool processTurn(const sf::Vector2i& mousePosition);
 	void choosePiece(Piece& triggeredPiece);
 	void switchTurn();
 	void resetMoveState();
@@ -64,6 +64,7 @@ public:
 	void updateCheckedState();
 	const sf::Color& getColor() const;
 	void setOpacity(sf::Uint8 opacity) const;
+	void dragFocusedPiece(const sf::Vector2i& mousePosition) const;
 	bool isLegalMove(Square& square, Piece& piece) override;
 	bool castleIsLegal(Square& square, Piece& piece) override;
 	bool enPassantIsLegal(Square& square, Piece& piece) override;

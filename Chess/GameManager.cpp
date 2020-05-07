@@ -38,7 +38,28 @@ void GameManager::readInput()
 				break;
 
 			case sf::Event::MouseButtonPressed:
-				m_ChessLogic.onClick(m_Window);
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					m_MouseButtonIsDown = true;
+					m_ChessLogic.onClick(sf::Mouse::getPosition(m_Window));
+				}
+				break;
+
+			case sf::Event::MouseButtonReleased:
+				if (m_MouseButtonIsDown && m_Dragging && event.mouseButton.button == sf::Mouse::Left)
+				{
+					m_ChessLogic.onClick(sf::Mouse::getPosition(m_Window));
+				}
+				m_MouseButtonIsDown = false;
+				m_Dragging = false;
+				break;
+
+			case sf::Event::MouseMoved:
+				if (m_MouseButtonIsDown)
+				{
+					m_Dragging = true;
+					m_ChessLogic.onMouseMoved(sf::Mouse::getPosition(m_Window));
+				}
 				break;
 
 			case sf::Event::Resized:

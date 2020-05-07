@@ -30,7 +30,8 @@ public:
 	ChessLogic();
 	GameState getGameState(const Player& currentPlayer) const;
 	void initializeGame(const sf::RenderWindow& window);
-	void onClick(sf::RenderWindow& window);
+	void onClick(const sf::Vector2i mousePosition);
+	void onMouseMoved(const sf::Vector2i mousePosition);
 	void gameOver(const GameState& gameOutcome);
 	~ChessLogic();
 };
