@@ -60,9 +60,9 @@ public:
 	const sf::Color& getColor() const;
 	const sf::Vector2i& getCoordinates() const;
 	const sf::Vector2f& getPosition() const;
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-	virtual bool isTriggered(const sf::Vector2i& mousePosition) const override;
-	virtual void setOpacity(sf::Uint8 opacity) override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	bool isTriggered(const sf::Vector2i& mousePosition) const override;
+	void setOpacity(sf::Uint8 opacity) override;
 	~Square();
 };
 

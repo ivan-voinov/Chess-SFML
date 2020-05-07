@@ -93,6 +93,9 @@
     <ClInclude Include="ILineValidator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ISquareGetter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -165,6 +168,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ILineValidator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ISquareGetter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

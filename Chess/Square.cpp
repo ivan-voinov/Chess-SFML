@@ -36,14 +36,14 @@ void Square::initializeLegalCaptureShape()
 	for (int i = 0; i < 4; i++)
 	{
 		sf::VertexArray triangle(sf::Triangles, 3);
-		const sf::Color& green = Colors::getColor(Colors::Names::GREEN);
+		const sf::Color& red = Colors::getColor(Colors::Names::RED);
 		const sf::Vector2f& squareCenter = m_Position;
 		float halfSquareSide = m_Shape.getLocalBounds().width / 2;
 		float quarterSquareSide = halfSquareSide / 2;
 
-		triangle[0].color = green;
-		triangle[1].color = green;
-		triangle[2].color = green;
+		triangle[0].color = red;
+		triangle[1].color = red;
+		triangle[2].color = red;
 
 		sf::Vector2f topLeftPoint(squareCenter.x - halfSquareSide, squareCenter.y - halfSquareSide);
 		sf::Vector2f bottomLeftPoint(squareCenter.x + halfSquareSide, squareCenter.y - halfSquareSide);

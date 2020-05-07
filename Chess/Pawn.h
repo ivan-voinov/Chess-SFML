@@ -19,10 +19,10 @@ private:
 public:
 	Pawn(const sf::Vector2f& position, const sf::Color& color);
 	Pawn(const sf::Vector2f& position, int squareId, const sf::Color& color);
-	virtual void move(Square& square, bool isMockingMove) override;
-	virtual void onSuccessfulMove() override;
-	virtual bool controlsSquare(const Square& square) const override;
-	virtual bool isLegalMove(Square& square) override;
+	void move(Square& square, bool isMockingMove) override;
+	void onSuccessfulMove() override;
+	bool controlsSquare(const Square& square) const override;
+	bool isLegalMove(Square& square) override;
 	bool canBePromoted(const Square& square) const;
 	bool enPassantIsActive() const;
 	void deactivateEnPassant();

@@ -39,12 +39,12 @@ public:
 	void setSquare(const Square& square);
 	void attachLineValidator(ILineValidator* lineValidator);
 	virtual void move(Square& square, bool isMockingMove);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void onSuccessfulMove() = 0;
 	virtual bool controlsSquare(const Square& square) const = 0;
 	virtual bool isLegalMove(Square & square);
-	virtual bool isTriggered(const sf::Vector2i& mousePosition) const override;
-	virtual void setOpacity(sf::Uint8 opacity) override;
+	bool isTriggered(const sf::Vector2i& mousePosition) const override;
+	void setOpacity(sf::Uint8 opacity) override;
 	virtual ~Piece();
 };
 

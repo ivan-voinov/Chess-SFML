@@ -84,7 +84,7 @@ bool MoveValidator::isLegalMove(Square& square, Piece& piece)
 
 	piece.move(square, true);
 
-	if (!currentPlayer.isChecked(*m_Board))
+	if (!currentPlayer.isChecked())
 		isLegalMove = true;
 	else
 		isLegalMove = false;
@@ -106,8 +106,8 @@ bool MoveValidator::castleIsLegal(Square& square, Piece& piece)
 
 	if (castleRook &&
 		castleRook->hasCastle() &&
-		!opponent.controlsSquare(*attackedSquare, *m_Board) &&
-		!currentPlayer.isChecked(*m_Board))
+		!opponent.controlsSquare(*attackedSquare) &&
+		!currentPlayer.isChecked())
 	{
 		castleRook->move(*attackedSquare, true);
 		castleIsLegal = isLegalMove(square, piece);
@@ -164,5 +164,5 @@ void MoveValidator::setBoard(Board& board)
 void MoveValidator::onPawnPromotionTriggered(Square& square, Piece& piece)
 {
 	Player& currentPlayer = getPlayer(piece.getColor(), false);
-	currentPlayer.onPawnPromotionTriggered(square, piece, *m_Board);
+	currentPlayer.onPawnPromotionTriggered(square, piece);
 }

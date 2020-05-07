@@ -15,7 +15,7 @@ ChessLogic::ChessLogic() :
 ChessLogic::GameState ChessLogic::getGameState(const Player& currentPlayer) const
 {
 	bool noLegalMoves = currentPlayer.hasNoLegalMoves();
-	if (noLegalMoves && currentPlayer.isChecked(m_Board))
+	if (noLegalMoves && currentPlayer.isChecked())
 	{
 		return GameState::CHECKMATE;
 	}
@@ -43,23 +43,27 @@ void ChessLogic::initializeGame(const sf::RenderWindow& window)
 
 	m_MoveValidator.setPlayers(m_WhitePlayer, m_BlackPlayer);
 	m_MoveValidator.setBoard(m_Board);
+
 	m_WhitePlayer.setMoveValidator(m_MoveValidator);
 	m_BlackPlayer.setMoveValidator(m_MoveValidator);
 
-	m_WhitePlayer.computeLegalMoves(m_Board);
+	m_WhitePlayer.attachSquareGetter(&m_Board);
+	m_BlackPlayer.attachSquareGetter(&m_Board);
+
+	m_WhitePlayer.computeLegalMoves();
 }
 
 void ChessLogic::onClick(sf::RenderWindow& window)
 {
 	if (!m_GameOver)
 	{
-		if (m_WhitePlayer.isPlayerTurn() && m_WhitePlayer.processTurn(m_Board, window))
+		if (m_WhitePlayer.isPlayerTurn() && m_WhitePlayer.processTurn(window))
 		{
 			GameState gameState = std::move(getGameState(m_BlackPlayer));
 			if (gameState != GameState::IN_PLAY)
 				gameOver(gameState);
 		}
-		else if (m_BlackPlayer.isPlayerTurn() && m_BlackPlayer.processTurn(m_Board, window))
+		else if (m_BlackPlayer.isPlayerTurn() && m_BlackPlayer.processTurn(window))
 		{
 			GameState gameState = std::move(getGameState(m_WhitePlayer));
 			if (gameState != GameState::IN_PLAY)
