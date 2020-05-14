@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ChessLogic.h"
+#include "InputEvent.h"
 
 
 ChessLogic::ChessLogic(const sf::Vector2u& windowDimensions) :
@@ -53,18 +54,34 @@ void ChessLogic::onClick(const sf::Vector2i& mousePosition)
 
 void ChessLogic::onMouseMoved(const sf::Vector2i& mousePosition)
 {
+	if (m_GameStateController.gameIsOver())
+		m_GameStateController.onMouseMoved(mousePosition);
+}
+
+void ChessLogic::onMouseDragged(const sf::Vector2i& mousePosition)
+{
 	if (m_WhitePlayer.isPlayerTurn())
 		m_WhitePlayer.dragFocusedPiece(mousePosition);
 	else
 		m_BlackPlayer.dragFocusedPiece(mousePosition);
 }
 
-void ChessLogic::update(const sf::Event& event, const sf::Vector2i& mousePosition)
+void ChessLogic::update(const InputEvent& inputEvent)
 {
-	if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased)
-		onClick(mousePosition);
+	const sf::Event& event = inputEvent.m_Event;
+	const sf::Vector2i mouseButton = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+	const sf::Vector2i mouseMove = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+	if (event.type == sf::Event::MouseButtonPressed)
+		onClick(mouseButton);
+
+	if (event.type == sf::Event::MouseButtonReleased && inputEvent.m_IsDragged)
+		onClick(mouseButton);
+
 	if (event.type == sf::Event::MouseMoved)
-		onMouseMoved(mousePosition);
+		if (inputEvent.m_IsDragged)
+			onMouseDragged(mouseMove);
+		else
+			onMouseMoved(mouseMove);
 }
 
 void ChessLogic::destroyGame()

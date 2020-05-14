@@ -27,7 +27,8 @@ public:
 	GameState getGameState(const Player& currentPlayer) const;
 	void updateGameState(const Player& currentPlayer, ChessLogic& chess);
 	void onGameOver(ChessLogic& chess);
-	void onClick(const sf::Vector2i& mousePosition);
+	void onClick(const sf::Vector2i& mousePosition) const;
+	void onMouseMoved(const sf::Vector2i& mousePosition) const;
 	bool gameIsOver();
 };
 

@@ -73,7 +73,7 @@ void GameStateController::onGameOver(ChessLogic& chess)
 	}
 }
 
-void GameStateController::onClick(const sf::Vector2i& mousePosition)
+void GameStateController::onClick(const sf::Vector2i& mousePosition) const
 {
 	Button* restart = GameManager::getInstance().getGameObject<Button>(m_RestartButtonId);
 	if (restart->isTriggered(mousePosition))
@@ -81,6 +81,15 @@ void GameStateController::onClick(const sf::Vector2i& mousePosition)
 		restart->executeAction();
 		restart->destroy();
 	}
+}
+
+void GameStateController::onMouseMoved(const sf::Vector2i& mousePosition) const
+{
+	Button* restart = GameManager::getInstance().getGameObject<Button>(m_RestartButtonId);
+	if (restart->isTriggered(mousePosition))
+		restart->toggleFocus(true);
+	else
+		restart->toggleFocus(false);
 }
 
 bool GameStateController::gameIsOver()

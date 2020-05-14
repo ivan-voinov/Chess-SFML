@@ -178,6 +178,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameStateController.h" />
     <ClInclude Include="ILineValidator.h" />
+    <ClInclude Include="InputEvent.h" />
     <ClInclude Include="IObserver.h" />
     <ClInclude Include="IOpaque.h" />
     <ClInclude Include="Subject.h" />
@@ -206,7 +207,7 @@
     <ClCompile Include="ChessLogic.cpp" />
     <ClCompile Include="FileException.cpp" />
     <ClCompile Include="GameStateController.cpp" />
-    <ClCompile Include="IObserver.cpp" />
+    <ClCompile Include="InputEvent.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />

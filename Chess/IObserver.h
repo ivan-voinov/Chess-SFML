@@ -1,9 +1,11 @@
 #pragma once
 #include <SFML/Window.hpp>
 
+class InputEvent;
+
 class IObserver
 {
 public:
-	virtual void update(const sf::Event& event, const sf::Vector2i& mousePosition) = 0;
+	virtual void update(const InputEvent& event) = 0;
 };
 

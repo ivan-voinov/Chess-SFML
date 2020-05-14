@@ -13,12 +13,13 @@ private:
 	ResourceManager<sf::Texture> m_TextureManager;
 	ResourceManager<sf::SoundBuffer> m_AudioManager;
 	ResourceManager<sf::Font> m_FontManager;
+	sf::Vector2f m_OnClickMousePosition;
 	bool m_MouseButtonIsDown = false;
-	bool m_Dragging = false;
 	const sf::Vector2u m_WindowDimensions;
 
 	std::vector<std::unique_ptr<GameObject>> m_GameObjects;
 	GameManager();
+	bool exceededMinDragDistance(const sf::Vector2i& mousePosition) const;
 
 public:
 	static GameManager& getInstance();

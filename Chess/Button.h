@@ -11,6 +11,7 @@ private:
 	sf::Text m_Text;
 	sf::Font m_Font;
 	bool m_FocusState = false;
+	bool m_PreviousFocusState = false;
 	std::function<void()> m_OnClickAction;
 
 public:
@@ -18,8 +19,8 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void setOnClickAction(std::function<void()> clickAction);
 	bool isTriggered(const sf::Vector2i& mousePosition) const override;
-	void toggleFocus();
-	bool getFocus();
+	void toggleFocus(bool focus);
+	bool isFocused();
 	void glow();
 	void increaseSize();
 	void decreaseSize();
@@ -33,6 +34,7 @@ public:
 	void setTextSize(int size);
 	void setPosition(const sf::Vector2f& position);
 	void setTextString(const std::string& textString);
+	void onFocusChanged();
 	~Button();
 };
 

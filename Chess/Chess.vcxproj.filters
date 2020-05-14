@@ -105,6 +105,9 @@
     <ClInclude Include="IMoveValidator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -179,10 +182,10 @@
     <ClCompile Include="GameStateController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IObserver.cpp">
+    <ClCompile Include="Subject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Subject.cpp">
+    <ClCompile Include="InputEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

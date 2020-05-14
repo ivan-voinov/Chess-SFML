@@ -21,7 +21,8 @@ public:
 	void initializeGame();
 	void onClick(const sf::Vector2i& mousePosition);
 	void onMouseMoved(const sf::Vector2i& mousePosition);
-	void update(const sf::Event& event, const sf::Vector2i& mousePosition) override;
+	void onMouseDragged(const sf::Vector2i& mousePosition);
+	void update(const InputEvent& inputEvent) override;
 	void destroyGame();
 	void restartGame();
 	~ChessLogic();

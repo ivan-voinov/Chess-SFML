@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 
 class IObserver;
+class InputEvent;
 
 class Subject
 {
@@ -11,6 +12,6 @@ private:
 
 public:
 	void attach(IObserver& observer);
-	void notify(const sf::Event& event, const sf::Vector2i& mousePosition) const;
+	void notify(const InputEvent& event) const;
 };
 

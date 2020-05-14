@@ -25,12 +25,15 @@ bool Button::isTriggered(const sf::Vector2i& mousePosition) const
 	return m_Sprite.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition));
 }
 
-void Button::toggleFocus()
+void Button::toggleFocus(bool focus)
 {
-	m_FocusState = !m_FocusState;
+	m_PreviousFocusState = m_FocusState;
+	m_FocusState = focus;
+	if (m_PreviousFocusState != m_FocusState)
+		onFocusChanged();
 }
 
-bool Button::getFocus()
+bool Button::isFocused()
 {
 	return m_FocusState;
 }
@@ -42,19 +45,18 @@ void Button::glow()
 
 void Button::increaseSize()
 {
-	m_Sprite.scale(1.5f, 1.5f);
+	m_Sprite.scale(1.1f, 1.1f);
 }
 
 void Button::decreaseSize()
 {
-	m_Sprite.scale(2.0f / 3.0f, 2.0f / 3.0f);
+	m_Sprite.scale(10.0f / 11.0f, 10.0f / 11.0f);
 }
 
 void Button::executeAction() const
 {
 	m_OnClickAction();
 }
-
 
 void Button::loadTextFont(const std::string& fontRoute)
 {
@@ -108,6 +110,14 @@ void Button::setTextString(const std::string& textString)
 	m_Text.setString(textString);
 	sf::FloatRect textRect = m_Text.getLocalBounds();
 	m_Text.setOrigin(textRect.left + textRect.width / 2.0f,	textRect.top + textRect.height / 2.0f);
+}
+
+void Button::onFocusChanged()
+{
+	if (m_FocusState)
+		increaseSize();
+	else
+		decreaseSize();
 }
 
 Button::~Button()
