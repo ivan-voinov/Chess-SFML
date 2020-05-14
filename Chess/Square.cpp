@@ -1,12 +1,11 @@
 #include "pch.h"
 #include "Square.h"
 #include "Colors.h"
-#include "GameManager.h"
 
 Square::Square(const sf::Color& color,
 	const sf::Vector2i& coordinates,
 	const sf::Vector2f& position,
-	double size,
+	float size,
 	const State& state
 	)
 {

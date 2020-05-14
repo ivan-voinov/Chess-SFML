@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Bishop.h"
 #include "Square.h"
-#include "MoveValidator.h"
+#include "IMoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
 #include "ILineValidator.h"
@@ -15,11 +15,12 @@ Bishop::Bishop(const sf::Vector2f& position, const sf::Color& color) :
 Bishop::Bishop(const sf::Vector2f& position, int squareId, const sf::Color& color) :
 	Piece(position, squareId, color)
 {
-	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
-	const sf::Texture& bishopPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteBishop") :
+	ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture* bishopPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteBishop") :
 		textureManager.getResource("blackBishop");
 
-	setSpriteTexture(bishopPath);
+	if (bishopPath)
+		setSpriteTexture(*bishopPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

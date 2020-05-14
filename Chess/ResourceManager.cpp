@@ -4,63 +4,56 @@
 template class ResourceManager<sf::Texture>;
 template class ResourceManager<sf::SoundBuffer>;
 
-void loadResource(const std::string& resourcePath, const std::string& resourceKey)
-{
-}
-
 template<>
-void ResourceManager<sf::Texture>::loadResource(const std::string& resourcePath, const std::string& resourceKey)
+const sf::Texture* ResourceManager<sf::Texture>::loadResource(const std::string& resourcePath, const std::string& resourceKey)
 {
-	m_Resources.emplace(resourceKey, sf::Texture());
+	sf::Texture* pResource = &m_Resources[resourceKey];
 	try
 	{
-		if (!m_Resources[resourceKey].loadFromFile(resourcePath))
+		if (!pResource->loadFromFile(resourcePath))
 			throw FileException("Error loading the texture from file: " + resourcePath);
+		else
+			return pResource;
 	}
 	catch (FileException& fileException)
 	{
 		std::cout << fileException.what();
+		return nullptr;
 	}
 }
 
 template<>
-ResourceManager<sf::Texture>::ResourceManager()
+const sf::SoundBuffer* ResourceManager<sf::SoundBuffer>::loadResource(const std::string& resourcePath, const std::string& resourceKey)
 {
-	AssetPaths assetPaths;
-	std::vector<std::string> pieceNames{ "Bishop", "King", "Knight", "Pawn", "Queen", "Rook" };
-	std::vector<std::string> colors{ "white", "black" };
-	for (const auto& pieceName : pieceNames)
-	{
-		for (const auto& color : colors)
-		{
-			const std::string* texturePath = assetPaths.getAssetPath(color + pieceName);
-			if (texturePath)
-				loadResource(*texturePath, color + pieceName);
-		}
-	}
-}
-
-template<>
-void ResourceManager<sf::SoundBuffer>::loadResource(const std::string& resourcePath, const std::string& resourceKey)
-{
-	m_Resources.emplace(resourceKey, sf::SoundBuffer());
+	sf::SoundBuffer* pResource = &m_Resources[resourceKey];
 	try
 	{
-		if (!m_Resources[resourceKey].loadFromFile(resourcePath))
+		if (!pResource->loadFromFile(resourcePath))
 			throw FileException("Error loading the SoundBuffer from file: " + resourcePath);
+		else
+			return pResource;
 	}
 	catch (FileException& fileException)
 	{
 		std::cout << fileException.what();
+		return nullptr;
 	}
 }
 
 template<>
-ResourceManager<sf::SoundBuffer>::ResourceManager()
+const sf::Font* ResourceManager<sf::Font>::loadResource(const std::string& resourcePath, const std::string& resourceKey)
 {
-	AssetPaths assetPaths;
-	const std::string soundKey{"checkMate"};
-	const std::string* soundPath = assetPaths.getAssetPath(soundKey);
-	if (soundPath)
-		loadResource(*soundPath, soundKey);
+	sf::Font* pResource = &m_Resources[resourceKey];
+	try
+	{
+		if (!pResource->loadFromFile(resourcePath))
+			throw FileException("Error loading the Font from file: " + resourcePath);
+		else
+			return pResource;
+	}
+	catch (FileException& fileException)
+	{
+		std::cout << fileException.what();
+		return nullptr;
+	}
 }

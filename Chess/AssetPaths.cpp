@@ -7,6 +7,9 @@
 static const std::string ASSETS_PATH = "Assets";
 static const std::string SOUNDS_PATH = ASSETS_PATH + "/Sounds";
 static const std::string PIECES_PATH = ASSETS_PATH + "/Pieces";
+static const std::string BUTTONS_PATH = ASSETS_PATH + "/Buttons";
+static const std::string FONTS_PATH = ASSETS_PATH + "/Fonts";
+
 const std::unordered_map<std::string, std::string> AssetPaths::m_AssetPaths
 {
 	{"whiteBishop", PIECES_PATH + "/whiteBishop.png"},
@@ -22,7 +25,9 @@ const std::unordered_map<std::string, std::string> AssetPaths::m_AssetPaths
 	{"blackPawn", PIECES_PATH + "/blackPawn.png"},
 	{"blackQueen", PIECES_PATH + "/blackQueen.png"},
 	{"blackRook", PIECES_PATH + "/blackRook.png"},
-	{"checkMate", SOUNDS_PATH + "/checkmate.wav"}
+	{"checkMate", SOUNDS_PATH + "/checkmate.wav"},
+	{"restartButton", BUTTONS_PATH + "/restartButton.png"},
+	{"buttonFont", FONTS_PATH + "/buttonFont.otf"}
 };
 
 const std::string* AssetPaths::getAssetPath(const std::string& requestedAsset) const

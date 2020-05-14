@@ -1,32 +1,37 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <cassert>
-#include "ChessLogic.h"
 #include "ResourceManager.h"
-	
-class GameManager
+#include "Subject.h"
+#include "GameObject.h"
+
+
+class GameManager : public Subject
 {
 private:
 	sf::RenderWindow m_Window;
-	ChessLogic m_ChessLogic;
 	ResourceManager<sf::Texture> m_TextureManager;
 	ResourceManager<sf::SoundBuffer> m_AudioManager;
+	ResourceManager<sf::Font> m_FontManager;
 	bool m_MouseButtonIsDown = false;
 	bool m_Dragging = false;
+	const sf::Vector2u m_WindowDimensions;
 
 	std::vector<std::unique_ptr<GameObject>> m_GameObjects;
 	GameManager();
 
 public:
 	static GameManager& getInstance();
+	const sf::Vector2u getWindowDimensions() const;
 	void runGame();
 	void addGameObject(std::unique_ptr<GameObject> gameObject);
 	void removeGameObject(int id);
 	void readInput();
 	void update();
 	void draw();
-	const ResourceManager<sf::Texture>& getTextureManager() const;
-	const ResourceManager<sf::SoundBuffer>& getAudioManager() const;
+	ResourceManager<sf::Texture>& getTextureManager();
+	ResourceManager<sf::SoundBuffer>& getAudioManager();
+	ResourceManager<sf::Font>& getFontManager();
 
 	template<typename T>
 	T* getGameObject(int id)

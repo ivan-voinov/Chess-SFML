@@ -15,7 +15,7 @@ public:
 	friend bool operator== (const GameObject& g1, int id);
 	friend bool operator!= (const GameObject& g1, int id);
 	int getId() const;
-	void destroy();
+	void destroy() const;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 	~GameObject();
 };

@@ -10,7 +10,7 @@ class Board : public ILineValidator
 {
 private:
 	static constexpr int m_BoardSize = 8;
-	static constexpr double m_SquareSize = 55;
+	float m_SquareSize = 0;
 	std::vector<int> m_SquareIds;
 
 	const sf::Color& getStartSquareColor(const sf::Vector2i& squareCoords) const;
@@ -20,14 +20,15 @@ private:
 
 public:
 	Board();
-	static const double getSquareSize();
+	const float getSquareSize();
 	Square* getSquare(const sf::Vector2i coords) const;
 	Square* getTriggeredSquare(const sf::Vector2i& mousePosition);
 	void setOpacity(sf::Uint8 opacity) const;
 	bool diagonalIsFree(const Square& startSquare, const Square& destSquare) const override;
 	bool LineIsFree(const Square& startSquare, const Square& destSquare) const override;
-	void buildBoard(const sf::RenderWindow& window);
+	void buildBoard(const sf::Vector2u& windowDimensions);
 	void assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer);
+	void destroyBoard();
 	~Board();
 };
 

@@ -25,7 +25,7 @@ private:
 	sf::Vector2f m_Position;
 	State m_State;
 	State m_PreviousState;
-	double m_Size;
+	float m_Size;
 
 	bool m_CheckShapeIsDisplayed = false;
 	bool m_LegalMoveShapeIsDisplayed = false;
@@ -41,7 +41,7 @@ public:
 	Square(const sf::Color& color,
 		const sf::Vector2i& coordinates,
 		const sf::Vector2f& position,
-		double size,
+		float size,
 		const State& state
 		);
 	void resetColor();

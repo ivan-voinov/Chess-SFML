@@ -4,6 +4,7 @@
 #include "GameManager.h"
 #include "SquareBuilder.h"
 #include "Colors.h"
+#include "Player.h"
 
 #define MAX_X 8
 
@@ -20,7 +21,7 @@ const sf::Color& Board::getStartSquareColor(const sf::Vector2i& squareCoords) co
 		Colors::getColor(Colors::Names::DARK_BROWN);
 }
 
-const double Board::getSquareSize()
+const float Board::getSquareSize()
 {
 	return m_SquareSize;
 }
@@ -178,6 +179,14 @@ void Board::assignPiecesToPlayers(Player& whitePlayer, Player& blackPlayer)
 	}
 }
 
+void Board::destroyBoard()
+{
+	std::vector<Square*> board = GameManager::getInstance().getGameObjects<Square>(m_SquareIds);
+	for (const auto& square : board)
+		square->destroy();
+	m_SquareIds.clear();
+}
+
 //Return the correct piece for the square at the start of the game
 std::unique_ptr<Piece> Board::getStartSquarePiece(const Square& square) const
 {
@@ -236,15 +245,18 @@ std::unique_ptr<Piece> Board::getStartSquarePiece(const Square& square) const
 	return nullptr;
 }
 
-void Board::buildBoard(const sf::RenderWindow& window)
+void Board::buildBoard(const sf::Vector2u& windowDimensions)
 {
+	const int squareSize = windowDimensions.x / 10;
+	const float indentation = 1.5 * squareSize;
+	m_SquareSize = squareSize;
 	//Build white-black rows
 	for (int i = 0; i < m_BoardSize; ++i)
 	{
 		for (int j = 0; j < m_BoardSize; ++j)
 		{
 			sf::Vector2f squarePosition =
-				std::move(sf::Vector2f(window.getSize().x / 4 + j * m_SquareSize, window.getSize().y / 4 + i * m_SquareSize));
+				std::move(sf::Vector2f(indentation + j * squareSize, indentation + i * squareSize));
 			sf::Vector2i squareCoordinates = std::move(sf::Vector2i(i, j));
 
 			const sf::Color& squareColor = getStartSquareColor(std::move(sf::Vector2i(i, j)));

@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "MoveValidator.h"
+#include "IMoveValidator.h"
 
 class Board;
 class Square;
@@ -9,8 +9,7 @@ class King;
 class Rook;
 class Pawn;
 
-
-class Player : public MoveValidator
+class Player : public IMoveValidator
 {
 private:
 	Board* m_Board = nullptr;
@@ -49,7 +48,7 @@ public:
 	bool isChecked() const;
 	bool hasNoLegalMoves() const;
 	bool controlsSquare(Square& square);
-	void resizePieces(double squareSize);
+	void resizePieces(float squareSize);
 	bool pieceIsChosen() const;
 	bool isPlayerTurn() const;
 	void makeMove(Square& square, Piece& focusedPiece);
@@ -65,6 +64,7 @@ public:
 	const sf::Color& getColor() const;
 	void setOpacity(sf::Uint8 opacity) const;
 	void dragFocusedPiece(const sf::Vector2i& mousePosition) const;
+	void destroyPieces();
 	bool isLegalMove(Square& square, Piece& piece) override;
 	bool castleIsLegal(Square& square, Piece& piece) override;
 	bool enPassantIsLegal(Square& square, Piece& piece) override;

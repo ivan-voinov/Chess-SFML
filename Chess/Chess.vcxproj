@@ -169,20 +169,24 @@
   <ItemGroup>
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="FileException.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="AssetPaths.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameStateController.h" />
     <ClInclude Include="ILineValidator.h" />
+    <ClInclude Include="IObserver.h" />
     <ClInclude Include="IOpaque.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="ITriggered.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="Knight.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveHistory.h" />
-    <ClInclude Include="MoveValidator.h" />
+    <ClInclude Include="IMoveValidator.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Piece.h" />
@@ -197,9 +201,13 @@
   <ItemGroup>
     <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="ChessLogic.cpp" />
     <ClCompile Include="FileException.cpp" />
+    <ClCompile Include="GameStateController.cpp" />
+    <ClCompile Include="IObserver.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="AssetPaths.cpp" />

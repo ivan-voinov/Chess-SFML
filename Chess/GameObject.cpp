@@ -39,7 +39,7 @@ int GameObject::getId() const
 	return m_Id;
 }
 
-void GameObject::destroy()
+void GameObject::destroy() const
 {
 	GameManager::getInstance().removeGameObject(m_Id);
 }

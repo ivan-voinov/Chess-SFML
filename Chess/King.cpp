@@ -1,7 +1,7 @@
  #include "pch.h"
 #include "King.h"
 #include "Square.h"
-#include "MoveValidator.h"
+#include "IMoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
 #include "ILineValidator.h"
@@ -12,11 +12,12 @@ King::King(const sf::Vector2f& position, const sf::Color& color) : King(position
 
 King::King(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
-	const sf::Texture& kingPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteKing") :
+	ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture* kingPath = Colors::isWhite(m_Color) ? textureManager.getResource("whiteKing") :
 		textureManager.getResource("blackKing");
 
-	setSpriteTexture(kingPath);
+	if (kingPath)
+		setSpriteTexture(*kingPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

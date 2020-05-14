@@ -113,6 +113,7 @@ void Player::displayPiecesToChoose(const std::vector<std::reference_wrapper<Squa
 				piece = std::make_unique<Bishop>(square.get().getPosition(), square.get().getId(), m_Color);
 				break;
 		}
+		piece->resize(m_Board->getSquareSize());
 		m_PawnPromotionPiecesIds.push_back(piece->getId());
 		GameManager::getInstance().addGameObject(std::move(piece));
 		i++;
@@ -206,7 +207,7 @@ bool Player::controlsSquare(Square& square)
 	return false;
 }
 
-void Player::resizePieces(double squareSize)
+void Player::resizePieces(float squareSize)
 {
 	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
 	for (auto& piece : pieces)
@@ -371,6 +372,19 @@ void Player::dragFocusedPiece(const sf::Vector2i& mousePosition) const
 	Piece* focusedPiece = GameManager::getInstance().getGameObject<Piece>(m_FocusedPieceId);
 	if (focusedPiece)
 		focusedPiece->setPosition(mousePosition);
+}
+
+void Player::destroyPieces()
+{
+	std::vector<Piece*> pieces = GameManager::getInstance().getGameObjects<Piece>(m_PiecesIds);
+	for (const auto& piece : pieces)
+		piece->destroy();
+	m_PiecesIds.clear();
+	m_FocusedPieceId = -1;
+	m_LastMovedPieceId = -1;
+	m_FocusedSquareId = -1;
+	m_CheckSquareId = -1;
+	m_KingId = -1;
 }
 
 Rook* Player::getCastleRook(const Square& square, const Piece& piece) const

@@ -3,36 +3,27 @@
 #include "Board.h"
 #include "MoveHistory.h"
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include "ResourceManager.h"
+#include "GameStateController.h"
+#include "IObserver.h"
 
-class ChessLogic
+class ChessLogic : public IObserver
 {
 private:
 	Board m_Board;
 	Player m_WhitePlayer;
 	Player m_BlackPlayer;
 	MoveHistory m_MoveHistory;
-	ResourceManager<sf::SoundBuffer> m_AudioManager;
-	sf::Sound m_CheckmateSound;
-	sf::Sound m_StalemateSound;
-	bool m_GameOver = false;
-
-	enum class GameState
-	{
-		CHECKMATE,
-		STALEMATE,
-		DRAW,
-		IN_PLAY
-	};
+	GameStateController m_GameStateController;
+	const sf::Vector2u m_WindowDimensions;
 
 public:
-	ChessLogic();
-	GameState getGameState(const Player& currentPlayer) const;
-	void initializeGame(const sf::RenderWindow& window);
-	void onClick(const sf::Vector2i mousePosition);
-	void onMouseMoved(const sf::Vector2i mousePosition);
-	void gameOver(const GameState& gameOutcome);
+	ChessLogic(const sf::Vector2u& windowDimensions);
+	void initializeGame();
+	void onClick(const sf::Vector2i& mousePosition);
+	void onMouseMoved(const sf::Vector2i& mousePosition);
+	void update(const sf::Event& event, const sf::Vector2i& mousePosition) override;
+	void destroyGame();
+	void restartGame();
 	~ChessLogic();
 };
 

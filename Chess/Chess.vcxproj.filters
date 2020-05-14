@@ -78,9 +78,6 @@
     <ClInclude Include="Move.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MoveValidator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IOpaque.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -91,6 +88,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ILineValidator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IObserver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IMoveValidator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -159,6 +171,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStateController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IObserver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

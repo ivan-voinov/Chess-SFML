@@ -2,7 +2,7 @@
 #include "SquareBuilder.h"
 
 
-SquareBuilder::SquareBuilder(const sf::Vector2i& coordinates, double size)
+SquareBuilder::SquareBuilder(const sf::Vector2i& coordinates, float size)
 {
 	this->m_Coordinates = coordinates;
 	this->m_Size = size;

@@ -1,16 +1,18 @@
 #include "pch.h"
 #include "GameManager.h"
-#include "Player.h"
 #include "GameObject.h"
 
 #define MAX_FPS 60
-#define WINDOW_SIZE_X 700
-#define WINDOW_SIZE_Y 700
 
-GameManager::GameManager()
+GameManager::GameManager() : m_WindowDimensions(700, 700)
 {
-	m_Window.create(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "Chess", sf::Style::Default);
+	m_Window.create(sf::VideoMode(m_WindowDimensions.x, m_WindowDimensions.y), "Chess", sf::Style::Default);
 	m_Window.setFramerateLimit(MAX_FPS);
+}
+
+const sf::Vector2u GameManager::getWindowDimensions() const
+{
+	return m_WindowDimensions;
 }
 
 void GameManager::addGameObject(std::unique_ptr<GameObject> gameObject)
@@ -41,14 +43,14 @@ void GameManager::readInput()
 				if (event.mouseButton.button == sf::Mouse::Left)
 				{
 					m_MouseButtonIsDown = true;
-					m_ChessLogic.onClick(sf::Mouse::getPosition(m_Window));
+					notify(event, sf::Mouse::getPosition(m_Window));
 				}
 				break;
 
 			case sf::Event::MouseButtonReleased:
 				if (m_MouseButtonIsDown && m_Dragging && event.mouseButton.button == sf::Mouse::Left)
 				{
-					m_ChessLogic.onClick(sf::Mouse::getPosition(m_Window));
+					notify(event, sf::Mouse::getPosition(m_Window));
 				}
 				m_MouseButtonIsDown = false;
 				m_Dragging = false;
@@ -58,7 +60,7 @@ void GameManager::readInput()
 				if (m_MouseButtonIsDown)
 				{
 					m_Dragging = true;
-					m_ChessLogic.onMouseMoved(sf::Mouse::getPosition(m_Window));
+					notify(event, sf::Mouse::getPosition(m_Window));
 				}
 				break;
 
@@ -83,19 +85,23 @@ void GameManager::draw()
 	m_Window.display();
 }
 
-const ResourceManager<sf::Texture>& GameManager::getTextureManager() const
+ResourceManager<sf::Texture>& GameManager::getTextureManager()
 {
 	return m_TextureManager;
 }
 
-const ResourceManager<sf::SoundBuffer>& GameManager::getAudioManager() const
+ResourceManager<sf::SoundBuffer>& GameManager::getAudioManager()
 {
 	return m_AudioManager;
 }
 
+ResourceManager<sf::Font>& GameManager::getFontManager()
+{
+	return m_FontManager;
+}
+
 void GameManager::runGame()
 {
-	m_ChessLogic.initializeGame(m_Window);
 	//Game loop
 	while (m_Window.isOpen())
 	{

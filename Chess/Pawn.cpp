@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Pawn.h"
 #include "Square.h"
-#include "MoveValidator.h"
+#include "IMoveValidator.h"
 #include "Colors.h"
 #include "GameManager.h"
 #include "ILineValidator.h"
@@ -12,11 +12,12 @@ Pawn::Pawn(const sf::Vector2f& position, const sf::Color& color) : Pawn(position
 
 Pawn::Pawn(const sf::Vector2f& position, int squareId, const sf::Color& color) : Piece(position, squareId, color)
 {
-	const ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
-	const sf::Texture& pawnPath = Colors::isWhite(m_Color) ? textureManager.getResource("whitePawn") :
+	ResourceManager<sf::Texture>& textureManager = GameManager::getInstance().getTextureManager();
+	const sf::Texture* pawnPath = Colors::isWhite(m_Color) ? textureManager.getResource("whitePawn") :
 		textureManager.getResource("blackPawn");
 
-	setSpriteTexture(pawnPath);
+	if (pawnPath)
+		setSpriteTexture(*pawnPath);
 	//Must set the origin and position only after setting texture to apply the origin correctly
 	setOriginAndPosition(position);
 }

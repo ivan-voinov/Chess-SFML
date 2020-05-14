@@ -12,34 +12,34 @@ class ResourceManager
 {
 private:
 	std::unordered_map<std::string, T> m_Resources;
-	void loadResource(const std::string& resourcePath, const std::string& resourceKey);
+	const T* loadResource(const std::string& resourcePath, const std::string& resourceKey);
 
 public:
 	ResourceManager()
 	{
 	}
 
-	const T& getResource(const std::string& requestedResource) const
+	//Return the resource if it exists; If it doesn't exist, check if there's a path for the resource.
+	//If there is one, add it and return it. Otherwise, return nullptr
+	const T* getResource(const std::string& requestedResource)
 	{
-		try
+		typename std::unordered_map<std::string, T>::const_iterator resourceIterator = m_Resources.find(requestedResource);
+		if (resourceIterator == m_Resources.end())
 		{
-			return m_Resources.at(requestedResource);
+			AssetPaths assetPaths;
+			const std::string* resourcePath = assetPaths.getAssetPath(requestedResource);
+			if (resourcePath)
+				return loadResource(*resourcePath, requestedResource);
+			else
+				return nullptr;
 		}
-		catch (std::out_of_range e)
-		{
-			std::cout << "Error: the resource " + requestedResource + " has not been found";
-		}
+		else
+			return &resourceIterator->second;
 	}
 };
-
 template<>
-ResourceManager<sf::SoundBuffer>::ResourceManager();
-
+const sf::SoundBuffer* ResourceManager<sf::SoundBuffer>::loadResource(const std::string& resourcePath, const std::string& resourceKey);
 template<>
-void ResourceManager<sf::SoundBuffer>::loadResource(const std::string& resourcePath, const std::string& resourceKey);
-
+const sf::Texture* ResourceManager<sf::Texture>::loadResource(const std::string& resourcePath, const std::string& resourceKey);
 template<>
-ResourceManager<sf::Texture>::ResourceManager();
-
-template<>
-void ResourceManager<sf::Texture>::loadResource(const std::string& resourcePath, const std::string& resourceKey);
+const sf::Font* ResourceManager<sf::Font>::loadResource(const std::string& resourcePath, const std::string& resourceKey);

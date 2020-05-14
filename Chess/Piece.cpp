@@ -36,7 +36,7 @@ Square* Piece::getSquare() const
 	return GameManager::getInstance().getGameObject<Square>(m_SquareId);
 }
 
-void Piece::resize(const double squareSize)
+void Piece::resize(float squareSize)
 {
 	m_PieceSprite.setScale(squareSize / m_PieceSprite.getLocalBounds().width, squareSize / m_PieceSprite.getLocalBounds().height);
 }
@@ -97,7 +97,7 @@ bool Piece::hasNoLegalSquares() const
 	return m_LegalSquaresIds.empty();
 }
 
-void Piece::attachMoveValidator(MoveValidator* moveValidator)
+void Piece::attachMoveValidator(IMoveValidator* moveValidator)
 {
 	m_MoveValidator = moveValidator;
 }

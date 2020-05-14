@@ -6,7 +6,7 @@
 #include "ResourceManager.h"
 
 class Square;
-class MoveValidator;
+class IMoveValidator;
 class ILineValidator;
 
 class Piece : public GameObject, public ITriggered, public IOpaque
@@ -16,7 +16,7 @@ protected:
 	sf::Sprite m_PieceSprite;
 	sf::Color m_Color;
 	std::vector<int> m_LegalSquaresIds;
-	MoveValidator* m_MoveValidator = nullptr;
+	IMoveValidator* m_MoveValidator = nullptr;
 	ILineValidator* m_LineValidator = nullptr;
 
 	void setSpriteTexture(const sf::Texture& texture);
@@ -27,7 +27,7 @@ public:
 	Piece(const sf::Vector2f& position, int squareId, const sf::Color& color);
 	const sf::Color& getColor() const;
 	Square* getSquare() const;
-	void resize(const double squareSize);
+	void resize(float squareSize);
 	void updateSquareState(Square& square, bool isMockingMove);
 	void clearLegalSquares();
 	void addLegalSquare(int squareId);
@@ -35,7 +35,7 @@ public:
 	void hideLegalMoves() const;
 	bool findLegalSquare(const Square& square) const;
 	bool hasNoLegalSquares() const;
-	void attachMoveValidator(MoveValidator* moveValidator);
+	void attachMoveValidator(IMoveValidator* moveValidator);
 	void setSquare(const Square& square);
 	void setPosition(const sf::Vector2i& position);
 	void attachLineValidator(ILineValidator* lineValidator);
